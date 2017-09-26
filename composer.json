@@ -1,0 +1,24 @@
+{
+    "name": "wazsmwazsm/workerf",
+    "description": "A http framework for workerman.",
+    "keywords": ["framework", "workerman"],
+    "license": "MIT",
+    "homepage": "https://github.com/wazsmwazsm/WorkerF",
+    "authors": [
+      {
+        "name": "MrQin",
+        "email": "942443360@qq.com"
+      }
+    ],
+    "require": {
+        "php": ">=5.4",
+        "workerman/workerman": "^3.4",
+        "ext-pdo": "*",
+        "ext-pdo_mysql": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "WorkerF\\": "src/WorkerF/"
+        }
+    }
+}

@@ -107,7 +107,7 @@ use ReflectionClass;
           /******* method Dependency injection *******/
           $reflectorMethod = $reflector->getMethod($method);
           // create di params
-          $di_params = self::_getDiParams($reflectorMethod->getParameters());//var_dump(self::$_singleton);
+          $di_params = self::_getDiParams($reflectorMethod->getParameters());
           // run method
           return call_user_func_array([$instance, $method], $di_params);
       }

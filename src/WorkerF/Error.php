@@ -21,10 +21,10 @@ class Error
     /**
      * print error.
      *
-     * @param  \Exception $e
+     * @param  Mixed $e
      * @return void
      */
-    public static function printError(\Exception $e)
+    public static function printError($e)
     {
         echo '['.date('Y-m-d H:i:s', time()).']'."\n".$e."\n";
     }
@@ -32,11 +32,11 @@ class Error
     /**
      * return error html.
      *
-     * @param  \Exception $e
+     * @param  Mixed $e
      * @param  int $header
      * @return String
      */
-    public static function errorHtml(\Exception $e, $header)
+    public static function errorHtml($e, $header)
     {
         $pattern = [
             '/\{\{title\}\}/',

@@ -34,21 +34,8 @@ class Model
     {
         // get db connection
         $db = DB::connection($this->connection)->table($this->table);
-        // improve the efficiency
-        switch (count($params)) {
-            case 0:
-                return $db->$method();
-            case 1:
-                return $db->$method($params[0]);
-            case 2:
-                return $db->$method($params[0], $params[1]);
-            case 3:
-                return $db->$method($params[0], $params[1], $params[2]);
-            case 4:
-                return $db->$method($params[0], $params[1], $params[2], $params[3]);
-            default:
-                return call_user_func_array([$db, $method], $params);
-        }
+
+        return call_user_func_array([$db, $method], $params);
     }
 
     /**
@@ -63,20 +50,7 @@ class Model
         $instance = new static;
         // get db connection
         $db = DB::connection($instance->connection)->table($instance->table);
-        // improve the efficiency
-        switch (count($params)) {
-            case 0:
-                return $db->$method();
-            case 1:
-                return $db->$method($params[0]);
-            case 2:
-                return $db->$method($params[0], $params[1]);
-            case 3:
-                return $db->$method($params[0], $params[1], $params[2]);
-            case 4:
-                return $db->$method($params[0], $params[1], $params[2], $params[3]);
-            default:
-                return call_user_func_array([$db, $method], $params);
-        }
+
+        return call_user_func_array([$db, $method], $params);
     }
 }

@@ -25,7 +25,6 @@ class Config
      */
     public static function set($file, $conf)
     {
-
         self::$_config[$file] = $conf;
     }
 
@@ -37,7 +36,6 @@ class Config
      */
     public static function get($key)
     {
-
         $path = explode('.', $key);
         list($file, $conf) = [$path[0], $path[1]];
 
@@ -51,7 +49,6 @@ class Config
      */
     public static function getRootPath()
     {
-
         return getcwd();
     }
 

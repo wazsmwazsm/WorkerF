@@ -22,7 +22,6 @@ Class Response
      */
     public static function header($headers)
     {
-
         if(is_array($headers)) {
             // if pass array
             foreach ($headers as $header) {
@@ -42,7 +41,6 @@ Class Response
      */
     public static function getHttpStatus($code)
     {
-
         return HttpCache::$codes[$code];
     }
 
@@ -76,7 +74,6 @@ Class Response
      */
     private static function _compress($data)
     {
-
         $compress_data = $data;
         // get accept encodeing from request
         $accept_encodeing = explode(',', $_SERVER['HTTP_ACCEPT_ENCODING']);

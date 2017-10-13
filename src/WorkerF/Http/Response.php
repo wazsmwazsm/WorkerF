@@ -37,7 +37,7 @@ Class Response
      * get http response status.
      *
      * @param  int  $code
-     * @return String
+     * @return string
      */
     public static function getHttpStatus($code)
     {
@@ -48,7 +48,7 @@ Class Response
      * build response data.
      *
      * @param  mixed  $data
-     * @return String
+     * @return string
      * @throws \InvalidArgumentException
      */
     public static function bulid($data)

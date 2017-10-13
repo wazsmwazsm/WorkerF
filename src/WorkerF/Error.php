@@ -12,7 +12,7 @@ class Error
     /**
      * response html.
      *
-     * @var String
+     * @var string
      */
     private static $_html_blade = '<html><head><title>{{title}}</title><style>'.
         'body{width:35em;margin:0 auto;font-family:Tahoma,Verdana,Arial,sans-serif}</style>'.
@@ -21,7 +21,7 @@ class Error
     /**
      * print error.
      *
-     * @param  Mixed $e
+     * @param  mixed $e
      * @return void
      */
     public static function printError($e)
@@ -32,9 +32,9 @@ class Error
     /**
      * return error html.
      *
-     * @param  Mixed $e
+     * @param  mixed $e
      * @param  int $header
-     * @return String
+     * @return string
      */
     public static function errorHtml($e, $header)
     {

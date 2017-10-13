@@ -11,37 +11,37 @@ Class Requests
     /**
      * get param.
      *
-     * @var Array
+     * @var array
      */
     public $get;
     /**
      * post param.
      *
-     * @var Array
+     * @var array
      */
     public $post;
     /**
      * request param.
      *
-     * @var Array
+     * @var array
      */
     public $requset;
     /**
      * server info.
      *
-     * @var Array
+     * @var array
      */
     public $server;
     /**
      * cokkie info.
      *
-     * @var Array
+     * @var array
      */
     public $cookie;
     /**
      * upload file info.
      *
-     * @var Array
+     * @var array
      */
     public $files;
 

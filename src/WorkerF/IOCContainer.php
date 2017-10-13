@@ -13,7 +13,7 @@ use ReflectionClass;
      /**
       * singleton instances.
       *
-      * @var Array
+      * @var array
       */
       private static $_singleton = [];
 
@@ -35,10 +35,10 @@ use ReflectionClass;
       /**
        * create Dependency injection params.
        *
-       * @param  Array $params
-       * @return Array
+       * @param  array $params
+       * @return array
        */
-      private static function _getDiParams(Array $params)
+      private static function _getDiParams(array $params)
       {
           $di_params = [];
           foreach ($params as $param) {
@@ -73,7 +73,7 @@ use ReflectionClass;
       /**
        * get a singleton instance.
        *
-       * @param  String $class_name
+       * @param  string $class_name
        * @return object
        */
       public static function getSingleton($class_name)
@@ -85,8 +85,8 @@ use ReflectionClass;
       /**
        * run class method.
        *
-       * @param  String $class_name
-       * @param  String $method
+       * @param  string $class_name
+       * @param  string $method
        * @return mixed
        * @throws \BadMethodCallException
        */

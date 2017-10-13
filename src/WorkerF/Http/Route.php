@@ -12,13 +12,13 @@ class Route {
     /**
      * The route map.
      *
-     * @var Array
+     * @var array
      */
     private static $_map_tree = [];
     /**
      * route config filter.
      *
-     * @var Array
+     * @var array
      */
     private static $_filter = [
         'prefix'    => '',
@@ -51,11 +51,11 @@ class Route {
     /**
      * set group route.
      *
-     * @param  Array    $filter
+     * @param  array    $filter
      * @param  \Closure  $routes
      * @return void
      */
-    public static function group(Array $filter, Closure $routes)
+    public static function group(array $filter, Closure $routes)
     {
         // set filter uri prefix
         if(isset($filter['prefix'])) {
@@ -75,8 +75,8 @@ class Route {
     /**
      * Parse uri.
      *
-     * @param  String  $uri
-     * @return String
+     * @param  string  $uri
+     * @return string
      */
     private static function _uriParse($uri)
     {
@@ -90,8 +90,8 @@ class Route {
     /**
      * Parse namespace.
      *
-     * @param  String  $namespace
-     * @return String
+     * @param  string  $namespace
+     * @return string
      */
     private static function _namespaceParse($namespace)
     {

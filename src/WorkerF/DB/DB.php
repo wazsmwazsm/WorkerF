@@ -13,7 +13,7 @@ class DB
     /**
      * connections.
      *
-     * @var Array
+     * @var array
      */
     private static $_connections = [];
 
@@ -49,7 +49,7 @@ class DB
     /**
      * get db connection.
      *
-     * @param String $con_name
+     * @param string $con_name
      * @return object
      */
     public static function connection($con_name)

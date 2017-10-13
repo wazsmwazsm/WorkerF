@@ -1,7 +1,5 @@
 <?php
-
 namespace WorkerF\DB\Drivers;
-
 use Closure;
 
 interface ConnectorInterface
@@ -24,7 +22,7 @@ interface ConnectorInterface
     /**
      * set table
      *
-     * @param  String $table
+     * @param  string $table
      * @return  self
      */
     public function table($table);
@@ -53,52 +51,52 @@ interface ConnectorInterface
     /**
      * build whereIn string
      *
-     * @param  String $field
-     * @param  Array $data
-     * @param  String $condition
-     * @param  String $operator
+     * @param  string $field
+     * @param  array $data
+     * @param  string $condition
+     * @param  string $operator
      * @return  self
      * @throws  \InvalidArgumentException
      */
-    public function whereIn($field, Array $data, $condition = 'IN', $operator = 'AND');
+    public function whereIn($field, array $data, $condition = 'IN', $operator = 'AND');
 
     /**
      * build orWhereIn string
      *
-     * @param  String $field
-     * @param  Array $data
+     * @param  string $field
+     * @param  array $data
      * @return  self
      * @throws  \InvalidArgumentException
      */
-    public function orWhereIn($field, Array $data);
+    public function orWhereIn($field, array $data);
 
     /**
      * build whereNotIn string
      *
-     * @param  String $field
-     * @param  Array $data
+     * @param  string $field
+     * @param  array $data
      * @return  self
      * @throws  \InvalidArgumentException
      */
-    public function whereNotIn($field, Array $data);
+    public function whereNotIn($field, array $data);
 
     /**
      * build orWhereNotIn string
      *
-     * @param  String $field
-     * @param  Array $data
+     * @param  string $field
+     * @param  array $data
      * @return  self
      * @throws  \InvalidArgumentException
      */
-    public function orWhereNotIn($field, Array $data);
+    public function orWhereNotIn($field, array $data);
 
     /**
      * build whereBetween string
      *
-     * @param  String $field
-     * @param  Int $start
-     * @param  Int $end
-     * @param  String $operator
+     * @param  string $field
+     * @param  int $start
+     * @param  int $end
+     * @param  string $operator
      * @return  self
      * @throws  \InvalidArgumentException
      */
@@ -107,9 +105,9 @@ interface ConnectorInterface
     /**
      * build orWhereBetween string
      *
-     * @param  String $field
-     * @param  Int $start
-     * @param  Int $end
+     * @param  string $field
+     * @param  int $start
+     * @param  int $end
      * @return  self
      * @throws  \InvalidArgumentException
      */
@@ -118,9 +116,9 @@ interface ConnectorInterface
     /**
      * build whereNull string
      *
-     * @param  String $field
-     * @param  String $condition
-     * @param  String $operator
+     * @param  string $field
+     * @param  string $condition
+     * @param  string $operator
      * @return  self
      * @throws  \InvalidArgumentException
      */
@@ -129,7 +127,7 @@ interface ConnectorInterface
     /**
      * build whereNotNull string
      *
-     * @param  String $field
+     * @param  string $field
      * @return  self
      * @throws  \InvalidArgumentException
      */
@@ -138,7 +136,7 @@ interface ConnectorInterface
     /**
      * build orWhereNull string
      *
-     * @param  String $field
+     * @param  string $field
      * @return  self
      * @throws  \InvalidArgumentException
      */
@@ -147,7 +145,7 @@ interface ConnectorInterface
     /**
      * build orWhereNotNull string
      *
-     * @param  String $field
+     * @param  string $field
      * @return  self
      * @throws  \InvalidArgumentException
      */
@@ -157,7 +155,7 @@ interface ConnectorInterface
      * build whereBrackets string
      *
      * @param  \Closure $callback
-     * @param  String $operator
+     * @param  string $operator
      * @return  self
      * @throws  \InvalidArgumentException
      */
@@ -176,8 +174,8 @@ interface ConnectorInterface
      * build whereExists string
      *
      * @param  \Closure $callback
-     * @param  String $condition
-     * @param  String $operator
+     * @param  string $condition
+     * @param  string $operator
      * @return  self
      * @throws  \InvalidArgumentException
      */
@@ -213,10 +211,10 @@ interface ConnectorInterface
     /**
      * build whereInSub string
      *
-     * @param  String $field
+     * @param  string $field
      * @param  \Closure $callback
-     * @param  String $condition
-     * @param  String $operator
+     * @param  string $condition
+     * @param  string $operator
      * @return  self
      * @throws  \InvalidArgumentException
      */
@@ -225,7 +223,7 @@ interface ConnectorInterface
     /**
      * build whereNotInSub string
      *
-     * @param  String $field
+     * @param  string $field
      * @param  \Closure $callback
      * @return  self
      * @throws  \InvalidArgumentException
@@ -235,7 +233,7 @@ interface ConnectorInterface
     /**
      * build orWhereInSub string
      *
-     * @param  String $field
+     * @param  string $field
      * @param  \Closure $callback
      * @return  self
      * @throws  \InvalidArgumentException
@@ -245,7 +243,7 @@ interface ConnectorInterface
     /**
      * build orWhereNotInSub string
      *
-     * @param  String $field
+     * @param  string $field
      * @param  \Closure $callback
      * @return  self
      * @throws  \InvalidArgumentException
@@ -255,7 +253,7 @@ interface ConnectorInterface
     /**
      * build groupBy string
      *
-     * @param  String $field
+     * @param  string $field
      * @return  self
      */
     public function groupBy($field);
@@ -277,8 +275,8 @@ interface ConnectorInterface
     /**
      * build orderBy string
      *
-     * @param  String $field
-     * @param  String $mode
+     * @param  string $field
+     * @param  string $mode
      * @return  self
      * @throws  \InvalidArgumentException
      */
@@ -287,10 +285,10 @@ interface ConnectorInterface
     /**
      * build join string
      *
-     * @param  String $table
-     * @param  String $one
-     * @param  String $two
-     * @param  String $type
+     * @param  string $table
+     * @param  string $one
+     * @param  string $two
+     * @param  string $type
      * @return  self
      * @throws  \InvalidArgumentException
      */
@@ -299,9 +297,9 @@ interface ConnectorInterface
     /**
      * build leftJoin string
      *
-     * @param  String $table
-     * @param  String $one
-     * @param  String $two
+     * @param  string $table
+     * @param  string $one
+     * @param  string $two
      * @return  self
      * @throws  \InvalidArgumentException
      */
@@ -310,9 +308,9 @@ interface ConnectorInterface
     /**
      * build rightJoin string
      *
-     * @param  String $table
-     * @param  String $one
-     * @param  String $two
+     * @param  string $table
+     * @param  string $one
+     * @param  string $two
      * @return  self
      * @throws  \InvalidArgumentException
      */
@@ -331,8 +329,8 @@ interface ConnectorInterface
     /**
      * build limit string
      *
-     * @param  Int $offset
-     * @param  Int $step
+     * @param  int $offset
+     * @param  int $step
      * @return  self
      */
     public function limit($offset, $step);
@@ -340,9 +338,9 @@ interface ConnectorInterface
     /**
      * get paginate data
      *
-     * @param  Int $step
-     * @param  Int $page
-     * @return  Array
+     * @param  int $step
+     * @param  int $page
+     * @return  array
      * @throws  \PDOException
      */
     public function paginate($step, $page = NULL);
@@ -350,7 +348,7 @@ interface ConnectorInterface
     /**
      * get assoc data
      *
-     * @return  Array
+     * @return  array
      * @throws  \PDOException
      */
     public function get();
@@ -358,7 +356,7 @@ interface ConnectorInterface
     /**
      * get assoc row data
      *
-     * @return  Array
+     * @return  array
      * @throws  \PDOException
      */
     public function row();
@@ -366,8 +364,8 @@ interface ConnectorInterface
     /**
      * get field list
      *
-     * @param  String $field
-     * @return  Array
+     * @param  string $field
+     * @return  array
      * @throws  \PDOException
      */
     public function list($field);
@@ -375,8 +373,8 @@ interface ConnectorInterface
     /**
      * get count
      *
-     * @param  String $field
-     * @return  Int
+     * @param  string $field
+     * @return  int
      * @throws  \PDOException
      */
     public function count($field = '*');
@@ -384,8 +382,8 @@ interface ConnectorInterface
     /**
      * get sum
      *
-     * @param  String $field
-     * @return  Int
+     * @param  string $field
+     * @return  int
      * @throws  \PDOException
      */
     public function sum($field);
@@ -393,8 +391,8 @@ interface ConnectorInterface
     /**
      * get max
      *
-     * @param  String $field
-     * @return  Int
+     * @param  string $field
+     * @return  int
      * @throws  \PDOException
      */
     public function max($field);
@@ -402,8 +400,8 @@ interface ConnectorInterface
     /**
      * get min
      *
-     * @param  String $field
-     * @return  Int
+     * @param  string $field
+     * @return  int
      * @throws  \PDOException
      */
     public function min($field);
@@ -411,8 +409,8 @@ interface ConnectorInterface
     /**
      * get avg
      *
-     * @param  String $field
-     * @return  Int
+     * @param  string $field
+     * @return  int
      * @throws  \PDOException
      */
     public function avg($field);
@@ -420,25 +418,25 @@ interface ConnectorInterface
     /**
      * insert data
      *
-     * @param  Array $data
-     * @return  NULL/Int
+     * @param  array $data
+     * @return  null/int
      * @throws  \PDOException
      */
-    public function insert(Array $data);
+    public function insert(array $data);
 
     /**
      * update data
      *
-     * @param  Array $data
-     * @return  Int
+     * @param  array $data
+     * @return  int
      * @throws  \PDOException
      */
-    public function update(Array $data);
+    public function update(array $data);
 
     /**
      * delete data
      *
-     * @return  Int
+     * @return  int
      * @throws  \PDOException
      */
     public function delete();
@@ -453,8 +451,8 @@ interface ConnectorInterface
     /**
      * native query, add auto reconnect
      *
-     * @param  String $sql
-     * @return  \PDOStatement/Boolean
+     * @param  string $sql
+     * @return  \PDOStatement/boolean
      * @throws  \PDOException
      */
     public function query($sql);
@@ -462,8 +460,8 @@ interface ConnectorInterface
     /**
      * native exec, add auto reconnect
      *
-     * @param  String $sql
-     * @return  Int
+     * @param  string $sql
+     * @return  int
      * @throws  \PDOException
      */
     public function exec($sql);
@@ -471,17 +469,17 @@ interface ConnectorInterface
     /**
      * native prepare, add auto reconnect
      *
-     * @param  String $sql
-     * @param  Array $driver_options
-     * @return  \PDOStatement/Boolean
+     * @param  string $sql
+     * @param  array $driver_options
+     * @return  \PDOStatement/boolean
      * @throws  \PDOException
      */
-    public function prepare($sql, Array $driver_options = []);
+    public function prepare($sql, array $driver_options = []);
 
     /**
      * begin Transaction, add auto reconnect
      *
-     * @return  Boolean
+     * @return  boolean
      * @throws  \PDOException
      */
     public function beginTrans();
@@ -489,14 +487,14 @@ interface ConnectorInterface
     /**
      * commit Transaction
      *
-     * @return  Boolean
+     * @return  boolean
      */
     public function commitTrans();
 
     /**
      * rollBack Transaction
      *
-     * @return  Boolean
+     * @return  boolean
      */
     public function rollBackTrans();
 }

@@ -12,7 +12,7 @@ class Config
     /**
      * config.
      *
-     * @var Array
+     * @var array
      */
     private static $_config = [];
 
@@ -31,7 +31,7 @@ class Config
     /**
      * get config.
      *
-     * @param  String  $key
+     * @param  string  $key
      * @return mixed
      */
     public static function get($key)
@@ -45,7 +45,7 @@ class Config
     /**
      * get root path.
      *
-     * @return String
+     * @return string
      */
     public static function getRootPath()
     {

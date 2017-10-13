@@ -28,21 +28,21 @@ class Mysql implements ConnectorInterface
     /**
      * debug, set TRUE dump debug info to stdout
      *
-     * @var Boolean
+     * @var boolean
      */
     private $_debug = FALSE;
 
     /**
      * PDO connect config
      *
-     * @var Array
+     * @var array
      */
     private $_config = [];
 
     /**
      * build attribute list
      *
-     * @var Array
+     * @var array
      */
     private $_buildAttrs = [
       '_table',
@@ -59,84 +59,84 @@ class Mysql implements ConnectorInterface
     /**
      * table name
      *
-     * @var String
+     * @var string
      */
     private $_table = '';
 
     /**
      * sql sting
      *
-     * @var String
+     * @var string
      */
     private $_query_sql = '';
 
     /**
      * sql sting
      *
-     * @var String
+     * @var string
      */
     private $_cols_str = ' * ';
 
     /**
      * where sting
      *
-     * @var String
+     * @var string
      */
     private $_where_str = '';
 
     /**
      * orderby sting
      *
-     * @var String
+     * @var string
      */
     private $_orderby_str = '';
 
     /**
      * groupby sting
      *
-     * @var String
+     * @var string
      */
     private $_groupby_str = '';
 
     /**
      * having sting
      *
-     * @var String
+     * @var string
      */
     private $_having_str = '';
 
     /**
      * join sting
      *
-     * @var String
+     * @var string
      */
     private $_join_str = '';
 
     /**
      * limit sting
      *
-     * @var String
+     * @var string
      */
     private $_limit_str = '';
 
     /**
      * insert sting
      *
-     * @var String
+     * @var string
      */
     private $_insert_str = '';
 
     /**
      * update sting
      *
-     * @var String
+     * @var string
      */
     private $_update_str = '';
 
     /**
      * bind params list
      *
-     * @var Array
+     * @var array
      */
     private $_bind_params = [];
 
@@ -351,7 +351,7 @@ class Mysql implements ConnectorInterface
     /**
      * generate a placeholder
      *
-     * @return  String
+     * @return  string
      */
     private static function _getPlh()
     {
@@ -361,8 +361,8 @@ class Mysql implements ConnectorInterface
     /**
      * add backquote sto field, support alias mode, prefix mode, func mode
      *
-     * @param  String $str
-     * @return  String
+     * @param  string $str
+     * @return  string
      */
     private static function _backquote($str)
     {
@@ -396,10 +396,10 @@ class Mysql implements ConnectorInterface
     /**
      * parse argurment, create build attr, store bind param
      *
-     * @param  Int $args_num
-     * @param  Array $params
-     * @param  String $operator
-     * @param  String &$construct_str
+     * @param  int $args_num
+     * @param  array $params
+     * @param  string $operator
+     * @param  string &$construct_str
      * @return  void
      * @throws  \InvalidArgumentException
      */
@@ -445,7 +445,7 @@ class Mysql implements ConnectorInterface
     /**
      * store build attr to tmp
      *
-     * @return  Array
+     * @return  array
      */
     private function _storeBuildAttr()
     {
@@ -462,10 +462,10 @@ class Mysql implements ConnectorInterface
     /**
      * restore build attr from tmp
      *
-     * @param  Array $data
+     * @param  array $data
      * @return  void
      */
-    private function _reStoreBuildAttr(Array $data)
+    private function _reStoreBuildAttr(array $data)
     {
         foreach ($this->_buildAttrs as $buildAttr) {
             $this->$buildAttr = $data[ltrim($buildAttr, '_')];
@@ -475,7 +475,7 @@ class Mysql implements ConnectorInterface
     /**
      * store bind params to tmp
      *
-     * @return  Array
+     * @return  array
      */
     private function _storeBindParam()
     {
@@ -485,7 +485,7 @@ class Mysql implements ConnectorInterface
     /**
      * restore bind params from tmp
      *
-     * @param  Array $data
+     * @param  array $data
      * @return  void
      */
     private function _reStoreBindParam($bind_params)
@@ -497,7 +497,7 @@ class Mysql implements ConnectorInterface
      * do sub build
      *
      * @param  \Closure $callback
-     * @return  Array
+     * @return  array
      * @throws  \InvalidArgumentException
      * @throws  \PDOException
      */
@@ -530,7 +530,7 @@ class Mysql implements ConnectorInterface
     /**
      * set table
      *
-     * @param  String $table
+     * @param  string $table
      * @return  self
      */
     public function table($table)
@@ -607,14 +607,14 @@ class Mysql implements ConnectorInterface
     /**
      * build whereIn string
      *
-     * @param  String $field
-     * @param  Array $data
-     * @param  String $condition
-     * @param  String $operator
+     * @param  string $field
+     * @param  array $data
+     * @param  string $condition
+     * @param  string $operator
      * @return  self
      * @throws  \InvalidArgumentException
      */
-    public function whereIn($field, Array $data, $condition = 'IN', $operator = 'AND')
+    public function whereIn($field, array $data, $condition = 'IN', $operator = 'AND')
     {
         if( ! in_array($condition, ['IN', 'NOT IN']) || ! in_array($operator, ['AND', 'OR'])) {
             throw new \InvalidArgumentException("Error whereIn mode");
@@ -638,12 +638,12 @@ class Mysql implements ConnectorInterface
     /**
      * build orWhereIn string
      *
-     * @param  String $field
-     * @param  Array $data
+     * @param  string $field
+     * @param  array $data
      * @return  self
      * @throws  \InvalidArgumentException
      */
-    public function orWhereIn($field, Array $data)
+    public function orWhereIn($field, array $data)
     {
         return $this->whereIn($field, $data, 'IN', 'OR');
     }
@@ -651,12 +651,12 @@ class Mysql implements ConnectorInterface
     /**
      * build whereNotIn string
      *
-     * @param  String $field
-     * @param  Array $data
+     * @param  string $field
+     * @param  array $data
      * @return  self
      * @throws  \InvalidArgumentException
      */
-    public function whereNotIn($field, Array $data)
+    public function whereNotIn($field, array $data)
     {
         return $this->whereIn($field, $data, 'NOT IN', 'AND');
     }
@@ -664,12 +664,12 @@ class Mysql implements ConnectorInterface
     /**
      * build orWhereNotIn string
      *
-     * @param  String $field
-     * @param  Array $data
+     * @param  string $field
+     * @param  array $data
      * @return  self
      * @throws  \InvalidArgumentException
      */
-    public function orWhereNotIn($field, Array $data)
+    public function orWhereNotIn($field, array $data)
     {
         return $this->whereIn($field, $data, 'NOT IN', 'OR');
     }
@@ -677,10 +677,10 @@ class Mysql implements ConnectorInterface
     /**
      * build whereBetween string
      *
-     * @param  String $field
-     * @param  Int $start
-     * @param  Int $end
-     * @param  String $operator
+     * @param  string $field
+     * @param  int $start
+     * @param  int $end
+     * @param  string $operator
      * @return  self
      * @throws  \InvalidArgumentException
      */
@@ -708,9 +708,9 @@ class Mysql implements ConnectorInterface
     /**
      * build orWhereBetween string
      *
-     * @param  String $field
-     * @param  Int $start
-     * @param  Int $end
+     * @param  string $field
+     * @param  int $start
+     * @param  int $end
      * @return  self
      * @throws  \InvalidArgumentException
      */
@@ -722,9 +722,9 @@ class Mysql implements ConnectorInterface
     /**
      * build whereNull string
      *
-     * @param  String $field
-     * @param  String $condition
-     * @param  String $operator
+     * @param  string $field
+     * @param  string $condition
+     * @param  string $operator
      * @return  self
      * @throws  \InvalidArgumentException
      */
@@ -748,7 +748,7 @@ class Mysql implements ConnectorInterface
     /**
      * build whereNotNull string
      *
-     * @param  String $field
+     * @param  string $field
      * @return  self
      * @throws  \InvalidArgumentException
      */
@@ -760,7 +760,7 @@ class Mysql implements ConnectorInterface
     /**
      * build orWhereNull string
      *
-     * @param  String $field
+     * @param  string $field
      * @return  self
      * @throws  \InvalidArgumentException
      */
@@ -772,7 +772,7 @@ class Mysql implements ConnectorInterface
     /**
      * build orWhereNotNull string
      *
-     * @param  String $field
+     * @param  string $field
      * @return  self
      * @throws  \InvalidArgumentException
      */
@@ -785,7 +785,7 @@ class Mysql implements ConnectorInterface
      * build whereBrackets string
      *
      * @param  \Closure $callback
-     * @param  String $operator
+     * @param  string $operator
      * @return  self
      * @throws  \InvalidArgumentException
      */
@@ -823,8 +823,8 @@ class Mysql implements ConnectorInterface
      * build whereExists string
      *
      * @param  \Closure $callback
-     * @param  String $condition
-     * @param  String $operator
+     * @param  string $condition
+     * @param  string $operator
      * @return  self
      * @throws  \InvalidArgumentException
      */
@@ -885,10 +885,10 @@ class Mysql implements ConnectorInterface
     /**
      * build whereInSub string
      *
-     * @param  String $field
+     * @param  string $field
      * @param  \Closure $callback
-     * @param  String $condition
-     * @param  String $operator
+     * @param  string $condition
+     * @param  string $operator
      * @return  self
      * @throws  \InvalidArgumentException
      */
@@ -913,7 +913,7 @@ class Mysql implements ConnectorInterface
     /**
      * build whereNotInSub string
      *
-     * @param  String $field
+     * @param  string $field
      * @param  \Closure $callback
      * @return  self
      * @throws  \InvalidArgumentException
@@ -926,7 +926,7 @@ class Mysql implements ConnectorInterface
     /**
      * build orWhereInSub string
      *
-     * @param  String $field
+     * @param  string $field
      * @param  \Closure $callback
      * @return  self
      * @throws  \InvalidArgumentException
@@ -939,7 +939,7 @@ class Mysql implements ConnectorInterface
     /**
      * build orWhereNotInSub string
      *
-     * @param  String $field
+     * @param  string $field
      * @param  \Closure $callback
      * @return  self
      * @throws  \InvalidArgumentException
@@ -953,7 +953,7 @@ class Mysql implements ConnectorInterface
     /**
      * build groupBy string
      *
-     * @param  String $field
+     * @param  string $field
      * @return  self
      */
     public function groupBy($field)
@@ -1013,8 +1013,8 @@ class Mysql implements ConnectorInterface
     /**
      * build orderBy string
      *
-     * @param  String $field
-     * @param  String $mode
+     * @param  string $field
+     * @param  string $mode
      * @return  self
      * @throws  \InvalidArgumentException
      */
@@ -1036,10 +1036,10 @@ class Mysql implements ConnectorInterface
     /**
      * build join string
      *
-     * @param  String $table
-     * @param  String $one
-     * @param  String $two
-     * @param  String $type
+     * @param  string $table
+     * @param  string $one
+     * @param  string $two
+     * @param  string $type
      * @return  self
      * @throws  \InvalidArgumentException
      */
@@ -1057,9 +1057,9 @@ class Mysql implements ConnectorInterface
     /**
      * build leftJoin string
      *
-     * @param  String $table
-     * @param  String $one
-     * @param  String $two
+     * @param  string $table
+     * @param  string $one
+     * @param  string $two
      * @return  self
      * @throws  \InvalidArgumentException
      */
@@ -1071,9 +1071,9 @@ class Mysql implements ConnectorInterface
     /**
      * build rightJoin string
      *
-     * @param  String $table
-     * @param  String $one
-     * @param  String $two
+     * @param  string $table
+     * @param  string $one
+     * @param  string $two
      * @return  self
      * @throws  \InvalidArgumentException
      */
@@ -1101,8 +1101,8 @@ class Mysql implements ConnectorInterface
     /**
      * build limit string
      *
-     * @param  Int $offset
-     * @param  Int $step
+     * @param  int $offset
+     * @param  int $step
      * @return  self
      */
     public function limit($offset, $step)
@@ -1115,9 +1115,9 @@ class Mysql implements ConnectorInterface
     /**
      * get paginate data
      *
-     * @param  Int $step
-     * @param  Int $page
-     * @return  Array
+     * @param  int $step
+     * @param  int $page
+     * @return  array
      * @throws  \PDOException
      */
     public function paginate($step, $page = NULL)
@@ -1150,7 +1150,7 @@ class Mysql implements ConnectorInterface
     /**
      * get assoc data
      *
-     * @return  Array
+     * @return  array
      * @throws  \PDOException
      */
     public function get()
@@ -1164,7 +1164,7 @@ class Mysql implements ConnectorInterface
     /**
      * get assoc row data
      *
-     * @return  Array
+     * @return  array
      * @throws  \PDOException
      */
     public function row()
@@ -1178,8 +1178,8 @@ class Mysql implements ConnectorInterface
     /**
      * get field list
      *
-     * @param  String $field
-     * @return  Array
+     * @param  string $field
+     * @return  array
      * @throws  \PDOException
      */
     public function list($field)
@@ -1194,8 +1194,8 @@ class Mysql implements ConnectorInterface
     /**
      * get count
      *
-     * @param  String $field
-     * @return  Int
+     * @param  string $field
+     * @return  int
      * @throws  \PDOException
      */
     public function count($field = '*')
@@ -1211,8 +1211,8 @@ class Mysql implements ConnectorInterface
     /**
      * get sum
      *
-     * @param  String $field
-     * @return  Int
+     * @param  string $field
+     * @return  int
      * @throws  \PDOException
      */
     public function sum($field)
@@ -1225,8 +1225,8 @@ class Mysql implements ConnectorInterface
     /**
      * get max
      *
-     * @param  String $field
-     * @return  Int
+     * @param  string $field
+     * @return  int
      * @throws  \PDOException
      */
     public function max($field)
@@ -1239,8 +1239,8 @@ class Mysql implements ConnectorInterface
     /**
      * get min
      *
-     * @param  String $field
-     * @return  Int
+     * @param  string $field
+     * @return  int
      * @throws  \PDOException
      */
     public function min($field)
@@ -1253,8 +1253,8 @@ class Mysql implements ConnectorInterface
     /**
      * get avg
      *
-     * @param  String $field
-     * @return  Int
+     * @param  string $field
+     * @return  int
      * @throws  \PDOException
      */
     public function avg($field)
@@ -1267,11 +1267,11 @@ class Mysql implements ConnectorInterface
     /**
      * insert data
      *
-     * @param  Array $data
-     * @return  NULL/Int
+     * @param  array $data
+     * @return  null/int
      * @throws  \PDOException
      */
-    public function insert(Array $data)
+    public function insert(array $data)
     {
         // create build str
         $field_str = '';
@@ -1301,11 +1301,11 @@ class Mysql implements ConnectorInterface
     /**
      * update data
      *
-     * @param  Array $data
-     * @return  Int
+     * @param  array $data
+     * @return  int
      * @throws  \PDOException
      */
-    public function update(Array $data)
+    public function update(array $data)
     {
         // should not update without where
         if(empty($this->_where_str)) {
@@ -1330,7 +1330,7 @@ class Mysql implements ConnectorInterface
     /**
      * delete data
      *
-     * @return  Int
+     * @return  int
      * @throws  \PDOException
      */
     public function delete()
@@ -1361,8 +1361,8 @@ class Mysql implements ConnectorInterface
     /**
      * native query, add auto reconnect
      *
-     * @param  String $sql
-     * @return  \PDOStatement/Boolean
+     * @param  string $sql
+     * @return  \PDOStatement/boolean
      * @throws  \PDOException
      */
     public function query($sql)
@@ -1391,8 +1391,8 @@ class Mysql implements ConnectorInterface
     /**
      * native exec, add auto reconnect
      *
-     * @param  String $sql
-     * @return  Int
+     * @param  string $sql
+     * @return  int
      * @throws  \PDOException
      */
     public function exec($sql)
@@ -1421,12 +1421,12 @@ class Mysql implements ConnectorInterface
     /**
      * native prepare, add auto reconnect
      *
-     * @param  String $sql
-     * @param  Array $driver_options
-     * @return  \PDOStatement/Boolean
+     * @param  string $sql
+     * @param  array $driver_options
+     * @return  \PDOStatement/boolean
      * @throws  \PDOException
      */
-    public function prepare($sql, Array $driver_options = [])
+    public function prepare($sql, array $driver_options = [])
     {
         try {
             return $this->_pdo->prepare($sql, $driver_options);
@@ -1452,7 +1452,7 @@ class Mysql implements ConnectorInterface
     /**
      * begin Transaction, add auto reconnect
      *
-     * @return  Boolean
+     * @return  boolean
      * @throws  \PDOException
      */
     public function beginTrans()
@@ -1481,7 +1481,7 @@ class Mysql implements ConnectorInterface
     /**
      * commit Transaction
      *
-     * @return  Boolean
+     * @return  boolean
      */
     public function commitTrans()
     {
@@ -1491,7 +1491,7 @@ class Mysql implements ConnectorInterface
     /**
      * rollBack Transaction
      *
-     * @return  Boolean
+     * @return  boolean
      */
     public function rollBackTrans()
     {

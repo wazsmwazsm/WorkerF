@@ -12,22 +12,22 @@ class Model
     /**
      * database connection
      *
-     * @var String
+     * @var string
      */
     protected $connection;
 
     /**
      * database table
      *
-     * @var String
+     * @var string
      */
     protected $table;
 
     /**
      * call method from DB.
      *
-     * @param String $method
-     * @param Array $params
+     * @param string $method
+     * @param array $params
      * @return mixed
      */
     public function __call($method, $params)
@@ -41,8 +41,8 @@ class Model
     /**
      * call static method from DB.
      *
-     * @param String $method
-     * @param Array $params
+     * @param string $method
+     * @param array $params
      * @return mixed
      */
     public static function __callStatic($method, $params)

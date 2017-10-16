@@ -25,7 +25,7 @@ class DB
     public static function init()
     {
         // get db config
-        $db_confs = Config::get('database.connection');
+        $db_confs = Config::get('database.db_con');
         // connect database
         foreach ($db_confs as $con_name => $db_conf) {
             try {

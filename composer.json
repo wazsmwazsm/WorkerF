@@ -13,6 +13,7 @@
     "require": {
         "php": ">=5.4",
         "workerman/workerman": "^3.4",
+        "predis/predis": "^v1.1.1",
         "ext-pdo": "*",
         "ext-pdo_mysql": "*"
     },

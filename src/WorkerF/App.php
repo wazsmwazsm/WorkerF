@@ -6,6 +6,8 @@ use WorkerF\Http\Response;
 use WorkerF\Http\Route;
 use WorkerF\Error;
 use WorkerF\DB\DB;
+use WorkerF\DB\Redis;
+
 /**
  * App.
  *
@@ -50,14 +52,16 @@ class App
     }
 
     /**
-     * init db connections.
+     * Initialize some devices like redis \ database ...
      *
      * @return void
      */
-    public static function dbInit()
+    public static function init()
     {
         // init database
         DB::init();
+        // init redis
+        Redis::init();
     }
 
 }

@@ -1,6 +1,6 @@
 <?php
 namespace WorkerF;
-
+use WorkerF\Tool\DotArr;
 /**
  * Config.
  *
@@ -17,15 +17,27 @@ class Config
     private static $_config = [];
 
     /**
-     * set config.
+     * load config.
      *
      * @param  string  $file
      * @param  string  $conf
      * @return void
      */
-    public static function set($file, $conf)
+    public static function load($file, $conf)
     {
         self::$_config[$file] = $conf;
+    }
+
+    /**
+     * set config.
+     *
+     * @param  string  $file
+     * @param  mixed  $value
+     * @return void
+     */
+    public static function set($key, $value)
+    {
+        DotArr::dotSet(self::$_config, $key, $value);
     }
 
     /**
@@ -34,12 +46,9 @@ class Config
      * @param  string  $key
      * @return mixed
      */
-    public static function get($key)
+    public static function get($key, $default = NULL)
     {
-        $path = explode('.', $key);
-        list($file, $conf) = [$path[0], $path[1]];
-
-        return self::$_config[$file][$conf];
+        return DotArr::dotGet(self::$_config, $key, $default);
     }
 
     /**

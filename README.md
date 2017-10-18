@@ -12,6 +12,7 @@
   - use dependency injection
   - brief routing
   - support mysql driver, timeout auto reconnect
+  - support redis driver, based on predis
 
   Not allround but brief, Extensible, efficient
 

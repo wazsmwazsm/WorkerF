@@ -1,5 +1,5 @@
 <?php
-namespace Framework\Tool;
+namespace WorkerF\Tool;
 
 class DotArr
 {

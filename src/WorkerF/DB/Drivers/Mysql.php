@@ -355,7 +355,7 @@ class Mysql implements ConnectorInterface
      */
     private static function _getPlh()
     {
-        return ':'.uniqid();
+        return ':'.md5(uniqid(mt_rand(), TRUE));
     }
 
     /**

@@ -25,7 +25,7 @@ Class Requests
      *
      * @var array
      */
-    public $requset;
+    public $request;
     /**
      * server info.
      *
@@ -53,7 +53,7 @@ Class Requests
     {
         $this->get     = (object) $_GET;
         $this->post    = (object) $_POST;
-        $this->requset = (object) $_REQUEST;
+        $this->request = (object) $_REQUEST;
         $this->server  = (object) $_SERVER;
         $this->cookie  = (object) $_COOKIE;
         $this->files   = (object) $_FILES;
@@ -67,8 +67,8 @@ Class Requests
      */
     public function __get($key)
     {
-        if (array_key_exists($key, $this->requset)) {
-            return $this->requset->$key;
+        if (array_key_exists($key, $this->request)) {
+            return $this->request->$key;
         }
         return NULL;
     }

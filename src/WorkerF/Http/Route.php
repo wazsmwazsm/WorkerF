@@ -57,19 +57,23 @@ class Route {
      */
     public static function group(array $filter, Closure $routes)
     {
+        // save sttribute
+        $tmp_prefix    = self::$_filter['prefix'];
+        $tmp_namespace = self::$_filter['namespace'];
+
         // set filter uri prefix
         if(isset($filter['prefix'])) {
-            self::$_filter['prefix'] = '/'.$filter['prefix'].'/';
+            self::$_filter['prefix'] .= '/'.$filter['prefix'].'/';
         }
         // set filter namespace prefix
         if(isset($filter['namespace'])) {
-            self::$_filter['namespace'] = '\\'.$filter['namespace'].'\\';
+            self::$_filter['namespace'] .= '\\'.$filter['namespace'].'\\';
         }
         // call route setting
         call_user_func($routes);
-        // out the scope of the group method, empty filter
-        self::$_filter['prefix'] = '';
-        self::$_filter['namespace'] = '';
+        // recover sttribute
+        self::$_filter['prefix']    = $tmp_prefix;
+        self::$_filter['namespace'] = $tmp_namespace;
     }
 
     /**

@@ -3,6 +3,8 @@ namespace WorkerF\DB;
 use WorkerF\Config;
 use WorkerF\Error;
 use WorkerF\DB\Drivers\Mysql;
+use WorkerF\DB\Drivers\Pgsql;
+use WorkerF\DB\Drivers\Sqlite;
 /**
  * DB.
  *
@@ -31,10 +33,13 @@ class DB
             try {
                 switch (strtolower($db_conf['driver'])) {
                     case 'mysql':
-                        self::$_connections[$con_name] = new Mysql
-                        (
-                            $db_conf['host'], $db_conf['port'], $db_conf['user'], $db_conf['password'], $db_conf['dbname'], $db_conf['charset']
-                        );
+                        self::$_connections[$con_name] = new Mysql($db_conf);
+                        break;
+                    case 'pgsql':
+                        self::$_connections[$con_name] = new Pgsql($db_conf);
+                        break;
+                    case 'sqlite':
+                        self::$_connections[$con_name] = new Sqlite($db_conf);
                         break;
                     default:
                         break;

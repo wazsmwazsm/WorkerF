@@ -32,7 +32,7 @@ class Redis
         $options = (array) $rd_confs['options'];
         $servers = $rd_confs['rd_con'];
         // get clients
-        self::$_clients = $cluster ?
+        self::$_clients = $cluster ? 
             self::createAggregateClient($servers, $options) :
             self::createSingleClients($servers, $options);
         // check redis connect

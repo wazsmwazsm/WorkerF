@@ -9,19 +9,14 @@ use Closure;
 interface ConnectorInterface
 {
 
-    /**
-     * construct , create a db connection
-     *
-     * @param string $host
-     * @param string $port
-     * @param string $user
-     * @param string $password
-     * @param string $dbname
-     * @param string $charset
-     * @return  void
-     * @throws  \PDOException
-     */
-    public function __construct($host, $port, $user, $password, $dbname, $charset = 'utf8');
+  /**
+   * construct , create a db connection
+   *
+   * @param string $config
+   * @return  void
+   * @throws  \PDOException
+   */
+    public function __construct($config);
 
     /**
      * set table
@@ -30,6 +25,13 @@ interface ConnectorInterface
      * @return  self
      */
     public function table($table);
+
+    /**
+     * get table
+     *
+     * @return string
+     */
+    public function getTable();
 
     /**
      * set select cols
@@ -268,6 +270,14 @@ interface ConnectorInterface
      * @return  self
      */
     public function having();
+
+    /**
+     * build having string raw
+     *
+     * @param   $string
+     * @return  self
+     */
+    public function havingRaw($string);
 
     /**
      * build orHaving string

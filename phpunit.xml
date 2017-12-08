@@ -1,0 +1,16 @@
+<phpunit bootstrap="./vendor/autoload.php">
+  <testsuites>
+    <testsuite name="mysql">
+        <file>tests/MysqlDMLTest.php</file>
+        <file>tests/MysqlDQLTest.php</file>
+    </testsuite>
+    <testsuite name="pgsql">
+        <file>tests/PgsqlDMLTest.php</file>
+        <file>tests/PgsqlDQLTest.php</file>
+    </testsuite>
+    <testsuite name="sqlite">
+        <file>tests/SqliteDMLTest.php</file>
+        <file>tests/SqliteDQLTest.php</file>
+    </testsuite>
+  </testsuites>
+</phpunit>

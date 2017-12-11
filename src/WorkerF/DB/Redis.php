@@ -5,7 +5,7 @@ use WorkerF\Error;
 use Predis\Client;
 use Closure;
 /**
- * Redis.
+ * Redis. reference from Laravel Redis
  *
  * @author MirQin https://github.com/wazsmwazsm
  */
@@ -16,7 +16,7 @@ class Redis
      *
      * @var array
      */
-    private static $_clients;
+    protected static $_clients;
 
     /**
      * init redis clients.
@@ -32,7 +32,7 @@ class Redis
         $options = (array) $rd_confs['options'];
         $servers = $rd_confs['rd_con'];
         // get clients
-        self::$_clients = $cluster ? 
+        self::$_clients = $cluster ?
             self::createAggregateClient($servers, $options) :
             self::createSingleClients($servers, $options);
         // check redis connect

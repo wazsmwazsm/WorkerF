@@ -17,7 +17,7 @@ class DB
      *
      * @var array
      */
-    private static $_connections = [];
+    protected static $_connections = [];
 
     /**
      * init db connections.

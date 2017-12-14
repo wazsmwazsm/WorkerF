@@ -1,6 +1,6 @@
 
 -- sqlite
-CREATE TABLE IF NOT EXISTS t_user (
+CREATE TABLE t_user (
    id INTEGER NOT NULL,
    g_id INTEGER NOT NULL,
    username TEXT NOT NULL,
@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS t_user (
 CREATE INDEX index_g_id
 ON t_user (g_id);
 
-CREATE TABLE IF NOT EXISTS t_user_group (
+CREATE TABLE t_user_group (
    id INTEGER NOT NULL,
    c_id INTEGER NOT NULL,
    groupname TEXT NOT NULL,
@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS t_user_group (
    PRIMARY KEY (id ASC)
 );
 
-CREATE TABLE IF NOT EXISTS t_company (
+CREATE TABLE t_company (
    id INTEGER NOT NULL,
    companyname TEXT NOT NULL,
    sort_num INTEGER NOT NULL,

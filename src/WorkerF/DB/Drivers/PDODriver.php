@@ -1287,7 +1287,7 @@ class PDODriver implements ConnectorInterface
      * @return  array
      * @throws  \PDOException
      */
-    public function list($field)
+    public function getList($field)
     {
         $this->_cols_str = ' '.self::_escape($field).' ';
         $this->_buildQuery();

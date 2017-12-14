@@ -382,7 +382,7 @@ interface ConnectorInterface
      * @return  array
      * @throws  \PDOException
      */
-    public function list($field);
+    public function getList($field);
 
     /**
      * get count

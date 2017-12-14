@@ -15,7 +15,7 @@ class PDODMLTest extends PHPUnit_Framework_TestCase
 
     public function getDataSet()
     {
-        return $this->createXMLDataSet(dirname(__FILE__).'/test.xml');
+        return $this->createXMLDataSet('test.xml');
     }
 
     public function testSetGetTable()

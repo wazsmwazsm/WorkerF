@@ -7,7 +7,7 @@ class SqliteDQLTest extends PDODQLTest
     public static function setUpBeforeClass()
     {
         // 新建 pdo 对象, 用于测试被测驱动
-        $dsn = 'sqlite:/home/vagrant/Code/WorkerPHPWeb/test/test.db';
+        $dsn = 'sqlite:test.db';
         $options = [
             PDO::ATTR_CASE => PDO::CASE_NATURAL,
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
@@ -19,7 +19,7 @@ class SqliteDQLTest extends PDODQLTest
 
         // 被测对象
         $config = [
-          'dbname' => '/home/vagrant/Code/WorkerPHPWeb/test/test.db',
+          'dbname' => 'test.db',
           'prefix' => 't_',
         ];
         self::$db = new Sqlite($config);

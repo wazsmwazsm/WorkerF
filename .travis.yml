@@ -21,7 +21,8 @@ services:
 
 before_install:
   - travis_retry composer self-update
-  - mysql -e 'CREATE DATABASE IF NOT EXISTS test;use test;'
+  - mysql -e 'CREATE DATABASE IF NOT EXISTS test;'
+  - mysql -e 'use test;'
   - mysql -e 'source tests/DB/testMysql.sql;'
   - psql -c 'create database test;' -U postgres
   - psql -h localhost -d test -U postgres -f tests/DB/testPgsql.sql

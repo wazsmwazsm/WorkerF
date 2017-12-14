@@ -40,11 +40,11 @@ class PDODQLTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expect, $testResult);
     }
 
-    public function testList()
+    public function testGetList()
     {
         $expect = self::$pdo->query('SELECT username FROM t_user ')
                 ->fetchAll(PDO::FETCH_COLUMN, 0);
-        $testResult = self::$db->table('user')->list('username');
+        $testResult = self::$db->table('user')->getList('username');
 
         $this->assertEquals($expect, $testResult);
     }

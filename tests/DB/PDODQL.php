@@ -1,7 +1,6 @@
 <?php
-use PHPUnit\Framework\TestCase;
 
-class PDODQLTest extends TestCase
+class PDODQLTest extends PHPUnit_Framework_TestCase
 {
     protected static $db;
 

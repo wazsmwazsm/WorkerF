@@ -16,7 +16,7 @@ class PgsqlDMLTest extends PDODMLTest
                 PDO::ATTR_ORACLE_NULLS => PDO::NULL_NATURAL,
                 PDO::ATTR_STRINGIFY_FETCHES => false,
             ];
-            self::$pdo = new PDO($dsn, 'homestead', 'secret', $options);
+            self::$pdo = new PDO($dsn, 'postgres', '', $options);
             self::$pdo->prepare("set names 'utf8'")->execute();
             self::$pdo->prepare('set time zone \'+8:00\'')->execute();
         }
@@ -25,8 +25,8 @@ class PgsqlDMLTest extends PDODMLTest
             $config = [
               'host'     => 'localhost',
               'port'     => '5432',
-              'user'     => 'homestead',
-              'password' => 'secret',
+              'user'     => 'postgres',
+              'password' => '',
               'dbname'   => 'test',
               'charset'  => 'utf8',
               'prefix'   => 't_',

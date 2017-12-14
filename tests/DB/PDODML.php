@@ -1,10 +1,8 @@
 <?php
-use PHPUnit\Framework\TestCase;
-use PHPUnit\DbUnit\TestCaseTrait;
 
-class PDODMLTest extends TestCase
+class PDODMLTest extends PHPUnit_Framework_TestCase
 {
-    use TestCaseTrait;
+    use PHPUnit_Extensions_Database_TestCase_Trait;
 
     protected static $db;
 

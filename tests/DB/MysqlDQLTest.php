@@ -16,7 +16,7 @@ class MysqlDQLTest extends PDODQLTest
             PDO::ATTR_STRINGIFY_FETCHES => FALSE,
             PDO::ATTR_EMULATE_PREPARES => FALSE,
         ];
-        self::$pdo = new PDO($dsn, 'homestead', 'secret', $options);
+        self::$pdo = new PDO($dsn, 'root', '', $options);
         self::$pdo->prepare('set names utf8 collate utf8_general_ci')->execute();
         self::$pdo->prepare('set time_zone=\'+8:00\'')->execute();
         self::$pdo->prepare("set session sql_mode=''")->execute();
@@ -26,8 +26,8 @@ class MysqlDQLTest extends PDODQLTest
         $config = [
           'host'        => 'localhost',
           'port'        => '3306',
-          'user'        => 'homestead',
-          'password'    => 'secret',
+          'user'        => 'root',
+          'password'    => '',
           'dbname'      => 'test',
           'charset'     => 'utf8',
           'prefix'      => 't_',

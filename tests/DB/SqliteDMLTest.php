@@ -10,7 +10,7 @@ class SqliteDMLTest extends PDODMLTest
         // pdo 对象，用于测试被测对象和构建测试基境
         if (self::$pdo == null) {
             // 新建 pdo 对象, 用于测试被测驱动
-            $dsn = 'sqlite:test.db';
+            $dsn = 'sqlite:'.dirname(__FILE__).'/test.db';
             $options = [
                 PDO::ATTR_CASE => PDO::CASE_NATURAL,
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
@@ -23,7 +23,7 @@ class SqliteDMLTest extends PDODMLTest
         // 待测的 mysql 对象
         if (self::$db == null) {
             $config = [
-              'dbname' => 'test.db',
+              'dbname' => dirname(__FILE__).'/test.db',
               'prefix' => 't_',
             ];
             self::$db = new Sqlite($config);

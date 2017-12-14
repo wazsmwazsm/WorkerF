@@ -11,8 +11,7 @@ CREATE TABLE public.t_user (
    created int NOT NULL,
    PRIMARY KEY (id)
 );
-CREATE INDEX public.index_g_id
-ON public.t_user (g_id);
+CREATE INDEX public.index_g_id ON public.t_user (g_id);
 
 CREATE TABLE public.t_user_group (
    id int NOT NULL,

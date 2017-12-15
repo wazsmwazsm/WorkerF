@@ -1396,11 +1396,7 @@ class PDODriver implements ConnectorInterface
         $this->_buildInsert();
         $this->_execute();
 
-        if($this->_pdoSt->rowCount() > 0) {
-            return $this->_pdo->lastInsertId();
-        }
-
-        return NULL;
+        return $this->_pdoSt->rowCount();
     }
 
     /**

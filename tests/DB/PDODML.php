@@ -35,12 +35,12 @@ class PDODMLTest extends PHPUnit_Framework_TestCase
 
         $count_before = self::$db->table('user_group')->count();
 
-        $last_id = self::$db->table('user_group')->insert($insert_data);
+        $effect_row = self::$db->table('user_group')->insert($insert_data);
 
-        $rst = self::$db->table('user_group')->where('id', $last_id)->row();
+        $rst = self::$db->table('user_group')->where('id', 5)->row();
         $count_after = self::$db->table('user_group')->count();
 
-        $this->assertEquals($insert_data, $rst);
+        $this->assertEquals(1, $effect_row);
         $this->assertEquals($count_before + 1, $count_after);
     }
 

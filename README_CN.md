@@ -1,5 +1,7 @@
 # WorkerF 框架部分
 
+[![Build Status](https://travis-ci.org/wazsmwazsm/WorkerF.svg?branch=master)](https://travis-ci.org/wazsmwazsm/WorkerF)
+
 ## 关于
 
   一个基于 workerman 的 http 小型框架, 框架核心部分

@@ -18,7 +18,7 @@ class PgsqlDMLTest extends PDODMLTest
         self::$pdo = new PDO($dsn, 'postgres', '', $options);
         self::$pdo->prepare("set names 'utf8'")->execute();
         self::$pdo->prepare('set time zone \'+8:00\'')->execute();
-        
+
         // 待测的 mysql 对象
         $config = [
           'host'     => 'localhost',

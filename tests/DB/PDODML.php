@@ -80,4 +80,35 @@ class PDODMLTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(2, $effect_row);
         $this->assertEquals($count_before - 2, $count_after);
     }
+
+    public function testTrans()
+    {
+        // rollBack
+        $count_before = self::$db->table('user_group')->count();
+
+        self::$db->beginTrans();
+        self::$db->table('user_group')
+                 ->where('c_id', 1)
+                 ->delete();
+        self::$db->rollBackTrans();
+
+        $count_after = self::$db->table('user_group')->count();
+
+        $this->assertEquals($count_before, $count_after);
+
+        // commit
+        $count_before = self::$db->table('user_group')->count();
+
+        self::$db->beginTrans();
+        self::$db->table('user_group')
+                 ->where('c_id', 2)
+                 ->delete();
+        self::$db->commitTrans();
+
+        $count_after = self::$db->table('user_group')->count();
+
+        $this->assertEquals($count_before - 2, $count_after);
+
+    }
+  
 }

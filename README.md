@@ -1,5 +1,7 @@
 # WorkerF framework part
 
+[![Build Status](https://travis-ci.org/wazsmwazsm/WorkerF.svg?branch=master)](https://travis-ci.org/wazsmwazsm/WorkerF)
+
 [中文文档](https://github.com/wazsmwazsm/WorkerF/blob/master/README_CN.md  "中文文档")
 
 ## About

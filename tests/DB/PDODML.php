@@ -44,6 +44,21 @@ class PDODMLTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($count_before + 1, $count_after);
     }
 
+    public function testInsertGetLastId()
+    {
+        $insert_data = [
+          'id'        => 5,
+          'c_id'      => 1,
+          'groupname' => 'test_group',
+          'sort_num'  => 50,
+          'created'   => time(),
+        ];
+
+        $last_id = self::$db->table('user_group')->insertGetLastId($insert_data);
+
+        $this->assertEquals(5, $last_id);
+    }
+
     public function testUpdate()
     {
         $update_data = [
@@ -110,5 +125,5 @@ class PDODMLTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($count_before - 2, $count_after);
 
     }
-  
+
 }

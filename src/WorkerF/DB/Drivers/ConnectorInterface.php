@@ -439,6 +439,15 @@ interface ConnectorInterface
     public function insert(array $data);
 
     /**
+     * insert data, get last insert ID
+     *
+     * @param  array $data
+     * @return  null/int
+     * @throws  \PDOException
+     */
+    public function insertGetLastId(array $data);
+
+    /**
      * update data
      *
      * @param  array $data

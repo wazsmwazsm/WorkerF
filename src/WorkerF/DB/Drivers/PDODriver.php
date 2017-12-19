@@ -1415,6 +1415,20 @@ class PDODriver implements ConnectorInterface
     }
 
     /**
+     * insert data, get last insert ID, this method dosen't apply to postgresql
+     *
+     * @param  array $data
+     * @return  null/int
+     * @throws  \PDOException
+     */
+    public function insertGetLastId(array $data)
+    {
+        $this->insert($data);
+
+        return $this->_pdo->lastInsertId();
+    }
+
+    /**
      * update data
      *
      * @param  array $data

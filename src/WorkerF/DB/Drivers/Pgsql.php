@@ -62,7 +62,7 @@ class Pgsql extends PDODriver implements ConnectorInterface
         try {
 
             $this->_pdo = new PDO($dsn, $user, $password, $options);
-            
+
             // charset set
             if(isset($charset)) {
                 $this->_pdo->prepare("set names '$charset'")->execute();
@@ -84,5 +84,35 @@ class Pgsql extends PDODriver implements ConnectorInterface
         }
     }
 
+    /**
+     * get last insert ID for postgresql
+     *
+     * @param  array $data
+     * @return  null/int
+     * @throws  \PDOException
+     */
+    public function insertGetLastId(array $data)
+    {
+        // create build str
+        $field_str = '';
+        $value_str = '';
+        foreach ($data as $key => $value) {
+            $field_str .= ' '.self::_backquote($key).',';
+            $plh = self::_getPlh();
+            $this->_bind_params[$plh] = $value;
+            $value_str .= ' '.$plh.',';
+        }
+
+        $field_str = rtrim($field_str, ',');
+        $value_str = rtrim($value_str, ',');
+
+        $this->_insert_str = ' ('.$field_str.') VALUES ('.$value_str.') RETURNING id ';
+        // execute
+        $this->_buildInsert();
+        $this->_execute();
+        $result = $this->_pdoSt->fetch(PDO::FETCH_ASSOC);
+
+        return $result['id'];
+    }
 
 }

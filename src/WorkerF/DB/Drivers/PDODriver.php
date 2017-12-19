@@ -221,6 +221,21 @@ class PDODriver implements ConnectorInterface
     }
 
     /**
+     * is pdo connect timeout
+     *
+     * @param   \PDOException $e
+     * @return  boolean
+     */
+    protected function _isTimeout(PDOException $e)
+    {
+        return (
+          $e->errorInfo[1] == 2006 ||   // MySQL server has gone away (CR_SERVER_GONE_ERROR)
+          $e->errorInfo[1] == 2013 ||   // Lost connection to MySQL server during query (CR_SERVER_LOST)
+          $e->errorInfo[1] == 7         // no connection to the server (for postgresql)
+        );
+    }
+
+    /**
      * reset all attribute
      * memory-resident mode , need manual reset attr
      *
@@ -332,8 +347,8 @@ class PDODriver implements ConnectorInterface
             $this->_wrapPrepareSql();
             $this->_pdoSt = $this->_pdo->prepare($this->_prepare_sql);
             $this->_bindParams();
-            $this->_reset();  // memory-resident mode, singleton pattern, need reset build attr
             $this->_pdoSt->execute();
+            $this->_reset();  // memory-resident mode, singleton pattern, need reset build attr
             // if debug mode, print sql and bind params to stdout
             if($this->_debug) {
                 $this->_pdoSt->debugDumpParams();
@@ -341,7 +356,7 @@ class PDODriver implements ConnectorInterface
             }
         } catch (PDOException $e) {
             // when time out, reconnect
-            if($e->errorInfo[1] == 2006 || $e->errorInfo[1] == 2013) {
+            if($this->_isTimeout($e) {
                 $this->_closeConnection();
                 $this->_connect();
                 // retry
@@ -349,8 +364,8 @@ class PDODriver implements ConnectorInterface
                     $this->_wrapPrepareSql();
                     $this->_pdoSt = $this->_pdo->prepare($this->_prepare_sql);
                     $this->_bindParams();
-                    $this->_reset();
                     $this->_pdoSt->execute();
+                    $this->_reset();
                     // if debug mode, print sql and bind params to stdout
                     if($this->_debug) {
                         $this->_pdoSt->debugDumpParams();
@@ -1472,7 +1487,7 @@ class PDODriver implements ConnectorInterface
             return $this->_pdo->query($sql);
         } catch (PDOException $e) {
             // when time out, reconnect
-            if($e->errorInfo[1] == 2006 || $e->errorInfo[1] == 2013) {
+            if($this->_isTimeout($e) {
 
                 $this->_closeConnection();
                 $this->_connect();
@@ -1502,7 +1517,7 @@ class PDODriver implements ConnectorInterface
             return $this->_pdo->exec($sql);
         } catch (PDOException $e) {
             // when time out, reconnect
-            if($e->errorInfo[1] == 2006 || $e->errorInfo[1] == 2013) {
+            if($this->_isTimeout($e) {
 
                 $this->_closeConnection();
                 $this->_connect();
@@ -1533,7 +1548,7 @@ class PDODriver implements ConnectorInterface
             return $this->_pdo->prepare($sql, $driver_options);
         } catch (PDOException $e) {
             // when time out, reconnect
-            if($e->errorInfo[1] == 2006 || $e->errorInfo[1] == 2013) {
+            if($this->_isTimeout($e) {
 
                 $this->_closeConnection();
                 $this->_connect();
@@ -1562,7 +1577,7 @@ class PDODriver implements ConnectorInterface
             return $this->_pdo->beginTransaction();
         } catch (PDOException $e) {
             // when time out, reconnect
-            if ($e->errorInfo[1] == 2006 || $e->errorInfo[1] == 2013) {
+            if ($this->_isTimeout($e) {
 
                 $this->_closeConnection();
                 $this->_connect();

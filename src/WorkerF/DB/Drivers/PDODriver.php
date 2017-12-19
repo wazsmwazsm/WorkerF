@@ -356,7 +356,7 @@ class PDODriver implements ConnectorInterface
             }
         } catch (PDOException $e) {
             // when time out, reconnect
-            if($this->_isTimeout($e) {
+            if($this->_isTimeout($e)) {
                 $this->_closeConnection();
                 $this->_connect();
                 // retry
@@ -1487,7 +1487,7 @@ class PDODriver implements ConnectorInterface
             return $this->_pdo->query($sql);
         } catch (PDOException $e) {
             // when time out, reconnect
-            if($this->_isTimeout($e) {
+            if($this->_isTimeout($e)) {
 
                 $this->_closeConnection();
                 $this->_connect();
@@ -1517,7 +1517,7 @@ class PDODriver implements ConnectorInterface
             return $this->_pdo->exec($sql);
         } catch (PDOException $e) {
             // when time out, reconnect
-            if($this->_isTimeout($e) {
+            if($this->_isTimeout($e)) {
 
                 $this->_closeConnection();
                 $this->_connect();
@@ -1548,7 +1548,7 @@ class PDODriver implements ConnectorInterface
             return $this->_pdo->prepare($sql, $driver_options);
         } catch (PDOException $e) {
             // when time out, reconnect
-            if($this->_isTimeout($e) {
+            if($this->_isTimeout($e)) {
 
                 $this->_closeConnection();
                 $this->_connect();
@@ -1577,7 +1577,7 @@ class PDODriver implements ConnectorInterface
             return $this->_pdo->beginTransaction();
         } catch (PDOException $e) {
             // when time out, reconnect
-            if ($this->_isTimeout($e) {
+            if ($this->_isTimeout($e)) {
 
                 $this->_closeConnection();
                 $this->_connect();

@@ -20,31 +20,29 @@ class DBTest extends PHPUnit_Framework_TestCase
     public function getConfig() {
 
         return [
-            'db_con' => [
-                'con1' => [
-                    'driver'   => 'mysql',
-                    'host'     => 'localhost',
-                    'port'     => '3306',
-                    'user'     => 'root',
-                    'password' => '',
-                    'dbname'   => 'test',
-                    'charset'  => 'utf8',
-                ],
-                'con2' => [
-                    'driver'   => 'pgsql',
-                    'host'     => 'localhost',
-                    'port'     => '5432',
-                    'user'     => 'postgres',
-                    'password' => '',
-                    'dbname'   => 'test',
-                    'charset'  => 'utf8',
-                ],
-                'con3' => [
-                    'driver'   => 'sqlite',
-                    'dbname'   => dirname(__FILE__).'/test.db',
-                    'charset'  => 'utf8',
-                ],
-            ]
+            'con1' => [
+                'driver'   => 'mysql',
+                'host'     => 'localhost',
+                'port'     => '3306',
+                'user'     => 'root',
+                'password' => '',
+                'dbname'   => 'test',
+                'charset'  => 'utf8',
+            ],
+            'con2' => [
+                'driver'   => 'pgsql',
+                'host'     => 'localhost',
+                'port'     => '5432',
+                'user'     => 'postgres',
+                'password' => '',
+                'dbname'   => 'test',
+                'charset'  => 'utf8',
+            ],
+            'con3' => [
+                'driver'   => 'sqlite',
+                'dbname'   => dirname(__FILE__).'/test.db',
+                'charset'  => 'utf8',
+            ],
         ];
     }
 

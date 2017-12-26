@@ -17,6 +17,7 @@ services:
   - mysql
   - postgresql
   - sqlite3
+  - redis-server
 
 
 before_install:

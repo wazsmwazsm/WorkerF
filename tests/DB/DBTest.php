@@ -1,15 +1,12 @@
 <?php
-use WorkerF\Config;
 use WorkerF\DB\DB;
 
 class DBTest extends PHPUnit_Framework_TestCase
 {
 
     public function testConnection() {
-        $this->setConfig();
 
-        $db_confs = Config::get('database.db_con');
-        DB::init();
+        DB::init($this->getConfig());
 
         $mysql = DB::connection('con1');
         $pgsql = DB::connection('con2');
@@ -20,9 +17,9 @@ class DBTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($sqlite instanceof \WorkerF\DB\Drivers\Sqlite);
     }
 
-    public function setConfig() {
+    public function getConfig() {
 
-        $db_con = [
+        return [
             'db_con' => [
                 'con1' => [
                     'driver'   => 'mysql',
@@ -49,8 +46,6 @@ class DBTest extends PHPUnit_Framework_TestCase
                 ],
             ]
         ];
-
-        Config::load('database', $db_con);
     }
 
 }

@@ -1,11 +1,11 @@
 <?php
 namespace WorkerF\DB;
-use WorkerF\Config;
-use WorkerF\Error;
+
+use WorkerF\DB\ConnectException;
 use Predis\Client;
 use Closure;
 /**
- * Redis. reference from Laravel Redis
+ * Redis. reference from Laravel Redis, based on Predis
  *
  * @author MirQin https://github.com/wazsmwazsm
  */
@@ -21,12 +21,12 @@ class Redis
     /**
      * init redis clients.
      *
+     * @param  array $rd_confs
      * @return void
+     * @throws WorkerF\DB\ConnectException
      */
-    public static function init()
+    public static function init(array $rd_confs)
     {
-        // get redis config
-        $rd_confs = Config::get('database.redis');
         // create redis init params
         $cluster = $rd_confs['cluster'];
         $options = (array) $rd_confs['options'];
@@ -39,9 +39,10 @@ class Redis
         foreach (self::$_clients as $con_name => $client) {
             try {
                 $client->connect();
+
             } catch (\Exception $e) {
                 $msg = "Redis connect fail, check your redis config for connection '$con_name'. \n".$e->getMessage();
-                Error::printError($msg);
+                throw new ConnectException($msg);
             }
         }
     }

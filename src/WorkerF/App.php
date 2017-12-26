@@ -4,6 +4,7 @@ use Workerman\Connection\TcpConnection;
 use WorkerF\Http\Requests;
 use WorkerF\Http\Response;
 use WorkerF\Http\Route;
+use WorkerF\Config;
 use WorkerF\Error;
 use WorkerF\DB\DB;
 use WorkerF\DB\Redis;
@@ -55,13 +56,20 @@ class App
      * Initialize some devices like redis \ database ...
      *
      * @return void
+     * @throws WorkerF\DB\ConnectException
      */
     public static function init()
     {
-        // init database
-        DB::init();
-        // init redis
-        Redis::init();
+        try {
+            // init database
+            DB::init(Config::get('database.db_con'));
+            // init redis
+            Redis::init(Config::get('database.redis'));
+
+        } catch (\Exception $e) {
+            Error::printError($e->getMessage());
+        }
+
     }
 
 }

@@ -1,7 +1,7 @@
 <?php
 namespace WorkerF\DB;
-use WorkerF\Config;
-use WorkerF\Error;
+
+use WorkerF\DB\ConnectException;
 use WorkerF\DB\Drivers\Mysql;
 use WorkerF\DB\Drivers\Pgsql;
 use WorkerF\DB\Drivers\Sqlite;
@@ -22,12 +22,12 @@ class DB
     /**
      * init db connections.
      *
+     * @param  array $db_confs
      * @return void
+     * @throws WorkerF\DB\ConnectException
      */
-    public static function init()
+    public static function init(array $db_confs)
     {
-        // get db config
-        $db_confs = Config::get('database.db_con');
         // connect database
         foreach ($db_confs as $con_name => $db_conf) {
             try {
@@ -44,9 +44,10 @@ class DB
                     default:
                         break;
                 }
+
             } catch (\Exception $e) {
                 $msg = "Database connect fail, check your database config for connection '$con_name' \n".$e->getMessage();
-                Error::printError($msg);
+                throw new ConnectException($msg);
             }
         }
     }

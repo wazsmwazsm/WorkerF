@@ -1,5 +1,6 @@
 <?php
 use WorkerF\DB\DB;
+use WorkerF\DB\ConnectException;
 
 class DBTest extends PHPUnit_Framework_TestCase
 {
@@ -15,6 +16,26 @@ class DBTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($mysql instanceof \WorkerF\DB\Drivers\Mysql);
         $this->assertTrue($pgsql instanceof \WorkerF\DB\Drivers\Pgsql);
         $this->assertTrue($sqlite instanceof \WorkerF\DB\Drivers\Sqlite);
+    }
+
+    /**
+    * @expectedException WorkerF\DB\ConnectException
+    */
+    public function testConnectFailed() {
+
+        $conf = [
+            'con1' => [
+                'driver'   => 'mysql',
+                'host'     => 'localhost',
+                'port'     => '3306',
+                'user'     => 'foo',
+                'password' => 'bar',
+                'dbname'   => 'test',
+                'charset'  => 'utf8',
+            ],
+        ];
+
+        DB::init($conf);
     }
 
     public function getConfig() {

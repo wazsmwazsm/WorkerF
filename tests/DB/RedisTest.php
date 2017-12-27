@@ -3,17 +3,16 @@ use WorkerF\DB\Redis;
 
 class RedisTest extends PHPUnit_Framework_TestCase
 {
-
-    public function testConnection() {
-
+    public function testConnection()
+    {
         Redis::init($this->getConfig());
         $default = Redis::connection('default');
 
         $this->assertTrue($default instanceof \Predis\Client);
     }
 
-    public function testGetSet() {
-
+    public function testGetSet()
+    {
         Redis::init($this->getConfig());
         $foo = 'hello';
 
@@ -25,8 +24,8 @@ class RedisTest extends PHPUnit_Framework_TestCase
     /**
     * @expectedException WorkerF\DB\ConnectException
     */
-    public function testConnectFailed() {
-
+    public function testConnectFailed()
+    {
         $conf = [
             'cluster' => FALSE,
             'options' => NULL,
@@ -44,8 +43,8 @@ class RedisTest extends PHPUnit_Framework_TestCase
         Redis::init($conf);
     }
 
-    public function getConfig() {
-
+    public function getConfig()
+    {
         return [
             'cluster' => FALSE,
             'options' => NULL,

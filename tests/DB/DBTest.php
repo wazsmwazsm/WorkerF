@@ -4,8 +4,8 @@ use WorkerF\DB\DB;
 class DBTest extends PHPUnit_Framework_TestCase
 {
 
-    public function testConnection() {
-
+    public function testConnection()
+    {
         DB::init($this->getConfig());
 
         $mysql = DB::connection('con1');
@@ -20,8 +20,8 @@ class DBTest extends PHPUnit_Framework_TestCase
     /**
     * @expectedException WorkerF\DB\ConnectException
     */
-    public function testConnectFailed() {
-
+    public function testConnectFailed()
+    {
         $conf = [
             'con1' => [
                 'driver'   => 'mysql',
@@ -37,8 +37,8 @@ class DBTest extends PHPUnit_Framework_TestCase
         DB::init($conf);
     }
 
-    public function getConfig() {
-
+    public function getConfig()
+    {
         return [
             'con1' => [
                 'driver'   => 'mysql',

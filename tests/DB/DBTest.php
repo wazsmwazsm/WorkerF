@@ -60,7 +60,7 @@ class DBTest extends PHPUnit_Framework_TestCase
             ],
             'con3' => [
                 'driver'   => 'sqlite',
-                'dbname'   => dirname(__FILE__).'/test.db',
+                'dbname'   => __DIR__.'/test.db',
                 'charset'  => 'utf8',
             ],
         ];

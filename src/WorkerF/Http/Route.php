@@ -14,13 +14,13 @@ class Route {
      *
      * @var array
      */
-    private static $_map_tree = [];
+    protected static $_map_tree = [];
     /**
      * route config filter.
      *
      * @var array
      */
-    private static $_filter = [
+    protected static $_filter = [
         'prefix'    => '',
         'namespace' => '',
     ];
@@ -82,7 +82,7 @@ class Route {
      * @param  string  $uri
      * @return string
      */
-    private static function _uriParse($uri)
+    protected static function _uriParse($uri)
     {
         // make uri as /a/b/c mode
         $uri = ($uri == '/') ? $uri : '/'.rtrim($uri, '/');
@@ -97,7 +97,7 @@ class Route {
      * @param  string  $namespace
      * @return string
      */
-    private static function _namespaceParse($namespace)
+    protected static function _namespaceParse($namespace)
     {
         // make namespace as \a\b\c mode
         // why 4 '\' ? see php document preg_replace

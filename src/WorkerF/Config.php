@@ -1,6 +1,7 @@
 <?php
 namespace WorkerF;
 use WorkerF\Tool\DotArr;
+
 /**
  * Config.
  *
@@ -14,7 +15,7 @@ class Config
      *
      * @var array
      */
-    private static $_config = [];
+    protected static $_config = [];
 
     /**
      * load config.

@@ -1,6 +1,6 @@
 <?php
 namespace WorkerF;
-use WorkerF\Config;
+
 /**
  * Error.
  *
@@ -34,9 +34,10 @@ class Error
      *
      * @param  mixed $e
      * @param  int $header
+     * @param  boolean $debug
      * @return string
      */
-    public static function errorHtml($e, $header)
+    public static function errorHtml($e, $header, $debug = TRUE)
     {
         $pattern = [
             '/\{\{title\}\}/',
@@ -45,7 +46,7 @@ class Error
         ];
 
         $title = $header;
-        $exception = Config::get('app.debug') ? $e : 'something error...';
+        $exception = $debug ? $e : 'something error...';
         $replacement = [$title, $header, $exception];
 
         return preg_replace($pattern, $replacement, self::$_html_blade);

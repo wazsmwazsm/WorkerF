@@ -15,7 +15,7 @@ use ReflectionClass;
       *
       * @var array
       */
-      private static $_singleton = [];
+      protected static $_singleton = [];
 
       /**
        * get Instance from reflection info.
@@ -23,7 +23,7 @@ use ReflectionClass;
        * @param  \ReflectionClass $reflector
        * @return object
        */
-      private static function _getInstance(ReflectionClass $reflector)
+      protected static function _getInstance(ReflectionClass $reflector)
       {
           $constructor = $reflector->getConstructor();
           // create di params
@@ -38,7 +38,7 @@ use ReflectionClass;
        * @param  array $params
        * @return array
        */
-      private static function _getDiParams(array $params)
+      protected static function _getDiParams(array $params)
       {
           $di_params = [];
           foreach ($params as $param) {

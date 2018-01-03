@@ -29,8 +29,11 @@ class App
     public static function run(TcpConnection $con)
     {
         try {
+            // build config
+            $conf = [];
+            $conf['compress'] = Config::get('app.compress');
             // dispatch route, return Response data
-            $response = Response::bulid(Route::dispatch(new Requests()));
+            $response = Response::bulid(Route::dispatch(new Requests()), $conf);
             $con->send($response);
 
         } catch (\Exception $e) {
@@ -47,7 +50,7 @@ class App
             }
 
             Response::header($header);
-            $con->send(Error::errorHtml($e, $header));
+            $con->send(Error::errorHtml($e, $header, Config::get('app.debug')));
         }
 
     }

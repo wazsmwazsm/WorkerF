@@ -1,8 +1,6 @@
 <?php
 namespace WorkerF\Http;
-use Workerman\Protocols\Http;
-use Workerman\Protocols\HttpCache;
-use WorkerF\Config;
+use WorkerF\WorkerSocket\WorkerHttp;
 
 /**
  * HTTP response.
@@ -13,54 +11,24 @@ use WorkerF\Config;
  */
 Class Response
 {
-
-    /**
-     * create http response header.
-     *
-     * @param  mixed  $header
-     * @return void
-     */
-    public static function header($headers)
-    {
-        if(is_array($headers)) {
-            // if pass array
-            foreach ($headers as $header) {
-                Http::header($header);
-            }
-            return;
-        }
-        // pass string
-        Http::header($headers);
-    }
-
-    /**
-     * get http response status.
-     *
-     * @param  int  $code
-     * @return string
-     */
-    public static function getHttpStatus($code)
-    {
-        return HttpCache::$codes[$code];
-    }
-
     /**
      * build response data.
      *
      * @param  mixed  $data
+     * @param  array  $conf
      * @return string
      * @throws \InvalidArgumentException
      */
-    public static function bulid($data)
+    public static function bulid($data, array $conf)
     {
         // should be json
         if(is_array($data) || is_object($data)) {
-            Http::header("Content-Type: application/json;charset=utf-8");
-            return self::_compress(json_encode($data));
+            WorkerHttp::header("Content-Type: application/json;charset=utf-8");
+            return self::_compress(json_encode($data), $conf['compress']);
         }
         // is string (could be html string)
         if(is_string($data)) {
-            return self::_compress($data);
+            return self::_compress($data, $conf['compress']);
         }
         // if return others, regard as illegal
         throw new \InvalidArgumentException("Controller return illegal data type!");
@@ -70,18 +38,17 @@ Class Response
      * compress data.
      *
      * @param  string  $data
+     * @param  array  $compress_conf
      * @return string
      */
-    private static function _compress($data)
+    protected static function _compress($data, array $compress_conf)
     {
         $compress_data = $data;
         // get accept encodeing from request
         $accept_encodeing = explode(',', $_SERVER['HTTP_ACCEPT_ENCODING']);
-        // get compress config
-        $compress_conf = Config::get('app.compress');
         // get response headers Content-Type
-        $content_type = isset(HttpCache::$header['Content-Type']) ?
-                        HttpCache::$header['Content-Type'] : "Content-Type: text/html;charset=utf-8";
+        $header = WorkerHttp::getHeader('Content-Type');
+        $content_type = $header ? $header : "Content-Type: text/html;charset=utf-8";
 
         foreach ($accept_encodeing as $key => $value) {
             $accept_encodeing[$key] = trim($value);
@@ -96,11 +63,11 @@ Class Response
                 // check conf encodeing, enable compress
                 switch ($compress_conf['encoding']) {
                     case 'gzip':
-                        Http::header("Content-Encoding: gzip");
+                        WorkerHttp::header("Content-Encoding: gzip");
                         $compress_data = gzencode($data, $compress_conf['level']);
                         break;
                     case 'deflate':
-                        Http::header("Content-Encoding: deflate");
+                        WorkerHttp::header("Content-Encoding: deflate");
                         $compress_data = gzdeflate($data, $compress_conf['level']);
                         break;
                 }

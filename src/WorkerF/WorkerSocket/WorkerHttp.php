@@ -5,7 +5,7 @@ use Workerman\Protocols\Http;
 use Workerman\Protocols\HttpCache;
 
 /**
- * DB.
+ * WorkerHttp.
  *
  * @author MirQin https://github.com/wazsmwazsm
  */

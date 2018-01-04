@@ -3,7 +3,6 @@ use WorkerF\Error;
 
 class ErrorTest extends PHPUnit_Framework_TestCase
 {
-
     public function testPrintError()
     {
         $e = new Exception('something error');

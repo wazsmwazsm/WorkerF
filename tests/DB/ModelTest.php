@@ -2,8 +2,8 @@
 use WorkerF\DB\DB;
 use WorkerF\DB\Model;
 
-class TModel extends Model {
-
+class TModel extends Model
+{
     protected $connection = 'con1';
 
     protected $table = 'user';

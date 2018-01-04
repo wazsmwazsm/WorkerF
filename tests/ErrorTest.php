@@ -21,17 +21,45 @@ class ErrorTest extends PHPUnit_Framework_TestCase
     {
         // with debug
         $e = new Exception('something error');
-        $expect = '<html><head><title>HTTP/1.1 404 Not Found</title><style>'.
-          'body{width:35em;margin:0 auto;font-family:Tahoma,Verdana,Arial,sans-serif}</style>'.
-          '</head><body><center><h1>HTTP/1.1 404 Not Found</h1><div style="text-align:left;line-height:22px">'.$e.'</div></center></body></html>';
+        $expect = <<<EOF
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>HTTP/1.1 404 Not Found</title>
+    <style>
+      body{width:35em;margin:0 auto;font-family:Tahoma,Verdana,Arial,sans-serif}
+    </style>
+  </head>
+  <body>
+    <center>
+      <h1>HTTP/1.1 404 Not Found</h1>
+      <div style="text-align:left;line-height:22px">{$e}</div>
+    </center>
+  </body>
+</html>
+EOF;
         $result = Error::errorHtml($e, 'HTTP/1.1 404 Not Found');
 
         $this->assertEquals($expect, $result);
 
         // online
-        $expect = '<html><head><title>HTTP/1.1 404 Not Found</title><style>'.
-          'body{width:35em;margin:0 auto;font-family:Tahoma,Verdana,Arial,sans-serif}</style>'.
-          '</head><body><center><h1>HTTP/1.1 404 Not Found</h1><div style="text-align:left;line-height:22px">something error...</div></center></body></html>';
+        $expect = <<<EOF
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>HTTP/1.1 404 Not Found</title>
+    <style>
+      body{width:35em;margin:0 auto;font-family:Tahoma,Verdana,Arial,sans-serif}
+    </style>
+  </head>
+  <body>
+    <center>
+      <h1>HTTP/1.1 404 Not Found</h1>
+      <div style="text-align:left;line-height:22px">something error...</div>
+    </center>
+  </body>
+</html>
+EOF;
         $result = Error::errorHtml($e, 'HTTP/1.1 404 Not Found', FALSE);
 
         $this->assertEquals($expect, $result);

@@ -14,10 +14,23 @@ class Error
      *
      * @var string
      */
-    protected static $_html_blade = '<html><head><title>{{title}}</title><style>'.
-        'body{width:35em;margin:0 auto;font-family:Tahoma,Verdana,Arial,sans-serif}</style>'.
-        '</head><body><center><h1>{{header}}</h1><div style="text-align:left;line-height:22px">{{exception}}</div></center></body></html>';
-
+    protected static $_html_blade = <<<EOF
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{{title}}</title>
+    <style>
+      body{width:35em;margin:0 auto;font-family:Tahoma,Verdana,Arial,sans-serif}
+    </style>
+  </head>
+  <body>
+    <center>
+      <h1>{{header}}</h1>
+      <div style="text-align:left;line-height:22px">{{exception}}</div>
+    </center>
+  </body>
+</html>
+EOF;
     /**
      * print error.
      *

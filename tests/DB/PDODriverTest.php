@@ -37,6 +37,11 @@ class PDODriverFake extends PDODriver
         return self::_getPlh();
     }
 
+    public function reset()
+    {
+        $this->_reset();
+    }
+
     public function wrapTable($table)
     {
         return $this->_wrapTable($table);
@@ -75,6 +80,31 @@ class PDODriverFake extends PDODriver
     public function condition_constructor($args_num, $params, &$construct_str)
     {
         $this->_condition_constructor($args_num, $params, $construct_str);
+    }
+
+    public function storeBuildAttr()
+    {
+        return $this->_storeBuildAttr();
+    }
+
+    public function reStoreBuildAttr(array $data)
+    {
+        $this->_reStoreBuildAttr($data);
+    }
+
+    public function storeBindParam()
+    {
+        return $this->_storeBindParam();
+    }
+
+    public function reStoreBindParam($bind_params)
+    {
+        $this->_reStoreBindParam($bind_params);
+    }
+
+    public function subBuilder(Closure $callback)
+    {
+        return $this->_subBuilder($callback);
     }
 }
 
@@ -262,7 +292,12 @@ class PDODriverTest extends PHPUnit_Framework_TestCase
         ];
         $this->pdoDriver->condition_constructor($args_num, $params, $construct_str);
 
-        $this->assertRegExp('/( `name` = :[0-9a-z]{32} AND `age` = :[0-9a-z]{32} )/', $construct_str);
+        $match = [];
+        preg_match('/\( `name` = (:[0-9a-z]{32}) AND `age` = (:[0-9a-z]{32}) \)/', $construct_str, $match);
+
+        $this->assertEquals('jack', $this->pdoDriver->_bind_params[$match[1]]);
+        $this->assertEquals(25, $this->pdoDriver->_bind_params[$match[2]]);
+        $this->assertRegExp('/\( `name` = :[0-9a-z]{32} AND `age` = :[0-9a-z]{32} \)/', $construct_str);
 
         // 2 param mode
         $construct_str = '';
@@ -270,6 +305,10 @@ class PDODriverTest extends PHPUnit_Framework_TestCase
         $params = ['name', 'jack'];
         $this->pdoDriver->condition_constructor($args_num, $params, $construct_str);
 
+        $match = [];
+        preg_match('/ `name` = (:[0-9a-z]{32}) /', $construct_str, $match);
+
+        $this->assertEquals('jack', $this->pdoDriver->_bind_params[$match[1]]);
         $this->assertRegExp('/ `name` = :[0-9a-z]{32} /', $construct_str);
         // 2 param is null mode
         $construct_str = '';
@@ -285,12 +324,21 @@ class PDODriverTest extends PHPUnit_Framework_TestCase
         $params = ['age', '<=', 30];
         $this->pdoDriver->condition_constructor($args_num, $params, $construct_str);
 
+        $match = [];
+        preg_match('/ `age` <= (:[0-9a-z]{32}) /', $construct_str, $match);
+
+        $this->assertEquals(30, $this->pdoDriver->_bind_params[$match[1]]);
         $this->assertRegExp('/ `age` <= :[0-9a-z]{32} /', $construct_str);
 
         $construct_str = '';
         $args_num = 3;
         $params = ['name', 'like', 'joe'];
         $this->pdoDriver->condition_constructor($args_num, $params, $construct_str);
+
+        $match = [];
+        preg_match('/ `name` like (:[0-9a-z]{32}) /', $construct_str, $match);
+
+        $this->assertEquals('joe', $this->pdoDriver->_bind_params[$match[1]]);
 
         $this->assertRegExp('/ `name` like :[0-9a-z]{32} /', $construct_str);
     }
@@ -331,5 +379,60 @@ class PDODriverTest extends PHPUnit_Framework_TestCase
         $this->pdoDriver->condition_constructor($args_num, $params, $construct_str);
     }
 
+    public function testStoreRestoreBuildAttr()
+    {
+        // store
+        $this->pdoDriver->_table = 'test';
+        $this->pdoDriver->_prepare_sql = 'SELECT * FROM test';
 
+        $buildAttr = $this->pdoDriver->storeBuildAttr();
+
+        $this->assertEquals($this->pdoDriver->_table, $buildAttr['table']);
+        $this->assertEquals($this->pdoDriver->_prepare_sql, $buildAttr['prepare_sql']);
+
+        // restore
+        $this->pdoDriver->reset();
+        $this->assertEmpty($this->pdoDriver->_table);
+        $this->assertEmpty($this->pdoDriver->_prepare_sql);
+
+        $this->pdoDriver->reStoreBuildAttr($buildAttr);
+        $this->assertEquals($this->pdoDriver->_table, $buildAttr['table']);
+        $this->assertEquals($this->pdoDriver->_prepare_sql, $buildAttr['prepare_sql']);
+    }
+
+    public function testStoreRestoreBindParam()
+    {
+        // store
+        $this->_bind_params = [
+            'foo' => 1,
+            'bar' => 2,
+        ];
+
+        $bindParam = $this->pdoDriver->storeBindParam();
+
+        $this->assertEquals($this->pdoDriver->_bind_params, $bindParam);
+
+        // restore
+        $this->pdoDriver->reset();
+        $this->assertEmpty($this->pdoDriver->_bind_params);
+
+        $this->pdoDriver->reStoreBindParam($bindParam);
+        $this->assertEquals($this->pdoDriver->_bind_params, $bindParam);
+    }
+
+    public function testSubBuilder()
+    {
+        $this->pdoDriver->_table = 'test';
+        $this->pdoDriver->_cols_str = '*';
+
+        $sub_attr = $this->pdoDriver->subBuilder(function($query) {
+            $query->_table = 'hello';
+            $query->_cols_str = 'hi';
+        });
+
+        $this->assertEquals('test', $this->pdoDriver->_table);
+        $this->assertEquals('*', $this->pdoDriver->_cols_str);
+        $this->assertEquals('hello', $sub_attr['table']);
+        $this->assertEquals('hi', $sub_attr['cols_str']);
+    }
 }

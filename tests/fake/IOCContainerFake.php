@@ -13,7 +13,6 @@ class IOCContainerFake extends IOCContainer
 
     public static function getDiParams(array $params)
     {
-        return self::_getDiParams($reflector);
+        return self::_getDiParams($params);
     }
-
 }

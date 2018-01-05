@@ -12,9 +12,9 @@ class DBTest extends PHPUnit_Framework_TestCase
         $pgsql = DB::connection('con2');
         $sqlite = DB::connection('con3');
 
-        $this->assertTrue($mysql instanceof \WorkerF\DB\Drivers\Mysql);
-        $this->assertTrue($pgsql instanceof \WorkerF\DB\Drivers\Pgsql);
-        $this->assertTrue($sqlite instanceof \WorkerF\DB\Drivers\Sqlite);
+        $this->assertInstanceOf('\WorkerF\DB\Drivers\Mysql', $mysql);
+        $this->assertInstanceOf('\WorkerF\DB\Drivers\Pgsql', $pgsql);
+        $this->assertInstanceOf('\WorkerF\DB\Drivers\Sqlite', $sqlite);
     }
 
     /**

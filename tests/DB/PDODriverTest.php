@@ -71,6 +71,11 @@ class PDODriverFake extends PDODriver
     {
         $this->_wrapPrepareSql();
     }
+
+    public function condition_constructor($args_num, $params, &$construct_str)
+    {
+        $this->_condition_constructor($args_num, $params, $construct_str);
+    }
 }
 
 class PDODriverTest extends PHPUnit_Framework_TestCase
@@ -243,4 +248,88 @@ class PDODriverTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(':', substr($plh, 0, 1));
         $this->assertEquals(33, strlen($plh));
     }
+
+    public function testConditionConstructor()
+    {
+        // 1 param mode
+        $construct_str = '';
+        $args_num = 1;
+        $params = [
+          [
+            'name' => 'jack',
+            'age'  => 25,
+          ]
+        ];
+        $this->pdoDriver->condition_constructor($args_num, $params, $construct_str);
+
+        $this->assertRegExp('/( `name` = :[0-9a-z]{32} AND `age` = :[0-9a-z]{32} )/', $construct_str);
+
+        // 2 param mode
+        $construct_str = '';
+        $args_num = 2;
+        $params = ['name', 'jack'];
+        $this->pdoDriver->condition_constructor($args_num, $params, $construct_str);
+
+        $this->assertRegExp('/ `name` = :[0-9a-z]{32} /', $construct_str);
+        // 2 param is null mode
+        $construct_str = '';
+        $args_num = 2;
+        $params = ['name', NULL];
+        $this->pdoDriver->condition_constructor($args_num, $params, $construct_str);
+
+        $this->assertEquals(' `name` IS NULL ', $construct_str);
+
+        // 3 parm mode
+        $construct_str = '';
+        $args_num = 3;
+        $params = ['age', '<=', 30];
+        $this->pdoDriver->condition_constructor($args_num, $params, $construct_str);
+
+        $this->assertRegExp('/ `age` <= :[0-9a-z]{32} /', $construct_str);
+
+        $construct_str = '';
+        $args_num = 3;
+        $params = ['name', 'like', 'joe'];
+        $this->pdoDriver->condition_constructor($args_num, $params, $construct_str);
+
+        $this->assertRegExp('/ `name` like :[0-9a-z]{32} /', $construct_str);
+    }
+
+    /**
+    * @expectedException \InvalidArgumentException
+    */
+    public function testConditionConstructorWrongParam1()
+    {
+        // args_num error
+        $construct_str = '';
+        $args_num = 5;
+        $params = ['name', 'like', 'joe'];
+        $this->pdoDriver->condition_constructor($args_num, $params, $construct_str);
+    }
+
+    /**
+    * @expectedException \InvalidArgumentException
+    */
+    public function testConditionConstructorWrongParam2()
+    {
+        // args_num is 1, but $params[0] is not an array
+        $construct_str = '';
+        $args_num = 1;
+        $params = ['name', 'like', 'joe'];
+        $this->pdoDriver->condition_constructor($args_num, $params, $construct_str);
+    }
+
+    /**
+    * @expectedException \InvalidArgumentException
+    */
+    public function testConditionConstructorWrongParam3()
+    {
+        // Confusing Symbol
+        $construct_str = '';
+        $args_num = 1;
+        $params = ['name', 'fuck', 'joe'];
+        $this->pdoDriver->condition_constructor($args_num, $params, $construct_str);
+    }
+
+
 }

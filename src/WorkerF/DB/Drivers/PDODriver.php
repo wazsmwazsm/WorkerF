@@ -282,7 +282,7 @@ class PDODriver implements ConnectorInterface
      */
     protected function _buildQuery()
     {
-        $this->_prepare_sql = 'SELECT '.$this->_cols_str.' '.' FROM '.$this->_table.
+        $this->_prepare_sql = 'SELECT '.$this->_cols_str.' FROM '.$this->_table.
             $this->_join_str.
             $this->_where_str.
             $this->_groupby_str.$this->_having_str.

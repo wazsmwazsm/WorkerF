@@ -16,7 +16,7 @@ class Mysql extends PDODriver implements ConnectorInterface
      *
      * @var array
      */
-    protected static $_escape_symbol = '`';
+    protected static $_quote_symbol = '`';
 
     /**
      * operators
@@ -48,7 +48,7 @@ class Mysql extends PDODriver implements ConnectorInterface
         try {
 
             $this->_pdo = new PDO($dsn, $user, $password, $options);
-            
+
             // charset set
             if(isset($charset)) {
                 $this->_pdo->prepare("set names $charset ".(isset($collation) ? " collate '$collation'" : ''))->execute();

@@ -17,7 +17,7 @@ class Pgsql extends PDODriver implements ConnectorInterface
      *
      * @var array
      */
-    protected static $_escape_symbol = '"';
+    protected static $_quote_symbol = '"';
 
     /**
      * operators
@@ -97,7 +97,7 @@ class Pgsql extends PDODriver implements ConnectorInterface
         $field_str = '';
         $value_str = '';
         foreach ($data as $key => $value) {
-            $field_str .= ' '.self::_backquote($key).',';
+            $field_str .= ' '.self::_wrapRow($key).',';
             $plh = self::_getPlh();
             $this->_bind_params[$plh] = $value;
             $value_str .= ' '.$plh.',';

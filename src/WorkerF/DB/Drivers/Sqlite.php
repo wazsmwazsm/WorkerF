@@ -16,7 +16,7 @@ class Sqlite extends PDODriver implements ConnectorInterface
      *
      * @var array
      */
-    protected static $_escape_symbol = '"';
+    protected static $_quote_symbol = '"';
 
     /**
      * operators

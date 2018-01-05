@@ -169,7 +169,7 @@ class PDODriver implements ConnectorInterface
      *
      * @var array
      */
-    protected static $_escape_symbol = '`';
+    protected static $_quote_symbol = '`';
 
     /**
      * construct , create a db connection
@@ -258,7 +258,7 @@ class PDODriver implements ConnectorInterface
     }
 
     /**
-     * reset build attr
+     * reset build attr (for _subBuilder)
      *
      * @return  void
      */
@@ -328,9 +328,9 @@ class PDODriver implements ConnectorInterface
     protected function _wrapPrepareSql()
     {
         // set table prefix
-        $escape = static::$_escape_symbol;
-        $prefix_pattern = '/'.$escape.'([a-zA-Z0-9_]+)'.$escape.'(\.)'.$escape.'([a-zA-Z0-9_]+)'.$escape.'/';
-        $prefix_replace = self::_escape($this->_wrapTable('$1')).'$2'.self::_escape('$3');
+        $quote = static::$_quote_symbol;
+        $prefix_pattern = '/'.$quote.'([a-zA-Z0-9_]+)'.$quote.'(\.)'.$quote.'([a-zA-Z0-9_]+)'.$quote.'/';
+        $prefix_replace = self::_quote($this->_wrapTable('$1')).'$2'.self::_quote('$3');
 
         $this->_prepare_sql = preg_replace($prefix_pattern, $prefix_replace, $this->_prepare_sql);
     }
@@ -442,9 +442,9 @@ class PDODriver implements ConnectorInterface
      * @param   string  $word
      * @return  string
      */
-    protected static function _escape($word)
+    protected static function _quote($word)
     {
-        return static::$_escape_symbol.$word.static::$_escape_symbol;
+        return static::$_quote_symbol.$word.static::$_quote_symbol;
     }
 
     /**
@@ -453,20 +453,20 @@ class PDODriver implements ConnectorInterface
      * @param  string $str
      * @return  string
      */
-    protected static function _backquote($str)
+    protected static function _wrapRow($str)
     {
         // match pattern
         $alias_pattern = '/([a-zA-Z0-9_\.]+)\s+(AS|as|As)\s+([a-zA-Z0-9_]+)/';
-        $alias_replace = self::_escape('$1').' $2 '.self::_escape('$3');
+        $alias_replace = self::_quote('$1').' $2 '.self::_quote('$3');
         $prefix_pattern = '/([a-zA-Z0-9_]+\s*)(\.)(\s*[a-zA-Z0-9_]+)/';
-        $prefix_replace = self::_escape('$1').'$2'.self::_escape('$3');
+        $prefix_replace = self::_quote('$1').'$2'.self::_quote('$3');
         $func_pattern = '/[a-zA-Z0-9_]+\([a-zA-Z0-9_\,\s\`\'\"\*]*\)/';
         // alias mode
         if(preg_match($alias_pattern, $str, $alias_match)) {
             // if field is aa.bb as cc mode
             if(preg_match($prefix_pattern, $alias_match[1])) {
                 $pre_rst = preg_replace($prefix_pattern, $prefix_replace, $alias_match[1]);
-                $alias_replace = $pre_rst.' $2 '.self::_escape('$3');
+                $alias_replace = $pre_rst.' $2 '.self::_quote('$3');
             }
             return preg_replace($alias_pattern, $alias_replace, $str);
         }
@@ -474,12 +474,12 @@ class PDODriver implements ConnectorInterface
         if(preg_match($prefix_pattern, $str)) {
             return preg_replace($prefix_pattern, $prefix_replace, $str);
         }
-        // func mode
+        // func mode (do nothing)
         if(preg_match($func_pattern, $str)) {
             return $str;
         }
         // field mode
-        return self::_escape($str);
+        return self::_quote($str);
     }
 
     /**
@@ -507,7 +507,7 @@ class PDODriver implements ConnectorInterface
               $construct_str .= '(';
               foreach ($params[0] as $field => $value) {
                   $plh = self::_getPlh();
-                  $construct_str .= ' '.self::_backquote($field).' = '.$plh.' AND';
+                  $construct_str .= ' '.self::_wrapRow($field).' = '.$plh.' AND';
                   $this->_bind_params[$plh] = $value;
               }
               // remove last operator
@@ -517,10 +517,10 @@ class PDODriver implements ConnectorInterface
           // ('a', 10) : a = 10 mode or ('a', null) : a is null mode
           case 2:
               if(is_null($params[1])) {
-                  $construct_str .= ' '.self::_backquote($params[0]).' IS NULL ';
+                  $construct_str .= ' '.self::_wrapRow($params[0]).' IS NULL ';
               } else {
                   $plh = self::_getPlh();
-                  $construct_str .= ' '.self::_backquote($params[0]).' = '.$plh.' ';
+                  $construct_str .= ' '.self::_wrapRow($params[0]).' = '.$plh.' ';
                   $this->_bind_params[$plh] = $params[1];
               }
               break;
@@ -530,7 +530,7 @@ class PDODriver implements ConnectorInterface
                   throw new \InvalidArgumentException('Confusing Symbol '.$params[1]);
               }
               $plh = self::_getPlh();
-              $construct_str .= ' '.self::_backquote($params[0]).' '.$params[1].' '.$plh.' ';
+              $construct_str .= ' '.self::_wrapRow($params[0]).' '.$params[1].' '.$plh.' ';
               $this->_bind_params[$plh] = $params[2];
               break;
         }
@@ -629,7 +629,7 @@ class PDODriver implements ConnectorInterface
      */
     public function table($table)
     {
-        $this->_table = self::_backquote($this->_wrapTable($table));
+        $this->_table = self::_wrapRow($this->_wrapTable($table));
 
         return $this;
     }
@@ -641,7 +641,7 @@ class PDODriver implements ConnectorInterface
      */
     public function getTable()
     {
-        $pattern = '/['.static::$_escape_symbol.']+/';
+        $pattern = '/['.static::$_quote_symbol.']+/';
         return preg_replace($pattern, '', $this->_table);
     }
 
@@ -661,7 +661,7 @@ class PDODriver implements ConnectorInterface
             // but when you call select func , you should set it to ''
             $this->_cols_str = '';
             foreach ($cols as $col) {
-                $this->_cols_str .= ' '.self::_backquote($col).',';
+                $this->_cols_str .= ' '.self::_wrapRow($col).',';
             }
             $this->_cols_str = rtrim($this->_cols_str, ',');
         }
@@ -732,9 +732,9 @@ class PDODriver implements ConnectorInterface
         }
         // is the first time call where method ?
         if($this->_where_str == '') {
-            $this->_where_str = ' WHERE '.self::_backquote($field).' '.$condition.' ('.implode(',', $data).')';
+            $this->_where_str = ' WHERE '.self::_wrapRow($field).' '.$condition.' ('.implode(',', $data).')';
         } else {
-            $this->_where_str .= ' '.$operator.' '.self::_backquote($field).' '.$condition.' ('.implode(',', $data).')';
+            $this->_where_str .= ' '.$operator.' '.self::_wrapRow($field).' '.$condition.' ('.implode(',', $data).')';
         }
 
         return $this;
@@ -802,9 +802,9 @@ class PDODriver implements ConnectorInterface
 
         // is the first time call where method ?
         if($this->_where_str == '') {
-            $this->_where_str = ' WHERE '.self::_backquote($field).' BETWEEN '.$start_plh.' AND '.$end_plh;
+            $this->_where_str = ' WHERE '.self::_wrapRow($field).' BETWEEN '.$start_plh.' AND '.$end_plh;
         } else {
-            $this->_where_str .= ' '.$operator.' '.self::_backquote($field).' BETWEEN '.$start_plh.' AND '.$end_plh;
+            $this->_where_str .= ' '.$operator.' '.self::_wrapRow($field).' BETWEEN '.$start_plh.' AND '.$end_plh;
         }
 
         return $this;
@@ -845,7 +845,7 @@ class PDODriver implements ConnectorInterface
             $this->_where_str .= ' '.$operator.' ';
         }
 
-        $this->_where_str .= self::_backquote($field).' IS '.$condition.' ';
+        $this->_where_str .= self::_wrapRow($field).' IS '.$condition.' ';
 
         return $this;
     }
@@ -1004,9 +1004,9 @@ class PDODriver implements ConnectorInterface
         }
         // first time call where ?
         if($this->_where_str == '') {
-            $this->_where_str = ' WHERE '.self::_backquote($field).' '.$condition.' ( ';
+            $this->_where_str = ' WHERE '.self::_wrapRow($field).' '.$condition.' ( ';
         } else {
-            $this->_where_str .= ' '.$operator.' '.self::_backquote($field).' '.$condition.' ( ';
+            $this->_where_str .= ' '.$operator.' '.self::_wrapRow($field).' '.$condition.' ( ';
         }
 
         $sub_attr = $this->_subBuilder($callback);
@@ -1065,9 +1065,9 @@ class PDODriver implements ConnectorInterface
     {
         // is the first time call groupBy method ?
         if($this->_groupby_str == '') {
-            $this->_groupby_str = ' GROUP BY '.self::_backquote($field);
+            $this->_groupby_str = ' GROUP BY '.self::_wrapRow($field);
         } else {
-            $this->_groupby_str .= ' , '.self::_backquote($field);
+            $this->_groupby_str .= ' , '.self::_wrapRow($field);
         }
 
         return $this;
@@ -1143,9 +1143,9 @@ class PDODriver implements ConnectorInterface
         }
         // is the first time call orderBy method ?
         if($this->_orderby_str == '') {
-            $this->_orderby_str = ' ORDER BY '.self::_backquote($field).' '.$mode;
+            $this->_orderby_str = ' ORDER BY '.self::_wrapRow($field).' '.$mode;
         } else {
-            $this->_orderby_str .= ' , '.self::_backquote($field).' '.$mode;
+            $this->_orderby_str .= ' , '.self::_wrapRow($field).' '.$mode;
         }
 
         return $this;
@@ -1169,8 +1169,8 @@ class PDODriver implements ConnectorInterface
         // set table prefix
         $table = $this->_wrapTable($table);
         // create join string
-        $this->_join_str .= ' '.$type.' JOIN '.self::_backquote($table).
-            ' ON '.self::_backquote($one).' = '.self::_backquote($two);
+        $this->_join_str .= ' '.$type.' JOIN '.self::_wrapRow($table).
+            ' ON '.self::_wrapRow($one).' = '.self::_wrapRow($two);
         return $this;
     }
 
@@ -1304,7 +1304,7 @@ class PDODriver implements ConnectorInterface
      */
     public function getList($field)
     {
-        $this->_cols_str = ' '.self::_escape($field).' ';
+        $this->_cols_str = ' '.self::_quote($field).' ';
         $this->_buildQuery();
         $this->_execute();
 
@@ -1321,7 +1321,7 @@ class PDODriver implements ConnectorInterface
     public function count($field = '*')
     {
         if(trim($field) != '*') {
-            $field = self::_escape($field);
+            $field = self::_quote($field);
         }
         $this->_cols_str = ' COUNT('.$field.') AS count_num ';
 
@@ -1337,7 +1337,7 @@ class PDODriver implements ConnectorInterface
      */
     public function sum($field)
     {
-        $this->_cols_str = ' SUM('.self::_escape($field).') AS sum_num ';
+        $this->_cols_str = ' SUM('.self::_quote($field).') AS sum_num ';
 
         return $this->row()['sum_num'];
     }
@@ -1351,7 +1351,7 @@ class PDODriver implements ConnectorInterface
      */
     public function max($field)
     {
-        $this->_cols_str = ' MAX('.self::_escape($field).') AS max_num ';
+        $this->_cols_str = ' MAX('.self::_quote($field).') AS max_num ';
 
         return $this->row()['max_num'];
     }
@@ -1365,7 +1365,7 @@ class PDODriver implements ConnectorInterface
      */
     public function min($field)
     {
-        $this->_cols_str = ' MIN('.self::_escape($field).') AS min_num ';
+        $this->_cols_str = ' MIN('.self::_quote($field).') AS min_num ';
 
         return $this->row()['min_num'];
     }
@@ -1379,7 +1379,7 @@ class PDODriver implements ConnectorInterface
      */
     public function avg($field)
     {
-        $this->_cols_str = ' AVG('.self::_escape($field).') AS avg_num ';
+        $this->_cols_str = ' AVG('.self::_quote($field).') AS avg_num ';
 
         return $this->row()['avg_num'];
     }
@@ -1397,7 +1397,7 @@ class PDODriver implements ConnectorInterface
         $field_str = '';
         $value_str = '';
         foreach ($data as $key => $value) {
-            $field_str .= ' '.self::_backquote($key).',';
+            $field_str .= ' '.self::_wrapRow($key).',';
             $plh = self::_getPlh();
             $this->_bind_params[$plh] = $value;
             $value_str .= ' '.$plh.',';
@@ -1446,7 +1446,7 @@ class PDODriver implements ConnectorInterface
         foreach ($data as $key => $value) {
             $plh = self::_getPlh();
             $this->_bind_params[$plh] = $value;
-            $this->_update_str .= ' '.self::_backquote($key).' = '.$plh.',';
+            $this->_update_str .= ' '.self::_wrapRow($key).' = '.$plh.',';
         }
 
         $this->_update_str = rtrim($this->_update_str, ',');

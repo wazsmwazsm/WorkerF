@@ -179,7 +179,6 @@ class PDODriverTest extends PHPUnit_Framework_TestCase
 
     public function testBuildQuery()
     {
-
         $this->pdoDriver->_table = ' test ';
         $this->pdoDriver->_prepare_sql = '';
         $this->pdoDriver->_cols_str = ' test.name, test.age ';
@@ -311,10 +310,10 @@ class PDODriverTest extends PHPUnit_Framework_TestCase
         $this->pdoDriver->condition_constructor($args_num, $params, $construct_str);
 
         $match = [];
-        preg_match('/ `name` = (:[0-9a-z]{32}) /', $construct_str, $match);
+        preg_match('/`name` = (:[0-9a-z]{32})/', $construct_str, $match);
         $this->assertEquals(3, count($this->pdoDriver->_bind_params));
         $this->assertEquals('jack', $this->pdoDriver->_bind_params[$match[1]]);
-        $this->assertRegExp('/ `name` = :[0-9a-z]{32} /', $construct_str);
+        $this->assertRegExp('/`name` = :[0-9a-z]{32}/', $construct_str);
         // 2 param is null mode
         $construct_str = '';
         $args_num = 2;
@@ -330,10 +329,10 @@ class PDODriverTest extends PHPUnit_Framework_TestCase
         $this->pdoDriver->condition_constructor($args_num, $params, $construct_str);
 
         $match = [];
-        preg_match('/ `age` <= (:[0-9a-z]{32}) /', $construct_str, $match);
+        preg_match('/`age` <= (:[0-9a-z]{32})/', $construct_str, $match);
         $this->assertEquals(4, count($this->pdoDriver->_bind_params));
         $this->assertEquals(30, $this->pdoDriver->_bind_params[$match[1]]);
-        $this->assertRegExp('/ `age` <= :[0-9a-z]{32} /', $construct_str);
+        $this->assertRegExp('/`age` <= :[0-9a-z]{32}/', $construct_str);
 
         $construct_str = '';
         $args_num = 3;
@@ -341,11 +340,11 @@ class PDODriverTest extends PHPUnit_Framework_TestCase
         $this->pdoDriver->condition_constructor($args_num, $params, $construct_str);
 
         $match = [];
-        preg_match('/ `name` like (:[0-9a-z]{32}) /', $construct_str, $match);
+        preg_match('/`name` like (:[0-9a-z]{32})/', $construct_str, $match);
 
         $this->assertEquals('joe', $this->pdoDriver->_bind_params[$match[1]]);
         $this->assertEquals(5, count($this->pdoDriver->_bind_params));
-        $this->assertRegExp('/ `name` like :[0-9a-z]{32} /', $construct_str);
+        $this->assertRegExp('/`name` like :[0-9a-z]{32}/', $construct_str);
     }
 
     /**
@@ -469,19 +468,19 @@ class PDODriverTest extends PHPUnit_Framework_TestCase
         $pdo = $this->pdoDriver->where('name', 'jack');
         $this->assertEquals($this->pdoDriver, $pdo);
         $match = [];
-        preg_match('/ `name` = (:[0-9a-z]{32}) /', $this->pdoDriver->_where_str, $match);
+        preg_match('/`name` = (:[0-9a-z]{32})/', $this->pdoDriver->_where_str, $match);
 
         $this->assertEquals('jack', $this->pdoDriver->_bind_params[$match[1]]);
         $this->assertEquals(1, count($this->pdoDriver->_bind_params));
-        $this->assertRegExp('/ WHERE\s+`name` = :[0-9a-z]{32} /', $this->pdoDriver->_where_str);
+        $this->assertRegExp('/WHERE\s+`name` = :[0-9a-z]{32}/', $this->pdoDriver->_where_str);
 
         // second
         $this->pdoDriver->where('age', '>=', 23);
-        $this->assertRegExp('/ WHERE\s+`name` = :[0-9a-z]{32}\s+AND\s+`age` >= :[0-9a-z]{32} /', $this->pdoDriver->_where_str);
+        $this->assertRegExp('/WHERE\s+`name` = :[0-9a-z]{32}\s+AND\s+`age` >= :[0-9a-z]{32}/', $this->pdoDriver->_where_str);
 
         // third
         $this->pdoDriver->orWhere(['sex' => 1, 'grade' => 2]);
-        $this->assertRegExp('/ WHERE\s+`name` = :[0-9a-z]{32}\s+AND\s+`age` >= :[0-9a-z]{32}\s+OR\s+\( `sex` = :[0-9a-z]{32} AND `grade` = :[0-9a-z]{32} \)/', $this->pdoDriver->_where_str);
+        $this->assertRegExp('/WHERE\s+`name` = :[0-9a-z]{32}\s+AND\s+`age` >= :[0-9a-z]{32}\s+OR\s+\( `sex` = :[0-9a-z]{32} AND `grade` = :[0-9a-z]{32} \)/', $this->pdoDriver->_where_str);
 
     }
 
@@ -491,33 +490,33 @@ class PDODriverTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($this->pdoDriver, $pdo);
         $match = [];
 
-        preg_match('/ `name` IN \((:[0-9a-z]{32}),(:[0-9a-z]{32}),(:[0-9a-z]{32})\)/', $this->pdoDriver->_where_str, $match);
+        preg_match('/`name` IN \((:[0-9a-z]{32}),(:[0-9a-z]{32}),(:[0-9a-z]{32})\)/', $this->pdoDriver->_where_str, $match);
 
         $this->assertEquals(3, count($this->pdoDriver->_bind_params));
         $this->assertEquals('jack', $this->pdoDriver->_bind_params[$match[1]]);
         $this->assertEquals('green', $this->pdoDriver->_bind_params[$match[2]]);
         $this->assertEquals('hack', $this->pdoDriver->_bind_params[$match[3]]);
 
-        $this->assertRegExp('/ WHERE\s+`name` IN \(:[0-9a-z]{32},:[0-9a-z]{32},:[0-9a-z]{32}\)/', $this->pdoDriver->_where_str);
+        $this->assertRegExp('/WHERE\s+`name` IN \(:[0-9a-z]{32},:[0-9a-z]{32},:[0-9a-z]{32}\)/', $this->pdoDriver->_where_str);
 
     }
 
     public function testWhereNotIn()
     {
         $pdo = $this->pdoDriver->whereNotIn('name', ['jack', 'hack']);
-        $this->assertRegExp('/ WHERE\s+`name` NOT IN \(:[0-9a-z]{32},:[0-9a-z]{32}\)/', $this->pdoDriver->_where_str);
+        $this->assertRegExp('/WHERE\s+`name` NOT IN \(:[0-9a-z]{32},:[0-9a-z]{32}\)/', $this->pdoDriver->_where_str);
     }
 
     public function testOrWhereIn()
     {
         $pdo = $this->pdoDriver->where('sex', NULL)->orWhereIn('name', ['jack', 'hack']);
-        $this->assertRegExp('/ WHERE\s+`sex` IS NULL\s+OR `name` IN \(:[0-9a-z]{32},:[0-9a-z]{32}\)/', $this->pdoDriver->_where_str);
+        $this->assertRegExp('/WHERE\s+`sex` IS NULL\s+OR `name` IN \(:[0-9a-z]{32},:[0-9a-z]{32}\)/', $this->pdoDriver->_where_str);
     }
 
     public function testOrWhereNotIn()
     {
         $pdo = $this->pdoDriver->where('sex', NULL)->orWhereNotIn('name', ['jack', 'hack']);
-        $this->assertRegExp('/ WHERE\s+`sex` IS NULL\s+OR `name` NOT IN \(:[0-9a-z]{32},:[0-9a-z]{32}\)/', $this->pdoDriver->_where_str);
+        $this->assertRegExp('/WHERE\s+`sex` IS NULL\s+OR `name` NOT IN \(:[0-9a-z]{32},:[0-9a-z]{32}\)/', $this->pdoDriver->_where_str);
     }
 
 
@@ -537,26 +536,34 @@ class PDODriverTest extends PHPUnit_Framework_TestCase
         $this->pdoDriver->whereIn('name', [1, 2, 4], 'NOT IN', 'ANDS');
     }
 
+    /**
+    * @expectedException \InvalidArgumentException
+    */
+    public function testWhereInException3()
+    {
+        $this->pdoDriver->whereIn('name', [1, 2, 4], 'SOME', 'SOME');
+    }
+
     public function testWhereBetween()
     {
         $pdo = $this->pdoDriver->whereBetween('age', 1, 20);
         $this->assertEquals($this->pdoDriver, $pdo);
         $match = [];
 
-        preg_match('/ `age` BETWEEN (:[0-9a-z]{32}) AND (:[0-9a-z]{32})/', $this->pdoDriver->_where_str, $match);
+        preg_match('/`age` BETWEEN (:[0-9a-z]{32}) AND (:[0-9a-z]{32})/', $this->pdoDriver->_where_str, $match);
 
         $this->assertEquals(2, count($this->pdoDriver->_bind_params));
         $this->assertEquals(1, $this->pdoDriver->_bind_params[$match[1]]);
         $this->assertEquals(20, $this->pdoDriver->_bind_params[$match[2]]);
 
-        $this->assertRegExp('/ WHERE\s+`age` BETWEEN :[0-9a-z]{32} AND :[0-9a-z]{32}/', $this->pdoDriver->_where_str);
+        $this->assertRegExp('/WHERE\s+`age` BETWEEN :[0-9a-z]{32} AND :[0-9a-z]{32}/', $this->pdoDriver->_where_str);
 
     }
 
     public function testOrWhereBetween()
     {
         $pdo = $this->pdoDriver->where('sex', NULL)->orWhereBetween('age', 1, 20);
-        $this->assertRegExp('/ WHERE\s+`sex` IS NULL\s+OR `age` BETWEEN :[0-9a-z]{32} AND :[0-9a-z]{32}/', $this->pdoDriver->_where_str);
+        $this->assertRegExp('/WHERE\s+`sex` IS NULL\s+OR `age` BETWEEN :[0-9a-z]{32} AND :[0-9a-z]{32}/', $this->pdoDriver->_where_str);
     }
 
     /**
@@ -572,7 +579,7 @@ class PDODriverTest extends PHPUnit_Framework_TestCase
         $pdo = $this->pdoDriver->whereNull('age');
         $this->assertEquals($this->pdoDriver, $pdo);
 
-        $this->assertRegExp('/ WHERE\s+`age` IS NULL /', $this->pdoDriver->_where_str);
+        $this->assertRegExp('/WHERE\s+`age` IS NULL/', $this->pdoDriver->_where_str);
     }
 
     public function testWhereNotNull()
@@ -580,7 +587,7 @@ class PDODriverTest extends PHPUnit_Framework_TestCase
         $pdo = $this->pdoDriver->whereNotNull('age');
         $this->assertEquals($this->pdoDriver, $pdo);
 
-        $this->assertRegExp('/ WHERE\s+`age` IS NOT NULL /', $this->pdoDriver->_where_str);
+        $this->assertRegExp('/WHERE\s+`age` IS NOT NULL/', $this->pdoDriver->_where_str);
     }
 
     public function testOrWhereNull()
@@ -588,7 +595,7 @@ class PDODriverTest extends PHPUnit_Framework_TestCase
         $pdo = $this->pdoDriver->where('sex', NULL)->orWhereNull('age');
         $this->assertEquals($this->pdoDriver, $pdo);
 
-        $this->assertRegExp('/ WHERE\s+`sex` IS NULL\s+OR `age` IS NULL /', $this->pdoDriver->_where_str);
+        $this->assertRegExp('/WHERE\s+`sex` IS NULL\s+OR `age` IS NULL/', $this->pdoDriver->_where_str);
     }
 
     public function testOrWhereNotNull()
@@ -596,7 +603,7 @@ class PDODriverTest extends PHPUnit_Framework_TestCase
         $pdo = $this->pdoDriver->where('sex', NULL)->orWhereNotNull('age');
         $this->assertEquals($this->pdoDriver, $pdo);
 
-        $this->assertRegExp('/ WHERE\s+`sex` IS NULL\s+OR `age` IS NOT NULL /', $this->pdoDriver->_where_str);
+        $this->assertRegExp('/WHERE\s+`sex` IS NULL\s+OR `age` IS NOT NULL/', $this->pdoDriver->_where_str);
     }
 
 
@@ -616,6 +623,14 @@ class PDODriverTest extends PHPUnit_Framework_TestCase
         $this->pdoDriver->whereNull('name', 'NULL', 'ANDS');
     }
 
+    /**
+    * @expectedException \InvalidArgumentException
+    */
+    public function testWhereNullException3()
+    {
+        $this->pdoDriver->whereNull('name', 'SOME', 'SOME');
+    }
+
     public function testWhereBrackets()
     {
         $pdo = $this->pdoDriver->where('sex', NULL)
@@ -625,7 +640,7 @@ class PDODriverTest extends PHPUnit_Framework_TestCase
              });
         $this->assertEquals($this->pdoDriver, $pdo);
 
-        $this->assertRegExp('/ WHERE\s+`sex` IS NULL\s+AND \(\s+`name` = :[0-9a-z]{32}\s+OR\s+`name` = :[0-9a-z]{32}\s+\)/', $this->pdoDriver->_where_str);
+        $this->assertRegExp('/WHERE\s+`sex` IS NULL\s+AND \(\s+`name` = :[0-9a-z]{32}\s+OR\s+`name` = :[0-9a-z]{32}\s+\)/', $this->pdoDriver->_where_str);
     }
 
     public function testOrWhereBrackets()
@@ -637,7 +652,7 @@ class PDODriverTest extends PHPUnit_Framework_TestCase
              });
         $this->assertEquals($this->pdoDriver, $pdo);
 
-        $this->assertRegExp('/ WHERE\s+`sex` IS NULL\s+OR \(\s+`name` = :[0-9a-z]{32}\s+OR\s+`name` = :[0-9a-z]{32}\s+\)/', $this->pdoDriver->_where_str);
+        $this->assertRegExp('/WHERE\s+`sex` IS NULL\s+OR \(\s+`name` = :[0-9a-z]{32}\s+OR\s+`name` = :[0-9a-z]{32}\s+\)/', $this->pdoDriver->_where_str);
     }
     /**
     * @expectedException \InvalidArgumentException
@@ -655,7 +670,7 @@ class PDODriverTest extends PHPUnit_Framework_TestCase
              });
         $this->assertEquals($this->pdoDriver, $pdo);
 
-        $this->assertRegExp('/ WHERE\s+`sex` IS NULL\s+AND EXISTS \(\s+SELECT\s+\*\s+FROM `t_test2`\s+\)/', $this->pdoDriver->_where_str);
+        $this->assertRegExp('/WHERE\s+`sex` IS NULL\s+AND EXISTS \(\s+SELECT\s+\*\s+FROM `t_test2`\s+\)/', $this->pdoDriver->_where_str);
     }
 
     public function testOrWhereExists()
@@ -666,7 +681,7 @@ class PDODriverTest extends PHPUnit_Framework_TestCase
              });
         $this->assertEquals($this->pdoDriver, $pdo);
 
-        $this->assertRegExp('/ WHERE\s+`sex` IS NULL\s+OR EXISTS \(\s+SELECT\s+\*\s+FROM `t_test2`\s+\)/', $this->pdoDriver->_where_str);
+        $this->assertRegExp('/WHERE\s+`sex` IS NULL\s+OR EXISTS \(\s+SELECT\s+\*\s+FROM `t_test2`\s+\)/', $this->pdoDriver->_where_str);
     }
 
     public function testWhereNotExists()
@@ -677,7 +692,7 @@ class PDODriverTest extends PHPUnit_Framework_TestCase
              });
         $this->assertEquals($this->pdoDriver, $pdo);
 
-        $this->assertRegExp('/ WHERE\s+`sex` IS NULL\s+AND NOT EXISTS \(\s+SELECT\s+\*\s+FROM `t_test2`\s+\)/', $this->pdoDriver->_where_str);
+        $this->assertRegExp('/WHERE\s+`sex` IS NULL\s+AND NOT EXISTS \(\s+SELECT\s+\*\s+FROM `t_test2`\s+\)/', $this->pdoDriver->_where_str);
     }
 
     public function testOrWhereNotExists()
@@ -688,7 +703,7 @@ class PDODriverTest extends PHPUnit_Framework_TestCase
              });
         $this->assertEquals($this->pdoDriver, $pdo);
 
-        $this->assertRegExp('/ WHERE\s+`sex` IS NULL\s+OR NOT EXISTS \(\s+SELECT\s+\*\s+FROM `t_test2`\s+\)/', $this->pdoDriver->_where_str);
+        $this->assertRegExp('/WHERE\s+`sex` IS NULL\s+OR NOT EXISTS \(\s+SELECT\s+\*\s+FROM `t_test2`\s+\)/', $this->pdoDriver->_where_str);
     }
 
     /**
@@ -709,8 +724,46 @@ class PDODriverTest extends PHPUnit_Framework_TestCase
 
     public function testWhereInSub()
     {
+        $pdo = $this->pdoDriver->where('sex', NULL)
+             ->whereInSub('name', function($query) {
+                $query->table('test2')->select('name');
+             });
+        $this->assertEquals($this->pdoDriver, $pdo);
 
+        $this->assertRegExp('/WHERE\s+`sex` IS NULL\s+AND `name` IN \(\s+SELECT\s+`name`\s+FROM `t_test2`\s+\)/', $this->pdoDriver->_where_str);
+    }
 
+    public function testOrWhereInSub()
+    {
+        $pdo = $this->pdoDriver->where('sex', NULL)
+             ->orWhereInSub('name', function($query) {
+                $query->table('test2')->select('name');
+             });
+        $this->assertEquals($this->pdoDriver, $pdo);
+
+        $this->assertRegExp('/WHERE\s+`sex` IS NULL\s+OR `name` IN \(\s+SELECT\s+`name`\s+FROM `t_test2`\s+\)/', $this->pdoDriver->_where_str);
+    }
+
+    public function testWhereNotInSub()
+    {
+        $pdo = $this->pdoDriver->where('sex', NULL)
+             ->whereNotInSub('name', function($query) {
+                $query->table('test2')->select('name');
+             });
+        $this->assertEquals($this->pdoDriver, $pdo);
+
+        $this->assertRegExp('/WHERE\s+`sex` IS NULL\s+AND `name` NOT IN \(\s+SELECT\s+`name`\s+FROM `t_test2`\s+\)/', $this->pdoDriver->_where_str);
+    }
+
+    public function testOrWhereNotInSub()
+    {
+        $pdo = $this->pdoDriver->where('sex', NULL)
+             ->orWhereNotInSub('name', function($query) {
+                $query->table('test2')->select('name');
+             });
+        $this->assertEquals($this->pdoDriver, $pdo);
+
+        $this->assertRegExp('/WHERE\s+`sex` IS NULL\s+OR `name` NOT IN \(\s+SELECT\s+`name`\s+FROM `t_test2`\s+\)/', $this->pdoDriver->_where_str);
     }
 
     /**
@@ -729,4 +782,116 @@ class PDODriverTest extends PHPUnit_Framework_TestCase
         $this->pdoDriver->whereInSub('name', function() { return; }, 'NOT IN', 'ANDS');
     }
 
+    /**
+    * @expectedException \InvalidArgumentException
+    */
+    public function testWhereInSubException3()
+    {
+        $this->pdoDriver->whereInSub('name', function() { return; }, 'SOME', 'SOME');
+    }
+
+    public function testFromSub()
+    {
+        $pdo = $this->pdoDriver->fromSub(function ($query) {
+            $query->table('test2');
+        });
+
+        $this->assertEquals($this->pdoDriver, $pdo);
+        $this->assertRegExp('/\( SELECT\s+\*\s+FROM `t_test2` \) AS tb_[0-9a-z]{13} /', $this->pdoDriver->_table);
+    }
+
+    public function testGroupBy()
+    {
+        // first
+        $pdo = $this->pdoDriver->groupBy('name');
+        $this->assertEquals($this->pdoDriver, $pdo);
+
+        $this->assertRegExp('/GROUP BY `name`/', $this->pdoDriver->_groupby_str);
+
+        // second
+        $this->pdoDriver->groupBy('age');
+        $this->assertRegExp('/GROUP BY `name` , `age`/', $this->pdoDriver->_groupby_str);
+    }
+
+    public function testHaving()
+    {
+        // first
+        $pdo = $this->pdoDriver->having('name', 'jack');
+        $this->assertEquals($this->pdoDriver, $pdo);
+        $match = [];
+        preg_match('/`name` = (:[0-9a-z]{32})/', $this->pdoDriver->_having_str, $match);
+
+        $this->assertEquals('jack', $this->pdoDriver->_bind_params[$match[1]]);
+        $this->assertEquals(1, count($this->pdoDriver->_bind_params));
+        $this->assertRegExp('/HAVING\s+`name` = :[0-9a-z]{32}/', $this->pdoDriver->_having_str);
+
+        // second
+        $this->pdoDriver->having('age', '>=', 23);
+        $this->assertRegExp('/HAVING\s+`name` = :[0-9a-z]{32}\s+AND\s+`age` >= :[0-9a-z]{32}/', $this->pdoDriver->_having_str);
+
+        // third
+        $this->pdoDriver->orHaving(['sex' => 1, 'grade' => 2]);
+        $this->assertRegExp('/HAVING\s+`name` = :[0-9a-z]{32}\s+AND\s+`age` >= :[0-9a-z]{32}\s+OR\s+\( `sex` = :[0-9a-z]{32} AND `grade` = :[0-9a-z]{32} \)/', $this->pdoDriver->_having_str);
+    }
+
+    public function testHavingRaw()
+    {
+        $pdo = $this->pdoDriver->havingRaw(' COUNT(`age`) <= 50');
+        $this->assertEquals($this->pdoDriver, $pdo);
+        $this->assertRegExp('/HAVING\s+COUNT\(`age`\) <= 50/', $this->pdoDriver->_having_str);
+    }
+
+    public function testOrderBy()
+    {
+        // first
+        $pdo = $this->pdoDriver->orderBy('name', 'DESC');
+        $this->assertEquals($this->pdoDriver, $pdo);
+
+        $this->assertRegExp('/ORDER BY `name` DESC/', $this->pdoDriver->_orderby_str);
+
+        // second
+        $this->pdoDriver->orderBy('age', 'ASC');
+        $this->assertRegExp('/ORDER BY `name` DESC , `age` ASC/', $this->pdoDriver->_orderby_str);
+    }
+
+    public function testLimit()
+    {
+        $pdo = $this->pdoDriver->limit(0, 15);
+
+        $this->assertEquals($this->pdoDriver, $pdo);
+        $this->assertRegExp('/LIMIT 15 OFFSET 0/', $this->pdoDriver->_limit_str);
+    }
+
+    public function testJoin()
+    {
+        $pdo = $this->pdoDriver->join('test2', 'test.a', 'test2.a', 'INNER');
+
+        $this->assertEquals($this->pdoDriver, $pdo);
+        $this->assertRegExp('/INNER JOIN `t_test2` ON `test`.`a` = `test2`.`a`/', $this->pdoDriver->_join_str);
+    }
+
+    public function testLeft()
+    {
+        $pdo = $this->pdoDriver->join('test2', 'test.a', 'test2.a', 'LEFT');
+
+        $this->assertEquals($this->pdoDriver, $pdo);
+        $this->assertRegExp('/LEFT JOIN `t_test2` ON `test`.`a` = `test2`.`a`/', $this->pdoDriver->_join_str);
+    }
+
+    // This test doesn't make sense to Sqlite, sqlite dosen't support right join.
+    public function testRight()
+    {
+        $pdo = $this->pdoDriver->join('test2', 'test.a', 'test2.a', 'RIGHT');
+
+        $this->assertEquals($this->pdoDriver, $pdo);
+        $this->assertRegExp('/RIGHT JOIN `t_test2` ON `test`.`a` = `test2`.`a`/', $this->pdoDriver->_join_str);
+    }
+
+    /**
+    * @expectedException \InvalidArgumentException
+    */
+    public function testJoinException()
+    {
+        $this->pdoDriver->join('test', 'test.a', 'test.b', 'OUTER');
+    }
 }

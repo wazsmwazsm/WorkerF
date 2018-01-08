@@ -835,7 +835,7 @@ class PDODriver implements ConnectorInterface
      */
     public function whereNull($field, $condition = 'NULL', $operator = 'AND')
     {
-        if( ! in_array($operator, ['AND', 'OR'])) {
+        if( ! in_array($condition, ['NULL', 'NOT NULL']) || ! in_array($operator, ['AND', 'OR'])) {
             throw new \InvalidArgumentException("Logical operator");
         }
         // is the first time call where method ?

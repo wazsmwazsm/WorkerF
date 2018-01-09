@@ -26,7 +26,7 @@ class RouteFake extends Route
 
 }
 
-class Foo
+class Fuck
 {
     public function bar()
     {
@@ -168,13 +168,13 @@ class RouteTest extends PHPUnit_Framework_TestCase
 
         $request = new Requests();
 
-        RouteFake::get('/pre/test', 'Foo@bar');
+        RouteFake::get('/pre/test', 'Fuck@bar');
         $result = RouteFake::dispatch($request);
 
         $this->assertEquals('hello bar!', $result);
 
         // class@method DI
-        RouteFake::get('/pre/test', 'Foo@getRequest');
+        RouteFake::get('/pre/test', 'Fuck@getRequest');
         $result = RouteFake::dispatch($request);
 
         $this->assertEquals($_REQUEST, $result);

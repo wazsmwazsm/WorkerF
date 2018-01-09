@@ -130,8 +130,13 @@ class Route {
         $uri = self::_uriParse(parse_url(($request->server->REQUEST_URI))['path']);
         $method = $request->server->REQUEST_METHOD;
         // router exist or not
-        if( ! isset(self::$_map_tree[$uri][$method])) {
-            throw new \LogicException("route rule uri: $uri <==> method : $method is not set!", 404);
+        if( ! array_key_exists($uri, self::$_map_tree) ||
+            ! array_key_exists($method, self::$_map_tree[$uri])
+        )
+        {
+            $e = new \LogicException("route rule uri: $uri <==> method : $method is not set!");
+            $e->httpCode = 404;
+            throw $e;
         }
         // get callback info
         $callback = self::$_map_tree[$uri][$method];
@@ -147,7 +152,9 @@ class Route {
             list($class, $method) = [$controller[0], $controller[1]];
             // class methods exist ?
             if( ! class_exists($class) || ! method_exists($class, $method)) {
-                throw new \BadMethodCallException("Class@method: $callback is not found!", 404);
+                $e = new \BadMethodCallException("Class@method: $callback is not found!");
+                $e->httpCode = 404;
+                throw $e;
             }
             // call method
             return IOCContainer::run($class, $method);

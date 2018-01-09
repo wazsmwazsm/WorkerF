@@ -1,5 +1,6 @@
 <?php
 use WorkerF\Http\Route;
+use WorkerF\Http\Requests;
 
 class RouteFake extends Route
 {
@@ -8,9 +9,9 @@ class RouteFake extends Route
         return self::$_map_tree;
     }
 
-    public static function getFilter()
+    public static function cleanMapTree()
     {
-        return self::$_filter;
+        self::$_map_tree = [];
     }
 
     public static function uriParse($uri)
@@ -25,8 +26,27 @@ class RouteFake extends Route
 
 }
 
+class Foo
+{
+    public function bar()
+    {
+        return 'hello bar!';
+    }
+
+    public function getRequest(Requests $request)
+    {
+        return $request->request;
+    }
+}
+
 class RouteTest extends PHPUnit_Framework_TestCase
 {
+    public function setUp()
+    {
+        // clean map tree
+        RouteFake::cleanMapTree();
+    }
+
     public function testUriParse()
     {
         $result = RouteFake::uriParse('usr//local///bin');
@@ -130,10 +150,91 @@ class RouteTest extends PHPUnit_Framework_TestCase
         });
 
         $map = RouteFake::getMapTree();
-        
+
         $this->assertEquals('g1 g2 test success', $map['/g1/g2/test']['GET']());
         $this->assertEquals('\App\Controller\TestController@test', $map['/g1/g2/con']['GET']);
         $this->assertEquals('g1 test success', $map['/g1/test']['GET']());
 
+    }
+
+    public function testDispatch()
+    {
+        // class@method
+        $_REQUEST = (object) ['foo' => 'bar', 'foz' => 'baz'];
+        $_SERVER  = (object) [
+          'REQUEST_URI'    => 'http://test.com/pre/test?foo=bar',
+          'REQUEST_METHOD' => 'GET',
+        ];
+
+        $request = new Requests();
+
+        RouteFake::get('/pre/test', 'Foo@bar');
+        $result = RouteFake::dispatch($request);
+
+        $this->assertEquals('hello bar!', $result);
+
+        // class@method DI
+        RouteFake::get('/pre/test', 'Foo@getRequest');
+        $result = RouteFake::dispatch($request);
+
+        $this->assertEquals($_REQUEST, $result);
+
+        // callback
+        RouteFake::get('/pre/test', function($request) {
+            return $request->foz;
+        });
+        $result = RouteFake::dispatch($request);
+
+        $this->assertEquals('baz', $result);
+    }
+
+    /**
+    * @expectedException \LogicException
+    */
+    public function testDispatchRouteNotSetException()
+    {
+        $_REQUEST = (object) ['foo' => 'bar', 'foz' => 'baz'];
+        $_SERVER  = (object) [
+          'REQUEST_URI'    => 'http://test.com/pre/test?foo=bar',
+          'REQUEST_METHOD' => 'GET',
+        ];
+
+        $request = new Requests();
+
+        RouteFake::dispatch($request);
+    }
+
+    /**
+    * @expectedException \LogicException
+    */
+    public function testDispatchMethodNotMatchException()
+    {
+        $_REQUEST = (object) ['foo' => 'bar', 'foz' => 'baz'];
+        $_SERVER  = (object) [
+          'REQUEST_URI'    => 'http://test.com/pre/test?foo=bar',
+          'REQUEST_METHOD' => 'GET',
+        ];
+
+        $request = new Requests();
+
+        RouteFake::get('/pre/test', 'ssssss');
+        RouteFake::dispatch($request);
+    }
+
+    /**
+    * @expectedException \BadMethodCallException
+    */
+    public function testDispatchMethodNotFoundException()
+    {
+        $_REQUEST = (object) ['foo' => 'bar', 'foz' => 'baz'];
+        $_SERVER  = (object) [
+          'REQUEST_URI'    => 'http://test.com/pre/test?foo=bar',
+          'REQUEST_METHOD' => 'GET',
+        ];
+
+        $request = new Requests();
+
+        RouteFake::get('/pre/test', 'Foz@baz');
+        RouteFake::dispatch($request);
     }
 }

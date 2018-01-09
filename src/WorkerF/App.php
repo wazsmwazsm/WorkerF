@@ -38,7 +38,8 @@ class App
 
         } catch (\Exception $e) {
             // create http response header
-            switch ($e->getCode()) {
+            $httpCode = property_exists($e, 'httpCode') ? $e->httpCode : NULL;
+            switch ($httpCode) {
                 case 404:
                     $header = 'HTTP/1.1 404 Not Found';
                     break;

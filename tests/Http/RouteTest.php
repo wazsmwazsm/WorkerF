@@ -45,6 +45,23 @@ class RouteTest extends PHPUnit_Framework_TestCase
         $this->assertEquals("\\a\\a\\g\\d", $result);
     }
 
+    public function testSetMapTree()
+    {
+        RouteFake::setMapTree('GET', '/test', 'TestController@test');
+
+        $map = RouteFake::getMapTree();
+
+        $this->assertEquals('\TestController@test', $map['/test']['GET']);
+
+        RouteFake::setMapTree('GET', '/a', function() {
+            return 'a';
+        });
+
+        $map = RouteFake::getMapTree();
+
+        $this->assertEquals('a', $map['/a']['GET']());
+    }
+
     public function testSetRoute()
     {
         // GET, callback
@@ -61,7 +78,7 @@ class RouteTest extends PHPUnit_Framework_TestCase
 
         $map = RouteFake::getMapTree();
 
-        $this->assertEquals('Test\Controller@get', $map['/b']['GET']);
+        $this->assertEquals('\Test\Controller@get', $map['/b']['GET']);
 
         // POST
         RouteFake::post('/c', function() {
@@ -73,10 +90,50 @@ class RouteTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('c', $map['/c']['POST']());
 
         // PUT
-        RouteFake::put('/d', 'Test\Controller@get');
+        RouteFake::put('/d/e', 'Test\Controller@get');
 
         $map = RouteFake::getMapTree();
 
-        $this->assertEquals('Test\Controller@get', $map['/d']['PUT']);
+        $this->assertEquals('\Test\Controller@get', $map['/d/e']['PUT']);
+    }
+
+    public function testGroup()
+    {
+        RouteFake::group(['prefix' => '/pre', 'namespace' => 'App\Controller'], function() {
+            RouteFake::get('control/', 'TestController@test');
+            RouteFake::post('call1/', function() {
+                return 'hello1';
+            });
+            RouteFake::get('call2/', function() {
+                return 'hello2';
+            });
+        });
+
+        $map = RouteFake::getMapTree();
+
+        $this->assertEquals('\App\Controller\TestController@test', $map['/pre/control']['GET']);
+        $this->assertEquals('hello1', $map['/pre/call1']['POST']());
+        $this->assertEquals('hello2', $map['/pre/call2']['GET']());
+
+        // group nesting
+        RouteFake::group(['prefix' => '/g1', 'namespace' => 'App'], function() {
+            RouteFake::group(['prefix' => '/g2', 'namespace' => 'Controller'], function() {
+                RouteFake::get('test', function() {
+                    return 'g1 g2 test success';
+                });
+                RouteFake::get('con', "TestController@test");
+            });
+
+            RouteFake::get('test', function() {
+                return 'g1 test success';
+            });
+        });
+
+        $map = RouteFake::getMapTree();
+        
+        $this->assertEquals('g1 g2 test success', $map['/g1/g2/test']['GET']());
+        $this->assertEquals('\App\Controller\TestController@test', $map['/g1/g2/con']['GET']);
+        $this->assertEquals('g1 test success', $map['/g1/test']['GET']());
+
     }
 }

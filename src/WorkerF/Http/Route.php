@@ -40,10 +40,23 @@ class Route {
             // not catch, trigger Fatal error
             throw new \InvalidArgumentException("method $method accept 2 params!");
         }
-        // create map tree, exp: $_map_tree['/a/b']['get'] = 'controller@method'
-        $uri      = self::_uriParse(self::$_filter['prefix'].$params[0]);
-        $callback = is_string($params[1]) ?
-                    self::_namespaceParse(self::$_filter['namespace'].$params[1]) : $params[1];
+        // set map tree
+        self::setMapTree($method, $params[0], $params[1]);
+    }
+
+    /**
+     * set map tree.
+     *
+     * @param  string  $method
+     * @param  string  $path
+     * @param  mixed  $content
+     * @return void
+     */
+    public static function setMapTree($method, $path, $content)
+    {
+        $uri      = self::_uriParse(self::$_filter['prefix'].$path);
+        $callback = is_string($content) ?
+                    self::_namespaceParse('\\'.self::$_filter['namespace'].$content) : $content;
 
         self::$_map_tree[$uri][strtoupper($method)] = $callback;
     }

@@ -547,7 +547,7 @@ class PDODriver implements ConnectorInterface
         $store = [];
         // store attr
         foreach ($this->_buildAttrs as $buildAttr) {
-            $store[ltrim($buildAttr, '_')] = $this->$buildAttr;
+            $store[$buildAttr] = $this->$buildAttr;
         }
 
         return $store;
@@ -562,7 +562,7 @@ class PDODriver implements ConnectorInterface
     protected function _reStoreBuildAttr(array $data)
     {
         foreach ($this->_buildAttrs as $buildAttr) {
-            $this->$buildAttr = $data[ltrim($buildAttr, '_')];
+            $this->$buildAttr = $data[$buildAttr];
         }
     }
 
@@ -611,7 +611,7 @@ class PDODriver implements ConnectorInterface
             $this->_buildQuery();
 
             foreach ($this->_buildAttrs as $buildAttr) {
-                $sub_attr[ltrim($buildAttr, '_')] = $this->$buildAttr;
+                $sub_attr[$buildAttr] = $this->$buildAttr;
             }
         /**************** end sub query build ****************/
 
@@ -907,7 +907,7 @@ class PDODriver implements ConnectorInterface
         }
         $sub_attr = $this->_subBuilder($callback);
 
-        $this->_where_str .= preg_replace('/WHERE/', '', $sub_attr['where_str'], 1).' ) ';
+        $this->_where_str .= preg_replace('/WHERE/', '', $sub_attr['_where_str'], 1).' ) ';
 
         return $this;
     }
@@ -946,7 +946,7 @@ class PDODriver implements ConnectorInterface
         }
 
         $sub_attr = $this->_subBuilder($callback);
-        $this->_where_str .= $sub_attr['prepare_sql'].' ) ';
+        $this->_where_str .= $sub_attr['_prepare_sql'].' ) ';
 
         return $this;
     }
@@ -1010,7 +1010,7 @@ class PDODriver implements ConnectorInterface
         }
 
         $sub_attr = $this->_subBuilder($callback);
-        $this->_where_str .= $sub_attr['prepare_sql'].' ) ';
+        $this->_where_str .= $sub_attr['_prepare_sql'].' ) ';
 
         return $this;
     }
@@ -1213,7 +1213,7 @@ class PDODriver implements ConnectorInterface
     public function fromSub(Closure $callback)
     {
         $sub_attr = $this->_subBuilder($callback);
-        $this->_table .= ' ( '.$sub_attr['prepare_sql'].' ) AS tb_'.uniqid().' ';
+        $this->_table .= ' ( '.$sub_attr['_prepare_sql'].' ) AS tb_'.uniqid().' ';
 
         return $this;
     }

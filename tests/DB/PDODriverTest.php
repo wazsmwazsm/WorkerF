@@ -391,8 +391,8 @@ class PDODriverTest extends PHPUnit_Framework_TestCase
 
         $buildAttr = $this->pdoDriver->storeBuildAttr();
 
-        $this->assertEquals($this->pdoDriver->_table, $buildAttr['table']);
-        $this->assertEquals($this->pdoDriver->_prepare_sql, $buildAttr['prepare_sql']);
+        $this->assertEquals($this->pdoDriver->_table, $buildAttr['_table']);
+        $this->assertEquals($this->pdoDriver->_prepare_sql, $buildAttr['_prepare_sql']);
 
         // restore
         $this->pdoDriver->reset();
@@ -400,8 +400,8 @@ class PDODriverTest extends PHPUnit_Framework_TestCase
         $this->assertEmpty($this->pdoDriver->_prepare_sql);
 
         $this->pdoDriver->reStoreBuildAttr($buildAttr);
-        $this->assertEquals($this->pdoDriver->_table, $buildAttr['table']);
-        $this->assertEquals($this->pdoDriver->_prepare_sql, $buildAttr['prepare_sql']);
+        $this->assertEquals($this->pdoDriver->_table, $buildAttr['_table']);
+        $this->assertEquals($this->pdoDriver->_prepare_sql, $buildAttr['_prepare_sql']);
     }
 
     public function testStoreRestoreBindParam()
@@ -436,8 +436,8 @@ class PDODriverTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals('test', $this->pdoDriver->_table);
         $this->assertEquals('*', $this->pdoDriver->_cols_str);
-        $this->assertEquals('hello', $sub_attr['table']);
-        $this->assertEquals('hi', $sub_attr['cols_str']);
+        $this->assertEquals('hello', $sub_attr['_table']);
+        $this->assertEquals('hi', $sub_attr['_cols_str']);
     }
 
     public function testTable()

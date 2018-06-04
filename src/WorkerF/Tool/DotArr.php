@@ -1,6 +1,11 @@
 <?php
 namespace WorkerF\Tool;
 
+/**
+ * DotArr, use "a.b.c" mode set\get config data.
+ *
+ * @author MirQin https://github.com/wazsmwazsm
+ */
 class DotArr
 {
     /**

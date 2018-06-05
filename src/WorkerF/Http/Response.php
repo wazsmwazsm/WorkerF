@@ -1,6 +1,7 @@
 <?php
 namespace WorkerF\Http;
 use WorkerF\WorkerSocket\WorkerHttp;
+use Closure;
 
 /**
  * HTTP response.
@@ -15,11 +16,11 @@ Class Response
      * create http response header.
      *
      * @param  mixed  $header
-     * @return boolean
+     * @return void
      */
     public static function header($headers)
     {
-        return WorkerHttp::header($headers);
+        WorkerHttp::header($headers);
     }
     
     /**
@@ -37,11 +38,18 @@ Class Response
      * redirect.
      *
      * @param  string  $path
-     * @return void
+     * @return \Closure
      */
     public static function redirect($path)
-    {
-        self::header("Location: $path");
+    {    
+        // return Closure 
+        // to notice bulid method the type of response
+        return function() use($path) {
+            // run Location
+            Response::header("Location: $path");
+
+            return "redirect";
+        };
     }
 
     /**
@@ -56,6 +64,20 @@ Class Response
     {
         // should be json
         if(is_array($data) || is_object($data)) {
+            // Closure
+            if($data instanceof Closure) {
+                
+                switch (call_user_func($data)) {
+                    case 'redirect':
+                        return 'link already redirected';
+                        break;
+                    
+                    default:
+                        return '';
+                        break;
+                }
+            }
+            // Array \ Object
             self::header("Content-Type: application/json;charset=utf-8");
             return self::_compress(json_encode($data), $conf['compress']);
         }

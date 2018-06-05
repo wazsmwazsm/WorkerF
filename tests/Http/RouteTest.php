@@ -14,9 +14,9 @@ class RouteFake extends Route
         self::$_map_tree = [];
     }
 
-    public static function uriParse($uri)
+    public static function pathParse($path)
     {
-        return self::_uriParse($uri);
+        return self::_pathParse($path);
     }
 
     public static function namespaceParse($namespace)
@@ -49,11 +49,11 @@ class RouteTest extends PHPUnit_Framework_TestCase
 
     public function testUriParse()
     {
-        $result = RouteFake::uriParse('usr//local///bin');
+        $result = RouteFake::pathParse('usr//local///bin');
 
         $this->assertEquals('/usr/local/bin', $result);
 
-        $result = RouteFake::uriParse('/');
+        $result = RouteFake::pathParse('/');
 
         $this->assertEquals('/', $result);
     }

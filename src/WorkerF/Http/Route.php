@@ -1,7 +1,9 @@
 <?php
 namespace WorkerF\Http;
 use WorkerF\Http\Requests;
+use WorkerF\Http\Response;
 use WorkerF\IOCContainer;
+use WorkerF\Config;
 use Closure;
 /**
  * HTTP router.
@@ -54,11 +56,11 @@ class Route {
      */
     public static function setMapTree($method, $path, $content)
     {
-        $uri      = self::_uriParse(self::$_filter['prefix'].$path);
+        $path      = self::_pathParse(self::$_filter['prefix'].$path);
         $callback = is_string($content) ?
                     self::_namespaceParse('\\'.self::$_filter['namespace'].$content) : $content;
 
-        self::$_map_tree[$uri][strtoupper($method)] = $callback;
+        self::$_map_tree[$path][strtoupper($method)] = $callback;
     }
 
     /**
@@ -74,7 +76,7 @@ class Route {
         $tmp_prefix    = self::$_filter['prefix'];
         $tmp_namespace = self::$_filter['namespace'];
 
-        // set filter uri prefix
+        // set filter path prefix
         if(isset($filter['prefix'])) {
             self::$_filter['prefix'] .= '/'.$filter['prefix'].'/';
         }
@@ -90,18 +92,18 @@ class Route {
     }
 
     /**
-     * Parse uri.
+     * Parse path.
      *
-     * @param  string  $uri
+     * @param  string  $path
      * @return string
      */
-    protected static function _uriParse($uri)
+    protected static function _pathParse($path)
     {
-        // make uri as /a/b/c mode
-        $uri = ($uri == '/') ? $uri : '/'.rtrim($uri, '/');
-        $uri = preg_replace('/\/+/', '/', $uri);
+        // make path as /a/b/c mode
+        $path = ($path == '/') ? $path : '/'.rtrim($path, '/');
+        $path = preg_replace('/\/+/', '/', $path);
 
-        return $uri;
+        return $path;
     }
 
     /**
@@ -127,19 +129,19 @@ class Route {
     public static function dispatch(Requests $request)
     {
         // get request param
-        $uri = self::_uriParse(parse_url(($request->server->REQUEST_URI))['path']);
+        $path = self::_pathParse(parse_url(($request->server->REQUEST_URI))['path']);
         $method = $request->server->REQUEST_METHOD;
         // router exist or not
-        if( ! array_key_exists($uri, self::$_map_tree) ||
-            ! array_key_exists($method, self::$_map_tree[$uri])
+        if( ! array_key_exists($path, self::$_map_tree) ||
+            ! array_key_exists($method, self::$_map_tree[$path])
         )
         {
-            $e = new \LogicException("route rule uri: $uri <==> method : $method is not set!");
+            $e = new \LogicException("route rule path: $path <==> method : $method is not set!");
             $e->httpCode = 404;
             throw $e;
         }
         // get callback info
-        $callback = self::$_map_tree[$uri][$method];
+        $callback = self::$_map_tree[$path][$method];
 
         // is class
         if(is_string($callback)) {
@@ -164,5 +166,21 @@ class Route {
             // call function
             return call_user_func($callback, $request);
         }
+    }
+
+    /**
+     * redirect. warning: only for get method
+     * 
+     * @param  string  $path
+     * @param  array  $param
+     * @return void
+     */
+    public static function redirect($path, $param = [])
+    {
+        $base_url = rtrim(Config::get('app.base_url'), '/');
+        $path = self::_pathParse($path);
+        $url = $base_url.$path.'?'.http_build_query($param);
+        
+        return Response::redirect($url);
     }
 }

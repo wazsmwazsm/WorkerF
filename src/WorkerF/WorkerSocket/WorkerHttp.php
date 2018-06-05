@@ -15,19 +15,23 @@ class WorkerHttp
      * create http response header.
      *
      * @param  mixed  $header
-     * @return boolean
+     * @return void
      */
     public static function header($headers)
     {
         if(is_array($headers)) {
             // if pass array
             foreach ($headers as $header) {
-                Http::header($header);
+                if(FALSE === Http::header($header)) {
+                    throw new \InvalidArgumentException("Header $header is invalid!");
+                }
             }
             return;
         }
         // pass string
-        return Http::header($headers);
+        if(FALSE === Http::header($headers)) {
+            throw new \InvalidArgumentException("Header $headers is invalid!");
+        }
     }
 
     /**

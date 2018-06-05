@@ -34,7 +34,7 @@ class WorkerHttp
      * get http response header.
      *
      * @param  string  $key
-     * @return void
+     * @return string
      */
     public static function getHeader($key)
     {

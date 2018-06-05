@@ -23,6 +23,28 @@ Class Response
     }
     
     /**
+     * get http response header.
+     *
+     * @param  string  $key
+     * @return string
+     */
+    public static function getHeader($key)
+    {
+        return WorkerHttp::getHeader($key);
+    }
+
+    /**
+     * redirect.
+     *
+     * @param  string  $path
+     * @return void
+     */
+    public static function redirect($path)
+    {
+        self::header("Location: $path");
+    }
+
+    /**
      * build response data.
      *
      * @param  mixed  $data
@@ -34,7 +56,7 @@ Class Response
     {
         // should be json
         if(is_array($data) || is_object($data)) {
-            WorkerHttp::header("Content-Type: application/json;charset=utf-8");
+            self::header("Content-Type: application/json;charset=utf-8");
             return self::_compress(json_encode($data), $conf['compress']);
         }
         // is string (could be html string)
@@ -58,7 +80,7 @@ Class Response
         // get accept encodeing from request
         $accept_encodeing = explode(',', $_SERVER['HTTP_ACCEPT_ENCODING']);
         // get response headers Content-Type
-        $header = WorkerHttp::getHeader('Content-Type');
+        $header = self::getHeader('Content-Type');
         $content_type = $header ? $header : "Content-Type: text/html;charset=utf-8";
 
         foreach ($accept_encodeing as $key => $value) {
@@ -74,11 +96,11 @@ Class Response
                 // check conf encodeing, enable compress
                 switch ($compress_conf['encoding']) {
                     case 'gzip':
-                        WorkerHttp::header("Content-Encoding: gzip");
+                        self::header("Content-Encoding: gzip");
                         $compress_data = gzencode($data, $compress_conf['level']);
                         break;
                     case 'deflate':
-                        WorkerHttp::header("Content-Encoding: deflate");
+                        self::header("Content-Encoding: deflate");
                         $compress_data = gzdeflate($data, $compress_conf['level']);
                         break;
                 }

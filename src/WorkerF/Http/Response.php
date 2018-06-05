@@ -12,6 +12,17 @@ use WorkerF\WorkerSocket\WorkerHttp;
 Class Response
 {
     /**
+     * create http response header.
+     *
+     * @param  mixed  $header
+     * @return boolean
+     */
+    public static function header($headers)
+    {
+        return WorkerHttp::header($headers);
+    }
+    
+    /**
      * build response data.
      *
      * @param  mixed  $data

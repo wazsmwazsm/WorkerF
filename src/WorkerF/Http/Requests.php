@@ -46,6 +46,13 @@ Class Requests
     public $files;
 
     /**
+     * http request raw body data.
+     *
+     * @var string
+     */
+    public $rawData;
+
+    /**
      * get http request param.
      *
      */
@@ -57,6 +64,7 @@ Class Requests
         $this->server  = (object) $_SERVER;
         $this->cookie  = (object) $_COOKIE;
         $this->files   = (object) $_FILES;
+        $this->rawData = $GLOBALS['HTTP_RAW_POST_DATA'];
     }
 
     /**

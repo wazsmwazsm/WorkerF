@@ -16,7 +16,7 @@ class Pipeline
      *
      * @var array
      */
-    protected $pipes = [];
+    protected $_pipes = [];
 
     /**
      * set pipes, array mode.
@@ -31,7 +31,7 @@ class Pipeline
                 throw new InvalidArgumentException('All pipes should be callable.');
             }
         }
-        $this->pipes = $pipes;
+        $this->_pipes = $pipes;
     }
 
     /**
@@ -47,7 +47,7 @@ class Pipeline
             throw new InvalidArgumentException('pipe should be callable.');
         }
 
-        $this->pipes[] = $pipe;
+        $this->_pipes[] = $pipe;
 
         return $this;
     }
@@ -60,7 +60,7 @@ class Pipeline
      */
     public function flow($payload) 
     {
-        foreach ($this->pipes as $pipe) {
+        foreach ($this->_pipes as $pipe) {
 
             if ($payload instanceOf Closure) {
                 // if payload is a closure, stop pipeline flow

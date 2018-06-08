@@ -1,12 +1,18 @@
 <?php
 use WorkerF\Http\Route;
 use WorkerF\Http\Requests;
+use WorkerF\Config;
 
 class RouteFake extends Route
 {
     public static function getMapTree()
     {
         return self::$_map_tree;
+    }
+
+    public static function setMapTree($method, $path, $content)
+    {
+        return self::_setMapTree($method, $path, $content);
     }
 
     public static function cleanMapTree()
@@ -24,6 +30,10 @@ class RouteFake extends Route
         return self::_namespaceParse($namespace);
     }
 
+    public static function getRedirectUrl($path, $param)
+    {
+        return self::_getRedirectUrl($path, $param);
+    }
 }
 
 class Fuck
@@ -35,7 +45,7 @@ class Fuck
 
     public function getRequest(Requests $request)
     {
-        return $request->request;
+        return $request->request();
     }
 }
 
@@ -43,6 +53,8 @@ class RouteTest extends PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
+        // init $GLOBALS
+        $GLOBALS['HTTP_RAW_POST_DATA'] = '{"a":"test"}';
         // clean map tree
         RouteFake::cleanMapTree();
     }
@@ -186,6 +198,14 @@ class RouteTest extends PHPUnit_Framework_TestCase
         $result = RouteFake::dispatch($request);
 
         $this->assertEquals('baz', $result);
+    }
+
+    public function testGetRedirectUrl()
+    {
+        Config::set('app.base_url', 'http://test.com/');
+        $url = RouteFake::getRedirectUrl('/pre/test', ['foo' => 1, 'bar' => 2]);
+
+        $this->assertEquals('http://test.com/pre/test?foo=1&bar=2', $url);
     }
 
     /**

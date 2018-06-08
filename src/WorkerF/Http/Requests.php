@@ -13,44 +13,44 @@ Class Requests
      *
      * @var array
      */
-    public $get;
+    protected $_get;
     /**
      * post param.
      *
      * @var array
      */
-    public $post;
+    protected $_post;
     /**
      * request param.
      *
      * @var array
      */
-    public $request;
+    protected $_request;
     /**
      * server info.
      *
      * @var array
      */
-    public $server;
+    protected $_server;
     /**
      * cokkie info.
      *
      * @var array
      */
-    public $cookie;
+    protected $_cookie;
     /**
      * upload file info.
      *
      * @var array
      */
-    public $files;
+    protected $_files;
 
     /**
      * http request raw body data.
      *
      * @var string
      */
-    public $rawData;
+    protected $_rawData;
 
     /**
      * get http request param.
@@ -58,13 +58,83 @@ Class Requests
      */
     public function __construct()
     {
-        $this->get     = (object) $_GET;
-        $this->post    = (object) $_POST;
-        $this->request = (object) $_REQUEST;
-        $this->server  = (object) $_SERVER;
-        $this->cookie  = (object) $_COOKIE;
-        $this->files   = (object) $_FILES;
-        $this->rawData = $GLOBALS['HTTP_RAW_POST_DATA'];
+        $this->_get     = (object) $_GET;
+        $this->_post    = (object) $_POST;
+        $this->_request = (object) $_REQUEST;
+        $this->_server  = (object) $_SERVER;
+        $this->_cookie  = (object) $_COOKIE;
+        $this->_files   = (object) $_FILES;
+        $this->_rawData = $GLOBALS['HTTP_RAW_POST_DATA'];
+    }
+
+    /**
+     * return http request get data.
+     *
+     * @return object
+     */
+    public function get()
+    {
+        return $this->_get;
+    }
+
+    /**
+     * return http request post data.
+     *
+     * @return object
+     */
+    public function post()
+    {
+        return $this->_post;
+    }
+    
+    /**
+     * return http request request data.
+     *
+     * @return object
+     */
+    public function request()
+    {
+        return $this->_request;
+    }
+
+    /**
+     * return http request server data.
+     *
+     * @return object
+     */
+    public function server()
+    {
+        return $this->_server;
+    }
+
+    /**
+     * return http request cookie data.
+     *
+     * @return object
+     */
+    public function cookie()
+    {
+        return $this->_cookie;
+    }
+
+    /**
+     * return http request files data.
+     *
+     * @return object
+     */
+    public function files()
+    {
+        return $this->_files;
+    }
+
+    /**
+     * return http request rawData data.
+     *
+     * @return object
+     */
+    public function rawData()
+    {
+        return $this->_rawData;
     }
 
     /**
@@ -75,8 +145,8 @@ Class Requests
      */
     public function __get($key)
     {
-        if (array_key_exists($key, $this->request)) {
-            return $this->request->$key;
+        if (array_key_exists($key, $this->_request)) {
+            return $this->_request->$key;
         }
         return NULL;
     }

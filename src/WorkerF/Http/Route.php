@@ -43,7 +43,7 @@ class Route {
             throw new \InvalidArgumentException("method $method accept 2 params!");
         }
         // set map tree
-        self::setMapTree($method, $params[0], $params[1]);
+        self::_setMapTree($method, $params[0], $params[1]);
     }
 
     /**
@@ -54,7 +54,7 @@ class Route {
      * @param  mixed  $content
      * @return void
      */
-    public static function setMapTree($method, $path, $content)
+    protected static function _setMapTree($method, $path, $content)
     {
         $path      = self::_pathParse(self::$_filter['prefix'].$path);
         $callback = is_string($content) ?
@@ -120,6 +120,22 @@ class Route {
     }
 
     /**
+     * get redirect url
+     * 
+     * @param  string  $path
+     * @param  array  $param
+     * @return string
+     */
+    protected static function _getRedirectUrl($path, $param) 
+    {
+        $base_url = rtrim(Config::get('app.base_url'), '/');
+        $path = self::_pathParse($path);
+        $url = $base_url.$path.'?'.http_build_query($param);
+
+        return $url;
+    }
+
+    /**
      * dispatch route.
      *
      * @return mixed
@@ -129,8 +145,8 @@ class Route {
     public static function dispatch(Requests $request)
     {
         // get request param
-        $path = self::_pathParse(parse_url(($request->server->REQUEST_URI))['path']);
-        $method = $request->server->REQUEST_METHOD;
+        $path = self::_pathParse(parse_url(($request->server()->REQUEST_URI))['path']);
+        $method = $request->server()->REQUEST_METHOD;
         // router exist or not
         if( ! array_key_exists($path, self::$_map_tree) ||
             ! array_key_exists($method, self::$_map_tree[$path])
@@ -173,14 +189,13 @@ class Route {
      * 
      * @param  string  $path
      * @param  array  $param
-     * @return void
+     * @return \Closure
      */
     public static function redirect($path, $param = [])
     {
-        $base_url = rtrim(Config::get('app.base_url'), '/');
-        $path = self::_pathParse($path);
-        $url = $base_url.$path.'?'.http_build_query($param);
+        $url = self::_getRedirectUrl($path, $param);
         
         return Response::redirect($url);
     }
+
 }

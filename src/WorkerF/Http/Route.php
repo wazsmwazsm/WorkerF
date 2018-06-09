@@ -17,14 +17,23 @@ class Route {
      * @var array
      */
     protected static $_map_tree = [];
+
+    /**
+     * The route middleware map.
+     *
+     * @var array
+     */
+    protected static $_middleware_map_tree = [];
+
     /**
      * route config filter.
      *
      * @var array
      */
     protected static $_filter = [
-        'prefix'    => '',
-        'namespace' => '',
+        'prefix'     => '',
+        'namespace'  => '',
+        'middleware' => [],
     ];
 
     /**
@@ -56,11 +65,12 @@ class Route {
      */
     protected static function _setMapTree($method, $path, $content)
     {
-        $path      = self::_pathParse(self::$_filter['prefix'].$path);
+        $path     = self::_pathParse(self::$_filter['prefix'].$path);
         $callback = is_string($content) ?
                     self::_namespaceParse('\\'.self::$_filter['namespace'].$content) : $content;
-
-        self::$_map_tree[$path][strtoupper($method)] = $callback;
+        
+        self::$_middleware_map_tree[$path][strtoupper($method)] = self::$_filter['middleware'];
+        self::$_map_tree[$path][strtoupper($method)]            = $callback;
     }
 
     /**
@@ -75,6 +85,7 @@ class Route {
         // save sttribute
         $tmp_prefix    = self::$_filter['prefix'];
         $tmp_namespace = self::$_filter['namespace'];
+        $middleware    = self::$_filter['middleware'];
 
         // set filter path prefix
         if(isset($filter['prefix'])) {
@@ -84,11 +95,16 @@ class Route {
         if(isset($filter['namespace'])) {
             self::$_filter['namespace'] .= '\\'.$filter['namespace'].'\\';
         }
+        // set filter middleware
+        if(isset($filter['middleware'])) {
+            self::$_filter['middleware'][] = $filter['middleware'];
+        }
         // call route setting
         call_user_func($routes);
         // recover sttribute
-        self::$_filter['prefix']    = $tmp_prefix;
-        self::$_filter['namespace'] = $tmp_namespace;
+        self::$_filter['prefix']     = $tmp_prefix;
+        self::$_filter['namespace']  = $tmp_namespace;
+        self::$_filter['middleware'] = $middleware;
     }
 
     /**

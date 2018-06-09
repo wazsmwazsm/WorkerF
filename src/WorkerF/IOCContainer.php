@@ -15,22 +15,7 @@ use ReflectionClass;
       *
       * @var array
       */
-      protected static $_singleton = [];
-
-      /**
-       * get Instance from reflection info.
-       *
-       * @param  \ReflectionClass $reflector
-       * @return object
-       */
-      protected static function _getInstance(ReflectionClass $reflector)
-      {
-          $constructor = $reflector->getConstructor();
-          // create di params
-          $di_params = $constructor ? self::_getDiParams($constructor->getParameters()) : [];
-          // create instance
-          return $reflector->newInstanceArgs($di_params);
-      }
+      protected static $_singleton = [];   
 
       /**
        * create Dependency injection params.
@@ -83,6 +68,24 @@ use ReflectionClass;
       }
 
       /**
+       * get Instance from reflection info.
+       *
+       * @param  string  $class_name
+       * @return object
+       */
+      public static function getInstance($class_name)
+      {
+          // get class reflector
+          $reflector = new ReflectionClass($class_name);
+          // get constructor
+          $constructor = $reflector->getConstructor();
+          // create di params
+          $di_params = $constructor ? self::_getDiParams($constructor->getParameters()) : [];
+          // create instance
+          return $reflector->newInstanceArgs($di_params);
+      }
+
+      /**
        * run class method.
        *
        * @param  string $class_name
@@ -100,11 +103,12 @@ use ReflectionClass;
           if( ! method_exists($class_name, $method)) {
               throw new \BadMethodCallException("undefined method $method in $class_name !");
           }
+          // create instance
+          $instance = self::getInstance($class_name);
+          /******* method Dependency injection *******/
           // get class reflector
           $reflector = new ReflectionClass($class_name);
-          // create instance
-          $instance = self::_getInstance($reflector);
-          /******* method Dependency injection *******/
+          // get method
           $reflectorMethod = $reflector->getMethod($method);
           // create di params
           $di_params = self::_getDiParams($reflectorMethod->getParameters());

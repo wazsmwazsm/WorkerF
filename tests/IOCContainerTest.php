@@ -4,11 +4,6 @@ use WorkerF\IOCContainer;
 
 class IOCContainerFake extends IOCContainer
 {
-    public static function getInstance(ReflectionClass $reflector)
-    {
-        return self::_getInstance($reflector);
-    }
-
     public static function getDiParams(array $params)
     {
         return self::_getDiParams($params);
@@ -97,8 +92,7 @@ class IOCContainerTest extends PHPUnit_Framework_TestCase
         $foo = new Foo();
         $foz = new Foz();
         $expect = new Bar($foo, $foz);
-        $reflector = new ReflectionClass('Bar');
-        $result = IOCContainerFake::getInstance($reflector);
+        $result = IOCContainerFake::getInstance('Bar');
 
         $this->assertEquals($expect, $result);
     }

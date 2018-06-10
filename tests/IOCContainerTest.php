@@ -97,6 +97,21 @@ class IOCContainerTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expect, $result);
     }
 
+    public function testGetInstanceSingleton()
+    {
+        $foo = new Foo();
+        $foz = new Foz();
+        $expect = new Bar($foo, $foz);
+        
+        $this->assertEquals(NULL, IOCContainerFake::getSingleton('Bar'));
+
+        $result = IOCContainerFake::getInstanceSingleton('Bar');
+
+        $this->assertEquals($expect, $result);
+
+        $this->assertEquals($expect, IOCContainerFake::getSingleton('Bar'));
+    }
+
     public function testRun()
     {
         $foo = new Foo();
@@ -104,7 +119,7 @@ class IOCContainerTest extends PHPUnit_Framework_TestCase
         $expect = new Bar($foo, $foz);
 
         $result = IOCContainerFake::run('Bar', 'f1');
-
+        
         $this->assertEquals($expect->f1($foo), $result);
     }
 

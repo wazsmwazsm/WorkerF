@@ -86,6 +86,26 @@ use ReflectionClass;
       }
 
       /**
+       * get Instance (Singleton) from reflection info.
+       *
+       * @param  string  $class_name
+       * @return object
+       */
+      public static function getInstanceSingleton($class_name)
+      {
+          // instance already singleton
+          if (NULL != ($instance = self::getSingleton($class_name))) {
+              return $instance;
+          }
+          // create instance
+          $instance = self::getInstance($class_name);
+          // set singleton
+          self::singleton($instance);
+
+          return $instance;
+      }
+
+      /**
        * run class method.
        *
        * @param  string $class_name

@@ -9,7 +9,8 @@ use WorkerF\IOCContainer;
  *
  * @author MirQin https://github.com/wazsmwazsm
  */
-class Middleware {
+class Middleware 
+{
     /**
      * dispatch route.
      *
@@ -30,6 +31,10 @@ class Middleware {
         foreach ($middlewares as $middleware) {
             // get instance
             $middleware_instance = IOCContainer::getInstance($middleware);
+            // check middleware
+            if(! ($middleware_instance instanceof MiddlewareInterface)) {
+                throw new \InvalidArgumentException("middleware must implements MiddlewareInterface!");
+            }
             // set singleton
             IOCContainer::singleton($middleware_instance);
             // create pipes array    

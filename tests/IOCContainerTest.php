@@ -104,8 +104,10 @@ class IOCContainerTest extends PHPUnit_Framework_TestCase
         $expect = new Bar($foo, $foz);
         
         $this->assertEquals(NULL, IOCContainerFake::getSingleton('Bar'));
+        // set singleton
+        IOCContainerFake::singleton($expect);
 
-        $result = IOCContainerFake::getInstanceSingleton('Bar');
+        $result = IOCContainerFake::getInstance('Bar');
 
         $this->assertEquals($expect, $result);
 

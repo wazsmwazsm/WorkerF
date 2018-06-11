@@ -1,9 +1,9 @@
 <?php
 namespace WorkerF;
 use Workerman\Connection\TcpConnection;
-use WorkerF\Http\Requests;
 use WorkerF\Http\Response;
 use WorkerF\Http\Route;
+use WorkerF\IOCContainer;
 use WorkerF\Config;
 use WorkerF\Error;
 use WorkerF\DB\DB;
@@ -32,8 +32,10 @@ class App
             // build config
             $conf = [];
             $conf['compress'] = Config::get('app.compress');
+            // get request
+            $request = IOCContainer::getInstance('WorkerF\Http\Requests');
             // dispatch route, return Response data
-            $response = Response::bulid(Route::dispatch(new Requests()), $conf);
+            $response = Response::bulid(Route::dispatch($request), $conf);
             $con->send($response);
 
         } catch (\Exception $e) {

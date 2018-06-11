@@ -10,9 +10,17 @@ use WorkerF\IOCContainer;
  * @author MirQin https://github.com/wazsmwazsm
  */
 class Middleware {
-
+    /**
+     * dispatch route.
+     *
+     * @param array $middlewares
+     * @param WorkerF\Http\Requests $request
+     * @return mixed
+     * @throws \InvalidArgumentException
+     */
     public static function run(array $middlewares, Requests $request)
     {
+        // if middlewares empty, return request as is
         if (empty($middlewares)) {
             return $request;
         }
@@ -20,16 +28,16 @@ class Middleware {
         $pipes = [];
 
         foreach ($middlewares as $middleware) {
-            if (NULL === ($middleware_instance = IOCContainer::getSingleton($middleware))) {
-                $middleware_instance = IOCContainer::getInstance($middleware);
-                IOCContainer::singleton($middleware_instance);
-            }
-
+            // set singleton
+            IOCContainer::singleton($middleware_instance);
+            // get instance
+            $middleware_instance = IOCContainer::getInstance($middleware);
+            // create pipes array    
             $pipes[] = [$middleware_instance, 'handle'];
         }
 
         $pipeline = new Pipeline($pipes);
-
+        // run pipes flow
         return $pipeline->flow($request);
     }
 }

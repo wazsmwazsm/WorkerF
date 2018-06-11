@@ -154,6 +154,7 @@ class Route {
     /**
      * dispatch route.
      *
+     * @param WorkerF\Http\Requests $request
      * @return mixed
      * @throws \LogicException
      * @throws \BadMethodCallException

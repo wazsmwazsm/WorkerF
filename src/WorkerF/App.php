@@ -1,8 +1,10 @@
 <?php
 namespace WorkerF;
 use Workerman\Connection\TcpConnection;
+use WorkerF\Http\Requests;
 use WorkerF\Http\Response;
 use WorkerF\Http\Route;
+use WorkerF\Http\Middleware;
 use WorkerF\IOCContainer;
 use WorkerF\Config;
 use WorkerF\Error;
@@ -34,8 +36,17 @@ class App
             $conf['compress'] = Config::get('app.compress');
             // get request
             $request = IOCContainer::getInstance('WorkerF\Http\Requests');
-            // dispatch route, return Response data
-            $response = Response::bulid(Route::dispatch($request), $conf);
+
+            // run global middleware
+            $global_middlerwares = Config::get('middleware.global');
+            $request = Middleware::run($global_middlerwares, $request);
+            // middlerwares check passed?
+            if ($request instanceof Requests) {
+                // run dispatch
+                $request = Route::dispatch($request);
+            }
+            // return Response data
+            $response = Response::bulid($request, $conf);
             $con->send($response);
 
         } catch (\Exception $e) {

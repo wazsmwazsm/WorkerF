@@ -28,10 +28,10 @@ class Middleware {
         $pipes = [];
 
         foreach ($middlewares as $middleware) {
-            // set singleton
-            IOCContainer::singleton($middleware_instance);
             // get instance
             $middleware_instance = IOCContainer::getInstance($middleware);
+            // set singleton
+            IOCContainer::singleton($middleware_instance);
             // create pipes array    
             $pipes[] = [$middleware_instance, 'handle'];
         }

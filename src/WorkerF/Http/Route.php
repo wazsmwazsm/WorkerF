@@ -56,24 +56,6 @@ class Route {
     }
 
     /**
-     * set map tree.
-     *
-     * @param  string  $method
-     * @param  string  $path
-     * @param  mixed  $content
-     * @return void
-     */
-    protected static function _setMapTree($method, $path, $content)
-    {
-        $path     = self::_pathParse(self::$_filter['prefix'].$path);
-        $callback = is_string($content) ?
-                    self::_namespaceParse('\\'.self::$_filter['namespace'].$content) : $content;
-        
-        self::$_middleware_map_tree[$path][strtoupper($method)] = self::$_filter['middleware'];
-        self::$_map_tree[$path][strtoupper($method)]            = $callback;
-    }
-
-    /**
      * set group route.
      *
      * @param  array    $filter
@@ -152,17 +134,64 @@ class Route {
     }
 
     /**
+     * set map tree.
+     *
+     * @param  string  $method
+     * @param  string  $path
+     * @param  mixed  $content
+     * @return void
+     */
+    protected static function _setMapTree($method, $path, $content)
+    {
+        $path     = self::_pathParse(self::$_filter['prefix'].$path);
+        $callback = is_string($content) ?
+                    self::_namespaceParse('\\'.self::$_filter['namespace'].$content) : $content;
+        
+        self::$_middleware_map_tree[$path][strtoupper($method)] = self::$_filter['middleware'];
+        self::$_map_tree[$path][strtoupper($method)]            = $callback;
+    }
+
+    /**
+     * set map tree.
+     *
+     * @param  WorkerF\Http\Requests $request
+     * @param  string $path
+     * @param  string $method
+     * @return mixed
+     * @throws \InvalidArgumentException
+     */
+    protected static function _checkMiddleware(Requests $request, $path, $method)
+    {   
+        // get all route middlewares
+        $route_middlewares = Config::get('middleware.route');
+        // get current request route middleware symbols
+        $middleware_symbols = self::$_middleware_map_tree[$path][$method];
+        // get current request route middlewares
+        $request_middlewares = [];
+        foreach ($middleware_symbols as $middleware_symbol) {
+            // if middleware_symbol is not in route_middlewares
+            if ( ! array_key_exists($middleware_symbol, $route_middlewares)) {
+                throw new \InvalidArgumentException("route middleware $middleware_symbol is not exists!");
+            }
+            $request_middlewares[] = $route_middlewares[$middleware_symbol];  
+        }
+        // run middleware flow
+        return Middleware::run($route_middlewares, $request);
+    }
+
+    /**
      * dispatch route.
      *
      * @param WorkerF\Http\Requests $request
      * @return mixed
      * @throws \LogicException
      * @throws \BadMethodCallException
+     * @throws \InvalidArgumentException
      */
     public static function dispatch(Requests $request)
-    {
+    {       
         // get request param
-        $path = self::_pathParse(parse_url(($request->server()->REQUEST_URI))['path']);
+        $path   = self::_pathParse(parse_url(($request->server()->REQUEST_URI))['path']);
         $method = $request->server()->REQUEST_METHOD;
         // router exist or not
         if( ! array_key_exists($path, self::$_map_tree) ||
@@ -172,10 +201,17 @@ class Route {
             $e = new \LogicException("route rule path: $path <==> method : $method is not set!");
             $e->httpCode = 404;
             throw $e;
+        }    
+
+        // check route middlewares
+        $request = self::_checkMiddleware($request, $path, $method);
+        // if middlewares check is not passed
+        if ( ! ($request instanceof Requests)) {
+            return $request;
         }
+
         // get callback info
         $callback = self::$_map_tree[$path][$method];
-
         // is class
         if(is_string($callback)) {
             // syntax check

@@ -36,15 +36,16 @@ class App
             $conf['compress'] = Config::get('app.compress');
             // get request
             $request = IOCContainer::getInstance('WorkerF\Http\Requests');
-
-            // run global middleware
+            
+            // check global middlewares
             $global_middlerwares = Config::get('middleware.global');
             $request = Middleware::run($global_middlerwares, $request);
-            // middlerwares check passed?
+            // middlewares check passed?
             if ($request instanceof Requests) {
                 // run dispatch
                 $request = Route::dispatch($request);
             }
+            
             // return Response data
             $response = Response::bulid($request, $conf);
             $con->send($response);

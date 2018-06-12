@@ -1,7 +1,10 @@
 <?php
+namespace WorkerF\Tests\Http;
+
 use WorkerF\Http\Route;
 use WorkerF\Http\Requests;
 use WorkerF\Config;
+use WorkerF\Http\MiddlewareInterface;
 
 class RouteFake extends Route
 {
@@ -10,14 +13,20 @@ class RouteFake extends Route
         return self::$_map_tree;
     }
 
+    public static function getMiddlewareMapTree()
+    {
+        return self::$_middleware_map_tree;
+    }
+
     public static function setMapTree($method, $path, $content)
     {
         return self::_setMapTree($method, $path, $content);
-    }
+    }  
 
     public static function cleanMapTree()
     {
         self::$_map_tree = [];
+        self::$_middleware_map_tree = [];
     }
 
     public static function pathParse($path)
@@ -34,6 +43,11 @@ class RouteFake extends Route
     {
         return self::_getRedirectUrl($path, $param);
     }
+
+    public static function checkMiddleware(Requests $request, $path, $method)
+    {
+        return self::_checkMiddleware($request, $path, $method);
+    }
 }
 
 class Fuck
@@ -49,14 +63,40 @@ class Fuck
     }
 }
 
-class RouteTest extends PHPUnit_Framework_TestCase
+class M3 implements MiddlewareInterface
+{
+    public function handle(Requests $request)
+    {
+        return $request;
+    }
+}
+
+class M4 implements MiddlewareInterface
+{
+    public function handle(Requests $request)
+    {
+        return function() {
+            return 'stop at m4!';
+        };
+    }
+}
+
+
+class RouteTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        // init $GLOBALS
-        $GLOBALS['HTTP_RAW_POST_DATA'] = '{"a":"test"}';
         // clean map tree
         RouteFake::cleanMapTree();
+        // init global variables
+        $GLOBALS['HTTP_RAW_POST_DATA'] = '{"a":"test"}';
+        $_REQUEST = ['foo' => 'bar', 'foz' => 'baz'];
+        $_SERVER  = [
+          'REQUEST_URI'    => 'http://test.com/pre/test?foo=bar',
+          'REQUEST_METHOD' => 'GET',
+        ];
+        Config::set('middleware.route', []);
+        
     }
 
     public function testUriParse()
@@ -121,17 +161,22 @@ class RouteTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals('c', $map['/c']['POST']());
 
-        // PUT
+        // PUT (same as DELETE\PATCH)
         RouteFake::put('/d/e', 'Test\Controller@get');
 
         $map = RouteFake::getMapTree();
 
         $this->assertEquals('\Test\Controller@get', $map['/d/e']['PUT']);
+
+        // Middleware
+        RouteFake::get('hello/', 'TestController@test');
+        $middleware_map = RouteFake::getMiddlewareMapTree();
+        $this->assertEquals([], $middleware_map['/hello']['GET']);
     }
 
     public function testGroup()
-    {
-        RouteFake::group(['prefix' => '/pre', 'namespace' => 'App\Controller'], function() {
+    {       
+        RouteFake::group(['prefix' => '/pre', 'namespace' => 'App\Controller', 'middleware' => 'auth'], function() {
             RouteFake::get('control/', 'TestController@test');
             RouteFake::post('call1/', function() {
                 return 'hello1';
@@ -142,14 +187,19 @@ class RouteTest extends PHPUnit_Framework_TestCase
         });
 
         $map = RouteFake::getMapTree();
+        $middleware_map = RouteFake::getMiddlewareMapTree();
 
         $this->assertEquals('\App\Controller\TestController@test', $map['/pre/control']['GET']);
         $this->assertEquals('hello1', $map['/pre/call1']['POST']());
         $this->assertEquals('hello2', $map['/pre/call2']['GET']());
 
+        $this->assertEquals(['auth'], $middleware_map['/pre/control']['GET']);
+        $this->assertEquals(['auth'], $middleware_map['/pre/call1']['POST']);
+        $this->assertEquals(['auth'], $middleware_map['/pre/call2']['GET']);
+
         // group nesting
-        RouteFake::group(['prefix' => '/g1', 'namespace' => 'App'], function() {
-            RouteFake::group(['prefix' => '/g2', 'namespace' => 'Controller'], function() {
+        RouteFake::group(['prefix' => '/g1', 'namespace' => 'App', 'middleware' => 'auth'], function() {
+            RouteFake::group(['prefix' => '/g2', 'namespace' => 'Controller', 'middleware' => 'jwt'], function() {
                 RouteFake::get('test', function() {
                     return 'g1 g2 test success';
                 });
@@ -162,34 +212,58 @@ class RouteTest extends PHPUnit_Framework_TestCase
         });
 
         $map = RouteFake::getMapTree();
+        $middleware_map = RouteFake::getMiddlewareMapTree();
 
         $this->assertEquals('g1 g2 test success', $map['/g1/g2/test']['GET']());
         $this->assertEquals('\App\Controller\TestController@test', $map['/g1/g2/con']['GET']);
         $this->assertEquals('g1 test success', $map['/g1/test']['GET']());
 
+        $this->assertEquals(['auth'], $middleware_map['/g1/test']['GET']);
+        $this->assertEquals(['auth', 'jwt'], $middleware_map['/g1/g2/test']['GET']);
+        $this->assertEquals(['auth', 'jwt'], $middleware_map['/g1/g2/con']['GET']);
+
+    }
+
+    public function testCheckMiddleware()
+    {
+        // middleware check passed
+        Config::set('middleware.route', ['auth' => 'WorkerF\Tests\Http\M3']);
+        $request = new Requests();
+        RouteFake::group(['prefix' => '/pre', 'middleware' => 'auth'], function() {    
+            RouteFake::get('/test', 'WorkerF\Tests\Http\Fuck@bar');
+        });    
+
+        $result = RouteFake::checkMiddleware($request, '/pre/test', 'GET');
+
+        $this->assertEquals($request, $result);
+        
+        // middleware check not passed
+        Config::set('middleware.route', ['auth' => 'WorkerF\Tests\Http\M4']);
+        $request = new Requests();
+        RouteFake::group(['prefix' => '/pre', 'middleware' => 'auth'], function() {    
+            RouteFake::get('/test', 'WorkerF\Tests\Http\Fuck@bar');
+        });    
+
+        $result = RouteFake::checkMiddleware($request, '/pre/test', 'GET');
+
+        $this->assertInstanceOf('Closure', $result);
+        $this->assertEquals('stop at m4!', call_user_func($result));
     }
 
     public function testDispatch()
     {
-        // class@method
-        $_REQUEST = (object) ['foo' => 'bar', 'foz' => 'baz'];
-        $_SERVER  = (object) [
-          'REQUEST_URI'    => 'http://test.com/pre/test?foo=bar',
-          'REQUEST_METHOD' => 'GET',
-        ];
-
         $request = new Requests();
 
-        RouteFake::get('/pre/test', 'Fuck@bar');
+        RouteFake::get('/pre/test', 'WorkerF\Tests\Http\Fuck@bar');
         $result = RouteFake::dispatch($request);
 
         $this->assertEquals('hello bar!', $result);
 
         // class@method DI
-        RouteFake::get('/pre/test', 'Fuck@getRequest');
+        RouteFake::get('/pre/test', 'WorkerF\Tests\Http\Fuck@getRequest');
         $result = RouteFake::dispatch($request);
 
-        $this->assertEquals($_REQUEST, $result);
+        $this->assertEquals((object) $_REQUEST, $result);
 
         // callback
         RouteFake::get('/pre/test', function($request) {
@@ -198,6 +272,30 @@ class RouteTest extends PHPUnit_Framework_TestCase
         $result = RouteFake::dispatch($request);
 
         $this->assertEquals('baz', $result);
+
+        // with middleware
+        // middleware check passed
+        Config::set('middleware.route', ['auth' => 'WorkerF\Tests\Http\M3']);
+        $request = new Requests();
+        RouteFake::group(['prefix' => '/pre', 'middleware' => 'auth'], function() {    
+            RouteFake::get('/test', 'WorkerF\Tests\Http\Fuck@bar');
+        });    
+
+        $result = RouteFake::dispatch($request);
+
+        $this->assertEquals('hello bar!', $result);
+
+        // middleware check not passed
+        Config::set('middleware.route', ['auth' => 'WorkerF\Tests\Http\M4']);
+        $request = new Requests();
+        RouteFake::group(['prefix' => '/pre', 'middleware' => 'auth'], function() {    
+            RouteFake::get('/test', 'WorkerF\Tests\Http\Fuck@bar');
+        });    
+
+        $result = RouteFake::dispatch($request);
+
+        $this->assertInstanceOf('Closure', $result);
+        $this->assertEquals('stop at m4!', call_user_func($result));
     }
 
     public function testGetRedirectUrl()
@@ -213,12 +311,6 @@ class RouteTest extends PHPUnit_Framework_TestCase
     */
     public function testDispatchRouteNotSetException()
     {
-        $_REQUEST = (object) ['foo' => 'bar', 'foz' => 'baz'];
-        $_SERVER  = (object) [
-          'REQUEST_URI'    => 'http://test.com/pre/test?foo=bar',
-          'REQUEST_METHOD' => 'GET',
-        ];
-
         $request = new Requests();
 
         RouteFake::dispatch($request);
@@ -229,12 +321,6 @@ class RouteTest extends PHPUnit_Framework_TestCase
     */
     public function testDispatchMethodNotMatchException()
     {
-        $_REQUEST = (object) ['foo' => 'bar', 'foz' => 'baz'];
-        $_SERVER  = (object) [
-          'REQUEST_URI'    => 'http://test.com/pre/test?foo=bar',
-          'REQUEST_METHOD' => 'GET',
-        ];
-
         $request = new Requests();
 
         RouteFake::get('/pre/test', 'ssssss');
@@ -246,15 +332,39 @@ class RouteTest extends PHPUnit_Framework_TestCase
     */
     public function testDispatchMethodNotFoundException()
     {
-        $_REQUEST = (object) ['foo' => 'bar', 'foz' => 'baz'];
-        $_SERVER  = (object) [
-          'REQUEST_URI'    => 'http://test.com/pre/test?foo=bar',
-          'REQUEST_METHOD' => 'GET',
-        ];
-
         $request = new Requests();
 
         RouteFake::get('/pre/test', 'Foz@baz');
         RouteFake::dispatch($request);
+    }
+
+    /**
+    * @expectedException \InvalidArgumentException
+    */
+    public function testCheckMiddlewareException()
+    {
+        // middleware check passed
+        Config::set('middleware.route', ['auth' => 'WorkerF\Tests\Http\M3']);
+        $request = new Requests();
+        RouteFake::group(['prefix' => '/pre', 'middleware' => 'some'], function() {    
+            RouteFake::get('/test', 'WorkerF\Tests\Http\Fuck@bar');
+        });    
+
+        $result = RouteFake::checkMiddleware($request, '/pre/test', 'GET');
+    }
+
+    /**
+    * @expectedException \InvalidArgumentException
+    */
+    public function testDispatchCheckMiddlewareException()
+    {
+        // middleware check passed
+        Config::set('middleware.route', ['auth' => 'WorkerF\Tests\Http\M3']);
+        $request = new Requests();
+        RouteFake::group(['prefix' => '/pre', 'middleware' => 'some'], function() {    
+            RouteFake::get('/test', 'WorkerF\Tests\Http\Fuck@bar');
+        });    
+
+        $result = RouteFake::dispatch($request);
     }
 }

@@ -175,7 +175,7 @@ Class Requests
     public function url()
     {
         $protocol = $this->isHttps() ? 'https://' : 'http://';
-        return $protocol.$this->_server->HTTP_HOST.parse_url(($this->_server->REQUEST_URI))['path'];
+        return $protocol.$this->_server->HTTP_HOST.parse_url($this->_server->REQUEST_URI)['path'];
     }
 
     /**
@@ -196,7 +196,7 @@ Class Requests
      */
     public function path()
     {
-        return parse_url(($this->_server->REQUEST_URI))['path'];
+        return parse_url($this->_server->REQUEST_URI)['path'];
     }
 
     /**

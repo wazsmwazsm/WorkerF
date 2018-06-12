@@ -191,8 +191,8 @@ class Route {
     public static function dispatch(Requests $request)
     {       
         // get request param
-        $path   = self::_pathParse(parse_url(($request->server()->REQUEST_URI))['path']);
-        $method = $request->server()->REQUEST_METHOD;
+        $path   = self::_pathParse($request->path());
+        $method = $request->method();
         // router exist or not
         if( ! array_key_exists($path, self::$_map_tree) ||
             ! array_key_exists($method, self::$_map_tree[$path])

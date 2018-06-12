@@ -196,7 +196,7 @@ Class Requests
      */
     public function path()
     {
-        return parse_url(($request->_server->REQUEST_URI))['path'];
+        return parse_url(($this->_server->REQUEST_URI))['path'];
     }
 
     /**

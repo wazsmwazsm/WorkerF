@@ -130,11 +130,101 @@ Class Requests
     /**
      * return http request rawData data.
      *
-     * @return object
+     * @return string
      */
     public function rawData()
     {
         return $this->_rawData;
+    }
+
+    /**
+     * return http request method.
+     *
+     * @return string
+     */
+    public function method()
+    {
+        return $this->_server->REQUEST_METHOD;
+    }
+
+    /**
+     * check http request is https or not.
+     *
+     * @return boolean
+     */
+    public function isHttps()
+    {
+        if ((isset($this->_server->HTTPS) && $this->_server->HTTPS == 'on')) {
+            return TRUE;
+        } 
+        
+        if ((isset($this->_server->HTTP_X_FORWARDED_PROTO) && 
+            $this->_server->HTTP_X_FORWARDED_PROTO == 'https')
+        ) {
+            return TRUE;
+        }
+        
+        return FALSE;
+    }
+
+    /**
+     * return http request url.
+     *
+     * @return string
+     */
+    public function url()
+    {
+        $protocol = $this->isHttps() ? 'https://' : 'http://';
+        return $protocol.$this->_server->HTTP_HOST.parse_url(($this->_server->REQUEST_URI))['path'];
+    }
+
+    /**
+     * return http request full url (with query string).
+     *
+     * @return string
+     */
+    public function fullUrl()
+    {
+        $protocol = $this->isHttps() ? 'https://' : 'http://';
+        return $protocol.$this->_server->HTTP_HOST.$this->_server->REQUEST_URI;
+    }
+
+    /**
+     * return http request path.
+     *
+     * @return string
+     */
+    public function path()
+    {
+        return parse_url(($request->_server->REQUEST_URI))['path'];
+    }
+
+    /**
+     * return http request query string.
+     *
+     * @return string
+     */
+    public function queryString()
+    {
+        return $this->_server->QUERY_STRING;
+    }
+
+    /**
+     * return http request ip.
+     *
+     * @return string
+     */
+    public function ip()
+    {
+        if (isset($this->_server->HTTP_X_FORWARDED_FOR)){
+            return $this->_server->HTTP_X_FORWARDED_FOR;
+        }
+
+        if (isset($this->_server->HTTP_CLIENT_IP)) {
+            return $this->_server->HTTP_CLIENT_IP;
+        }
+
+        return $this->_server->REMOTE_ADDR;
     }
 
     /**

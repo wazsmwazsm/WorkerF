@@ -1,4 +1,7 @@
 <?php
+namespace WorkerF\Tests\DB;
+
+use PHPUnit_Framework_TestCase;
 use WorkerF\DB\Redis;
 
 class RedisTest extends PHPUnit_Framework_TestCase

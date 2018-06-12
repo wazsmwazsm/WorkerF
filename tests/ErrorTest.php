@@ -1,5 +1,9 @@
 <?php
+namespace WorkerF\Tests;
+
+use PHPUnit_Framework_TestCase;
 use WorkerF\Error;
+use Exception;
 
 class ErrorTest extends PHPUnit_Framework_TestCase
 {

@@ -1,6 +1,9 @@
 <?php
+namespace WorkerF\Tests\DB;
+
 require_once 'PDODQL.php';
 use WorkerF\DB\Drivers\Pgsql;
+use PDO;
 
 class PgsqlDQLTest extends PDODQLTest
 {

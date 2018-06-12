@@ -1,4 +1,8 @@
 <?php
+namespace WorkerF\Tests\DB;
+
+use PHPUnit_Framework_TestCase;
+use PHPUnit_Extensions_Database_TestCase_Trait;
 
 class PDODMLTest extends PHPUnit_Framework_TestCase
 {

@@ -1,4 +1,7 @@
 <?php
+namespace WorkerF\Tests\Tool;
+
+use PHPUnit_Framework_TestCase;
 use WorkerF\Tool\Pipeline;
 
 class PipelineFake extends Pipeline

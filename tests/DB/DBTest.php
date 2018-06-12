@@ -1,4 +1,8 @@
 <?php
+
+namespace WorkerF\Tests\DB;
+
+use PHPUnit_Framework_TestCase;
 use WorkerF\DB\DB;
 
 class DBTest extends PHPUnit_Framework_TestCase

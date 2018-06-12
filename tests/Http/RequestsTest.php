@@ -1,9 +1,10 @@
 <?php
 namespace WorkerF\Tests\Http;
 
+use PHPUnit_Framework_TestCase;
 use WorkerF\Http\Requests;
 
-class RequestsTest extends \PHPUnit_Framework_TestCase
+class RequestsTest extends PHPUnit_Framework_TestCase
 {
     public function testRequests()
     {

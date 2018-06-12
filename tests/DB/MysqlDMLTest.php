@@ -1,6 +1,9 @@
 <?php
+namespace WorkerF\Tests\DB;
+
 require_once 'PDODML.php';
 use WorkerF\DB\Drivers\Mysql;
+use PDO;
 
 class MysqlDMLTest extends PDODMLTest
 {

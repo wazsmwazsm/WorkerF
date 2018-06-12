@@ -1,5 +1,9 @@
 <?php
+namespace WorkerF\Tests\DB;
+
 use WorkerF\DB\Drivers\PDODriver;
+use PDOException;
+use Closure;
 
 /**
  * PDODriverFake class , use mysql quote
@@ -112,7 +116,7 @@ class PDODriverFake extends PDODriver
     }
 }
 
-class PDODriverTest extends PHPUnit_Framework_TestCase
+class PDODriverTest extends \PHPUnit_Framework_TestCase
 {
     public $pdoDriver;
 
@@ -152,7 +156,7 @@ class PDODriverTest extends PHPUnit_Framework_TestCase
 
     public function testIsTimeout()
     {
-        $e = new \PDOException('something error');
+        $e = new PDOException('something error');
 
         $e->errorInfo[1] = 2006;
         $result = $this->pdoDriver->isTimeout($e);

@@ -1,6 +1,9 @@
 <?php
+namespace WorkerF\Tests\DB;
+
 require_once 'PDODML.php';
 use WorkerF\DB\Drivers\Sqlite;
+use PDO;
 
 class SqliteDMLTest extends PDODMLTest
 {

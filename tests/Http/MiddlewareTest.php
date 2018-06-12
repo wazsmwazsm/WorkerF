@@ -2,6 +2,7 @@
 
 namespace WorkerF\Tests\Http;
 
+use PHPUnit_Framework_TestCase;
 use WorkerF\Http\Middleware;
 use WorkerF\Http\Requests;
 use WorkerF\Http\MiddlewareInterface;
@@ -32,7 +33,7 @@ class Some
     }
 }
 
-class MiddlewareTest extends \PHPUnit_Framework_TestCase
+class MiddlewareTest extends PHPUnit_Framework_TestCase
 {
     public function testRun()
     {

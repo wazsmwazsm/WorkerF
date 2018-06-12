@@ -1,4 +1,8 @@
 <?php
+
+namespace WorkerF\Tests\DB;
+
+use PHPUnit_Framework_TestCase;
 use WorkerF\DB\DB;
 use WorkerF\DB\Model;
 

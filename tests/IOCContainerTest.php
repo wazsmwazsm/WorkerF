@@ -1,6 +1,9 @@
 <?php
+namespace WorkerF\Tests;
 
+use PHPUnit_Framework_TestCase;
 use WorkerF\IOCContainer;
+use ReflectionClass;
 
 class IOCContainerFake extends IOCContainer
 {
@@ -49,13 +52,13 @@ class IOCContainerTest extends PHPUnit_Framework_TestCase
 {
     public function testSingleton()
     {
-        $singleton = IOCContainerFake::getSingleton('Foo');
+        $singleton = IOCContainerFake::getSingleton('WorkerF\Tests\Foo');
         $this->assertNull($singleton);
 
         $foo = new Foo();
         IOCContainerFake::singleton($foo);
 
-        $singleton = IOCContainerFake::getSingleton('Foo');
+        $singleton = IOCContainerFake::getSingleton('WorkerF\Tests\Foo');
         $this->assertEquals($singleton, $foo);
 
     }
@@ -65,26 +68,26 @@ class IOCContainerTest extends PHPUnit_Framework_TestCase
     */
     public function testSingletonException()
     {
-        IOCContainerFake::singleton('Foo');
+        IOCContainerFake::singleton('WorkerF\Tests\Foo');
     }
 
     public function testGetDiParams()
     {
         // test construct
-        $reflector = new ReflectionClass('Bar');
+        $reflector = new ReflectionClass('WorkerF\Tests\Bar');
         $constructor = $reflector->getConstructor();
         $di_params = IOCContainerFake::getDiParams($constructor->getParameters());
 
         $this->assertEquals(2, count($di_params));
-        $this->assertInstanceOf('Foo', $di_params[0]);
-        $this->assertInstanceOf('Foz', $di_params[1]);
+        $this->assertInstanceOf('WorkerF\Tests\Foo', $di_params[0]);
+        $this->assertInstanceOf('WorkerF\Tests\Foz', $di_params[1]);
 
         // test function
-        $reflector = new ReflectionClass('Bar');
+        $reflector = new ReflectionClass('WorkerF\Tests\Bar');
         $reflectorMethod = $reflector->getMethod('f1');
         $di_params = IOCContainerFake::getDiParams($reflectorMethod->getParameters());
         $this->assertEquals(1, count($di_params));
-        $this->assertInstanceOf('Foo', $di_params[0]);
+        $this->assertInstanceOf('WorkerF\Tests\Foo', $di_params[0]);
     }
 
     public function testGetInstance()
@@ -92,7 +95,7 @@ class IOCContainerTest extends PHPUnit_Framework_TestCase
         $foo = new Foo();
         $foz = new Foz();
         $expect = new Bar($foo, $foz);
-        $result = IOCContainerFake::getInstance('Bar');
+        $result = IOCContainerFake::getInstance('WorkerF\Tests\Bar');
 
         $this->assertEquals($expect, $result);
     }
@@ -103,15 +106,15 @@ class IOCContainerTest extends PHPUnit_Framework_TestCase
         $foz = new Foz();
         $expect = new Bar($foo, $foz);
         
-        $this->assertEquals(NULL, IOCContainerFake::getSingleton('Bar'));
+        $this->assertEquals(NULL, IOCContainerFake::getSingleton('WorkerF\Tests\Bar'));
         // set singleton
         IOCContainerFake::singleton($expect);
 
-        $result = IOCContainerFake::getInstance('Bar');
+        $result = IOCContainerFake::getInstance('WorkerF\Tests\Bar');
 
         $this->assertEquals($expect, $result);
 
-        $this->assertEquals($expect, IOCContainerFake::getSingleton('Bar'));
+        $this->assertEquals($expect, IOCContainerFake::getSingleton('WorkerF\Tests\Bar'));
     }
 
     public function testRun()
@@ -120,7 +123,7 @@ class IOCContainerTest extends PHPUnit_Framework_TestCase
         $foz = new Foz();
         $expect = new Bar($foo, $foz);
 
-        $result = IOCContainerFake::run('Bar', 'f1');
+        $result = IOCContainerFake::run('WorkerF\Tests\Bar', 'f1');
         
         $this->assertEquals($expect->f1($foo), $result);
     }
@@ -130,7 +133,7 @@ class IOCContainerTest extends PHPUnit_Framework_TestCase
     */
     public function testRunExceptionClassNotFound()
     {
-        $result = IOCContainerFake::run('Baz', 'f1');
+        $result = IOCContainerFake::run('WorkerF\Tests\Baz', 'f1');
     }
 
     /**
@@ -138,6 +141,6 @@ class IOCContainerTest extends PHPUnit_Framework_TestCase
     */
     public function testRunExceptionMethodNotFound()
     {
-        $result = IOCContainerFake::run('Bar', 'f2');
+        $result = IOCContainerFake::run('WorkerF\Tests\Bar', 'f2');
     }
 }

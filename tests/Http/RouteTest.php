@@ -1,6 +1,7 @@
 <?php
 namespace WorkerF\Tests\Http;
 
+use PHPUnit_Framework_TestCase;
 use WorkerF\Http\Route;
 use WorkerF\Http\Requests;
 use WorkerF\Config;
@@ -82,7 +83,7 @@ class M4 implements MiddlewareInterface
 }
 
 
-class RouteTest extends \PHPUnit_Framework_TestCase
+class RouteTest extends PHPUnit_Framework_TestCase
 {
     public function setUp()
     {

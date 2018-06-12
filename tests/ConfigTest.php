@@ -1,4 +1,8 @@
 <?php
+
+namespace WorkerF\Tests;
+
+use PHPUnit_Framework_TestCase;
 use WorkerF\Config;
 
 class ConfigTest extends PHPUnit_Framework_TestCase

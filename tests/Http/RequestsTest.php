@@ -6,6 +6,11 @@ use WorkerF\Http\Requests;
 
 class RequestsTest extends PHPUnit_Framework_TestCase
 {
+    public function setUp()
+    {
+        $GLOBALS['HTTP_RAW_POST_DATA'] = '{"a":"test"}';
+    }
+
     public function testRequests()
     {
         $_GET     = ['foo' => 'bar'];
@@ -15,7 +20,6 @@ class RequestsTest extends PHPUnit_Framework_TestCase
         $_COOKIE  = ['foo' => 'bar'];
         $_FILES   = ['foo' => 'bar'];
         $_FILES   = ['foo' => 'bar'];
-        $GLOBALS['HTTP_RAW_POST_DATA'] = '{"a":"test"}';
 
         $request = new Requests();
 
@@ -31,11 +35,17 @@ class RequestsTest extends PHPUnit_Framework_TestCase
     public function testMagicGet()
     {
         $_REQUEST = ['foo' => 'bar', 'foz' => 'baz'];
-        $GLOBALS['HTTP_RAW_POST_DATA'] = '{"a":"test"}';
 
         $request = new Requests();
         $this->assertEquals('bar', $request->foo);
         $this->assertEquals('baz', $request->foz);
     }
 
+    public function testMethod()
+    {
+        $_SERVER = ['REQUEST_METHOD' => 'PUT'];
+
+        $request = new Requests();
+        $this->assertEquals('PUT', $request->method());
+    }
 }

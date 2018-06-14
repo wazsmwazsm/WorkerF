@@ -48,4 +48,112 @@ class RequestsTest extends PHPUnit_Framework_TestCase
         $request = new Requests();
         $this->assertEquals('PUT', $request->method());
     }
+
+    public function testIsHttps()
+    {
+        $_SERVER = [];
+
+        $request = new Requests();
+        $this->assertFalse($request->isHttps());
+
+        $_SERVER = ['HTTPS' => 'off'];
+
+        $request = new Requests();
+        $this->assertFalse($request->isHttps());
+
+        $_SERVER = ['HTTPS' => 'on'];
+
+        $request = new Requests();
+        $this->assertTrue($request->isHttps());
+
+        $_SERVER = ['HTTP_X_FORWARDED_PROTO' => 'http'];
+
+        $request = new Requests();
+        $this->assertFalse($request->isHttps());
+
+        $_SERVER = ['HTTP_X_FORWARDED_PROTO' => 'https'];
+
+        $request = new Requests();
+        $this->assertTrue($request->isHttps());
+    }
+
+    public function testUrl()
+    {
+        $_SERVER = [
+            'HTTP_HOST' => 'www.test.com',
+            'REQUEST_URI' => '/p1/p2?a=2&b3',
+        ];
+
+        $request = new Requests();
+        $this->assertEquals('http://www.test.com/p1/p2', $request->url());
+
+        $_SERVER = [
+            'HTTPS' => 'on',
+            'HTTP_HOST' => 'www.test.com',
+            'REQUEST_URI' => '/p1/p2?a=2&b3',
+        ];
+
+        $request = new Requests();
+        $this->assertEquals('https://www.test.com/p1/p2', $request->url());
+    }
+
+    public function testFullUrl()
+    {
+        $_SERVER = [
+            'HTTP_HOST' => 'www.test.com',
+            'REQUEST_URI' => '/p1/p2?a=2&b3',
+        ];
+
+        $request = new Requests();
+        $this->assertEquals('http://www.test.com/p1/p2?a=2&b3', $request->fullUrl());
+
+        $_SERVER = [
+            'HTTPS' => 'on',
+            'HTTP_HOST' => 'www.test.com',
+            'REQUEST_URI' => '/p1/p2?a=2&b3',
+        ];
+
+        $request = new Requests();
+        $this->assertEquals('https://www.test.com/p1/p2?a=2&b3', $request->fullUrl());
+    }
+
+    public function testPath()
+    {
+        $_SERVER = [
+            'REQUEST_URI' => '/p1/p2?a=2&b3',
+        ];
+
+        $request = new Requests();
+        $this->assertEquals('/p1/p2', $request->path());
+    }
+
+    public function testQueryString()
+    {
+        $_SERVER = [
+            'QUERY_STRING' => 'a=2&b3',
+        ];
+
+        $request = new Requests();
+        $this->assertEquals('a=2&b3', $request->queryString());
+    }
+
+    public function testIp()
+    {
+        $_SERVER = [
+            'REMOTE_ADDR' => '123.22.11.1',
+        ];
+
+        $request = new Requests();
+        $this->assertEquals('123.22.11.1', $request->ip());
+
+        $_SERVER['HTTP_CLIENT_IP'] = '1.2.3.4';
+
+        $request = new Requests();
+        $this->assertEquals('1.2.3.4', $request->ip());
+
+        $_SERVER['HTTP_X_FORWARDED_FOR'] = '192.168.1.1';
+
+        $request = new Requests();
+        $this->assertEquals('192.168.1.1', $request->ip());
+    }
 }

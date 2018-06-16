@@ -51,17 +51,14 @@ class App
             $con->send($response);
 
         } catch (\Exception $e) {
+            $httpCode = 500;
             // create http response header
-            $httpCode = property_exists($e, 'httpCode') ? $e->httpCode : NULL;
-            switch ($httpCode) {
-                case 404:
-                    $header = 'HTTP/1.1 404 Not Found';
-                    break;
-
-                default:
-                    $header = 'HTTP/1.1 500 Internal Server Error';
-                    Error::printError($e); // if Server error, echo to stdout
-                    break;
+            if (property_exists($e, 'httpCode')) { // is a http exception
+                $httpCode = $e->httpCode;
+                $header = Response::$statusCodes[$httpCode];
+            } else { // other exception
+                $header = Response::$statusCodes[$httpCode];
+                Error::printError($e); // if Server error, echo to stdout
             }
 
             Response::header($header);

@@ -48,15 +48,4 @@ class WorkerHttp
 
         return HttpCache::$header[$key];
     }
-
-    /**
-     * get http response status.
-     *
-     * @param  int  $code
-     * @return string
-     */
-    public static function getHttpStatus($code)
-    {
-        return HttpCache::$codes[$code];
-    }
 }

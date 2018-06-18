@@ -35,7 +35,7 @@ class App
             $conf = [];
             $conf['compress'] = Config::get('app.compress');
             // get request
-            $request = IOCContainer::getInstance('WorkerF\Http\Requests');
+            $request = new Requests();
             
             // check global middlewares
             $global_middlerwares = Config::get('middleware.global');

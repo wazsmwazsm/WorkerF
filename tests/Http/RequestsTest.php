@@ -18,8 +18,7 @@ class RequestsTest extends PHPUnit_Framework_TestCase
         $_REQUEST = ['foo' => 'bar', 'foz' => 'baz'];
         $_SERVER  = ['server' => 'test'];
         $_COOKIE  = ['foo' => 'bar'];
-        $_FILES   = ['foo' => 'bar'];
-        $_FILES   = ['foo' => 'bar'];
+        // $_FILES   = ['foo' => 'bar'];
 
         $request = new Requests();
 
@@ -28,7 +27,7 @@ class RequestsTest extends PHPUnit_Framework_TestCase
         $this->assertEquals((object) $_REQUEST, $request->request());
         $this->assertEquals((object) $_SERVER, $request->server());
         $this->assertEquals((object) $_COOKIE, $request->cookie());
-        $this->assertEquals((object) $_FILES, $request->files());
+        // $this->assertEquals($_FILES, $request->files());
         $this->assertEquals($GLOBALS['HTTP_RAW_POST_DATA'], $request->rawData());
     }
 

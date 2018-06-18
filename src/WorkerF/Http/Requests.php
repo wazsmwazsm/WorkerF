@@ -1,6 +1,8 @@
 <?php
 namespace WorkerF\Http;
 
+use WorkerF\Http\File;
+
 /**
  * HTTP requests.
  *
@@ -63,7 +65,7 @@ Class Requests
         $this->_request = (object) $_REQUEST;
         $this->_server  = (object) $_SERVER;
         $this->_cookie  = (object) $_COOKIE;
-        $this->_files   = (object) $_FILES;
+        $this->_files   = $this->files();
         $this->_rawData = $GLOBALS['HTTP_RAW_POST_DATA'];
     }
 
@@ -120,11 +122,36 @@ Class Requests
     /**
      * return http request files data.
      *
-     * @return object
+     * @return array
      */
     public function files()
     {
-        return $this->_files;
+        $files = [];
+        foreach ($_FILES as $file) {
+            if ( ! empty($file['file_data'])) {
+                $files[$file['name']][] = new File($file);
+            } else {
+                $files[$file['name']] = NULL;
+            }   
+        }
+        // count file 
+        foreach ($files as $name => $file) {
+            if (count($file) == 1) {
+                $files[$name] = $file[0];
+            }
+        }
+        return $files;
+    }
+
+    /**
+     * return http request file data by name.
+     *
+     * @param string $name
+     * @return mixed WorkerF\Http\File or NULL
+     */
+    public function file($name)
+    {
+        return $this->_files[$name];
     }
 
     /**

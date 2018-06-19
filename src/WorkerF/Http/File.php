@@ -43,10 +43,10 @@ Class File
      */
     public function __construct(array $file)
     {
-        $this->_fileName =  $file['file_name'];
-        $this->_fileData =  $file['file_data'];
-        $this->_fileSize =  $file['file_size'];
-        $this->_fileType =  $file['file_type'];
+        $this->_fileName = $file['file_name'];
+        $this->_fileData = $file['file_data'];
+        $this->_fileSize = $file['file_size'];
+        $this->_fileType = $file['file_type'];
     }
 
     /**

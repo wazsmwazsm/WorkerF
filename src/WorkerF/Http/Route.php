@@ -26,6 +26,27 @@ class Route {
     protected static $_middleware_map_tree = [];
 
     /**
+     * The variable route map.
+     *
+     * @var array
+     */
+    protected static $_variable_map_tree = []; 
+
+    /**
+     * The variable route regexp mode.
+     *
+     * @var array
+     */
+    protected static $_variable_regexp = '/\{([a-zA-Z]+)\}/';
+
+    /**
+     * The variable route regexp replacement.
+     *
+     * @var array
+     */
+    protected static $_variable_replacement = '([0-9|a-z|A-Z|_]+)';
+
+    /**
      * route config filter.
      *
      * @var array
@@ -115,6 +136,25 @@ class Route {
         // make namespace as \a\b\c mode
         // why 4 '\' ? see php document preg_replace
         return preg_replace('/\\\\+/', '\\\\', $namespace);
+    }
+    
+    /**
+     * check route is variable route or not.
+     *
+     * @param  string  $route
+     * @return boolean
+     */
+    protected static function _isVariableRoute($route)
+    {
+        $matched = [];
+
+        preg_match_all(self::$_variable_regexp, $route, $matched);
+
+        if (empty($matched[0])) {
+            return FALSE;
+        }
+
+        return TRUE;
     }
 
     /**

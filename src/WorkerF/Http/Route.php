@@ -141,20 +141,31 @@ class Route {
     /**
      * check route is variable route or not.
      *
-     * @param  string  $route
+     * @param  string  $path
      * @return boolean
      */
-    protected static function _isVariableRoute($route)
+    protected static function _isVariableRoute($path)
     {
         $matched = [];
 
-        preg_match_all(self::$_variable_regexp, $route, $matched);
+        preg_match_all(self::$_variable_regexp, $path, $matched);
 
         if (empty($matched[0])) {
             return FALSE;
         }
 
         return TRUE;
+    }
+
+    /**
+     * replace variable route path to regexp string.
+     *
+     * @param  string  $path
+     * @return boolean
+     */
+    protected static function _variablePathReplace($path)
+    {
+        return '@'.preg_replace(self::$_variable_regexp, self::$_variable_replacement, $path).'@';;
     }
 
     /**
@@ -187,8 +198,13 @@ class Route {
         $callback = is_string($content) ?
                     self::_namespaceParse('\\'.self::$_filter['namespace'].$content) : $content;
         
-        self::$_middleware_map_tree[$path][strtoupper($method)] = self::$_filter['middleware'];
-        self::$_map_tree[$path][strtoupper($method)]            = $callback;
+        if (self::_isVariableRoute($path)) {
+            $path = self::_variablePathReplace($path);
+            self::$_variable_map_tree[$path][strtoupper($method)] = $callback;
+        } else {
+            self::$_map_tree[$path][strtoupper($method)] = $callback;
+        }
+        self::$_middleware_map_tree[$path][strtoupper($method)] = self::$_filter['middleware'];  
     }
 
     /**
@@ -229,7 +245,7 @@ class Route {
      * @throws \InvalidArgumentException
      */
     public static function dispatch(Requests $request)
-    {       
+    {    
         // get request param
         $path   = self::_pathParse($request->path());
         $method = $request->method();
@@ -238,9 +254,26 @@ class Route {
             ! array_key_exists($method, self::$_map_tree[$path])
         )
         {
-            $e = new \LogicException("route rule path: $path <==> method : $method is not set!");
-            $e->httpCode = 404;
-            throw $e;
+            $matcheArr = [];
+            // variable route exist or not
+            foreach (self::$_variable_map_tree as $key => $value) {
+                preg_match($key, $path, $matched);
+                if ( ! empty($matched)) {
+                    array_unshift($matched);
+                    $matcheArr['params'] = $matched;
+                    // $matcheArr['params']
+                }
+            }
+            $matched = array_pop($matcheArr);
+
+            if ( ! empty($matched)) {
+                // dispatch variable route
+                var_dump($matched);
+            } else {
+                $e = new \LogicException("route rule path: $path <==> method : $method is not set!");
+                $e->httpCode = 404;
+                throw $e;
+            }
         }    
 
         // check route middlewares

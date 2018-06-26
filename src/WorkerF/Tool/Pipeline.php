@@ -61,13 +61,13 @@ class Pipeline
     public function flow($payload) 
     {
         foreach ($this->_pipes as $pipe) {
-
+            // process pipe
+            $payload = call_user_func($pipe, $payload);
+            
             if ($payload instanceOf Closure) {
                 // if payload is a closure, stop pipeline flow
                 return call_user_func($payload);
-            } 
-            // process pipe
-            $payload = call_user_func($pipe, $payload);
+            }     
         }
 
         return $payload;

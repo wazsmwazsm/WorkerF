@@ -45,6 +45,13 @@ class Bar
 
         return $this->a;
     }
+
+    public function f2(Foo $foo, $id, $name)
+    {
+        $this->a = $foo->a + $foo->b;
+
+        return 'Name: '.$name.' Id: '.$id.' Number: '.$this->a;
+    }
 }
 
 
@@ -128,6 +135,17 @@ class IOCContainerTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expect->f1($foo), $result);
     }
 
+    public function testRunWithParam()
+    {
+        $foo = new Foo();
+        $foz = new Foz();
+        $expect = new Bar($foo, $foz);
+
+        $result = IOCContainerFake::run('WorkerF\Tests\Bar', 'f2', [13, 'Jack']);
+        
+        $this->assertEquals($expect->f2($foo, 13, 'Jack'), $result);
+    }
+
     /**
     * @expectedException \BadMethodCallException
     */
@@ -141,6 +159,6 @@ class IOCContainerTest extends PHPUnit_Framework_TestCase
     */
     public function testRunExceptionMethodNotFound()
     {
-        $result = IOCContainerFake::run('WorkerF\Tests\Bar', 'f2');
+        $result = IOCContainerFake::run('WorkerF\Tests\Bar', 'f3');
     }
 }

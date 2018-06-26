@@ -95,10 +95,11 @@ use ReflectionClass;
      *
      * @param  string $class_name
      * @param  string $method
+     * @param  array  $params
      * @return mixed
      * @throws \BadMethodCallException
      */
-    public static function run($class_name, $method)
+    public static function run($class_name, $method, $params = [])
     {
         // class exist ?
         if( ! class_exists($class_name)) {
@@ -118,6 +119,6 @@ use ReflectionClass;
         // create di params
         $di_params = self::_getDiParams($reflectorMethod->getParameters());
         // run method
-        return call_user_func_array([$instance, $method], $di_params);
+        return call_user_func_array([$instance, $method], array_merge($di_params, $params));
     }
  }

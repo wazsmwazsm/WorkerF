@@ -51,13 +51,11 @@ class MiddlewareTest extends PHPUnit_Framework_TestCase
         // not passed
         $middlewares = ['WorkerF\Tests\Http\M2'];
         $result = Middleware::run($middlewares, $request);
-        $this->assertInstanceOf('Closure', $result);
-        $this->assertEquals('stop at m2!', call_user_func($result));
+        $this->assertEquals('stop at m2!', $result);
         // not passed
         $middlewares = ['WorkerF\Tests\Http\M1', 'WorkerF\Tests\Http\M2'];
         $result = Middleware::run($middlewares, $request);
-        $this->assertInstanceOf('Closure', $result);
-        $this->assertEquals('stop at m2!', call_user_func($result));
+        $this->assertEquals('stop at m2!', $result);
     }
 
     /**

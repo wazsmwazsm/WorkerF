@@ -45,9 +45,9 @@ class RouteFake extends Route
         return self::_getRedirectUrl($path, $param);
     }
 
-    public static function checkMiddleware(Requests $request, $path, $method)
+    public static function checkMiddleware(Requests $request, $middleware_symbols)
     {
-        return self::_checkMiddleware($request, $path, $method);
+        return self::_checkMiddleware($request, $middleware_symbols);
     }
 }
 
@@ -230,25 +230,18 @@ class RouteTest extends PHPUnit_Framework_TestCase
         // middleware check passed
         Config::set('middleware.route', ['auth' => 'WorkerF\Tests\Http\M3']);
         $request = new Requests();
-        RouteFake::group(['prefix' => '/pre', 'middleware' => 'auth'], function() {    
-            RouteFake::get('/test', 'WorkerF\Tests\Http\Fuck@bar');
-        });    
-
-        $result = RouteFake::checkMiddleware($request, '/pre/test', 'GET');
+        $middleware_symbols = ['auth'];
+        $result = RouteFake::checkMiddleware($request, $middleware_symbols);
 
         $this->assertEquals($request, $result);
         
         // middleware check not passed
         Config::set('middleware.route', ['auth' => 'WorkerF\Tests\Http\M4']);
         $request = new Requests();
-        RouteFake::group(['prefix' => '/pre', 'middleware' => 'auth'], function() {    
-            RouteFake::get('/test', 'WorkerF\Tests\Http\Fuck@bar');
-        });    
+        $middleware_symbols = ['auth'];
+        $result = RouteFake::checkMiddleware($request, $middleware_symbols);
 
-        $result = RouteFake::checkMiddleware($request, '/pre/test', 'GET');
-
-        $this->assertInstanceOf('Closure', $result);
-        $this->assertEquals('stop at m4!', call_user_func($result));
+        $this->assertEquals('stop at m4!', $result);
     }
 
     public function testDispatch()
@@ -267,12 +260,12 @@ class RouteTest extends PHPUnit_Framework_TestCase
         $this->assertEquals((object) $_REQUEST, $result);
 
         // callback
-        RouteFake::get('/pre/test', function($request) {
-            return $request->foz;
+        RouteFake::get('/pre/test', function() {
+            return 'hello';
         });
         $result = RouteFake::dispatch($request);
 
-        $this->assertEquals('baz', $result);
+        $this->assertEquals('hello', $result);
 
         // with middleware
         // middleware check passed
@@ -295,8 +288,7 @@ class RouteTest extends PHPUnit_Framework_TestCase
 
         $result = RouteFake::dispatch($request);
 
-        $this->assertInstanceOf('Closure', $result);
-        $this->assertEquals('stop at m4!', call_user_func($result));
+        $this->assertEquals('stop at m4!', $result);
     }
 
     public function testGetRedirectUrl()
@@ -347,11 +339,9 @@ class RouteTest extends PHPUnit_Framework_TestCase
         // middleware check passed
         Config::set('middleware.route', ['auth' => 'WorkerF\Tests\Http\M3']);
         $request = new Requests();
-        RouteFake::group(['prefix' => '/pre', 'middleware' => 'some'], function() {    
-            RouteFake::get('/test', 'WorkerF\Tests\Http\Fuck@bar');
-        });    
 
-        $result = RouteFake::checkMiddleware($request, '/pre/test', 'GET');
+        $middleware_symbols = ['some'];
+        $result = RouteFake::checkMiddleware($request, $middleware_symbols);
     }
 
     /**

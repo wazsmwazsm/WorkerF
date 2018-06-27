@@ -171,7 +171,7 @@ class Route {
      * replace variable route path to regexp string.
      *
      * @param  string  $path
-     * @return boolean
+     * @return string
      */
     protected static function _variablePathReplace($path)
     {

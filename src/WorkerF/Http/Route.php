@@ -42,13 +42,15 @@ class Route {
 
     /**
      * The variable route regexp mode.
+     * accept letter, underscore. cannot start with a number 
      *
      * @var array
      */
-    protected static $_variable_regexp = '/\{([a-zA-Z]+)\}/';
+    protected static $_variable_regexp = '/\{([a-z|A-Z|_]+[0-9]*)\}/';
 
     /**
      * The variable route regexp replacement.
+     * accept letter, underscore, number
      *
      * @var array
      */

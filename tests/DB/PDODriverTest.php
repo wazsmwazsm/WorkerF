@@ -856,6 +856,10 @@ class PDODriverTest extends \PHPUnit_Framework_TestCase
         // second
         $this->pdoDriver->orderBy('age', 'ASC');
         $this->assertRegExp('/ORDER BY `name` DESC , `age` ASC/', $this->pdoDriver->_orderby_str);
+
+        // with lowercase
+        $this->pdoDriver->orderBy('score', 'aSc');
+        $this->assertRegExp('/ORDER BY `name` DESC , `age` ASC , `score` ASC/', $this->pdoDriver->_orderby_str);
     }
 
     public function testLimit()

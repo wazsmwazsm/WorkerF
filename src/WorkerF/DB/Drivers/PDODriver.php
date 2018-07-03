@@ -1138,6 +1138,7 @@ class PDODriver implements ConnectorInterface
      */
     public function orderBy($field, $mode = 'ASC')
     {
+        $mode = strtoupper($mode);
         if( ! in_array($mode, ['ASC', 'DESC'])) {
             throw new \InvalidArgumentException("Error order by mode");
         }

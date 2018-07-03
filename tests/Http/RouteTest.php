@@ -596,13 +596,15 @@ class RouteTest extends PHPUnit_Framework_TestCase
             'REQUEST_URI'    => 'http://test.com/post/8',
             'REQUEST_METHOD' => 'GET',
           ];
-        Config::set('middleware.route', ['auth' => 'WorkerF\Tests\Http\M4']);
+        Config::set('middleware.route', ['auth' => 'WorkerF\Tests\Http\M3']);
         $request = new Requests();
         RouteFake::group(['middleware' => 'auth'], function() {
             RouteFake::get('/post/{id}', 'WorkerF\Tests\Http\Fuck@post');
         });  
         
         $result = RouteFake::dispatch($request);
+        $this->assertEquals(8, $result);
+
         $variableCache = RouteFake::getVariableRouteCache();
         $path = '/post/8';
 
@@ -610,6 +612,10 @@ class RouteTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('\WorkerF\Tests\Http\Fuck@post', $variableCache[$path]['GET']['callback']);
         $this->assertEquals([8], $variableCache[$path]['GET']['params']);
         $this->assertEquals(['auth'], $variableCache[$path]['GET']['middleware']);
+
+        // dispatch when variable already cached
+        $result = RouteFake::dispatch($request);
+        $this->assertEquals(8, $result);
     }
 
     public function testGetRedirectUrl()

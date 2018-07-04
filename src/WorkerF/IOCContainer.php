@@ -60,7 +60,7 @@ use ReflectionClass;
      * get a singleton instance.
      *
      * @param  string $class_name
-     * @return object
+     * @return mixed object or NULL
      */
     public static function getSingleton($class_name)
     {

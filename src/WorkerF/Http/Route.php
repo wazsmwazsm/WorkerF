@@ -71,7 +71,7 @@ class Route {
      * call method (http methods).
      *
      * @param  string  $method
-     * @param  mixed  $params
+     * @param  mixed  $params string or Closure
      * @return void
      * @throws \InvalidArgumentException run out of worker container, not catch, just crash
      */
@@ -183,7 +183,7 @@ class Route {
      *
      * @param  string  $path
      * @param  string  $method
-     * @return mixed
+     * @return mixed string or NULL
      */
     protected static function _variablePathParse($path, $method)
     {
@@ -217,7 +217,7 @@ class Route {
      *
      * @param  string  $method
      * @param  string  $path
-     * @param  mixed  $content
+     * @param  mixed  $content string or Closure
      * @return void
      */
     protected static function _setMapTree($method, $path, $content)
@@ -281,7 +281,7 @@ class Route {
      * run dispatch.
      *
      * @param WorkerF\Http\Requests $request
-     * @param mixed $callback
+     * @param mixed $callback string or Closure
      * @param array $middleware_symbols
      * @param array $params
      * @return mixed

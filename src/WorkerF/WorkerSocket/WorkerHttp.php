@@ -14,7 +14,7 @@ class WorkerHttp
     /**
      * create http response header.
      *
-     * @param  mixed  $header
+     * @param  mixed  $header array or string
      * @return void
      */
     public static function header($headers)

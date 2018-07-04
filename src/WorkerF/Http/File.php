@@ -84,7 +84,7 @@ Class File
      *
      * @param string $targetPath
      * @param string $targetName
-     * @return mixed
+     * @return mixed int or FALSE
      */
     public function move($targetPath, $targetName)
     {

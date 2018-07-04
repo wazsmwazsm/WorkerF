@@ -144,7 +144,7 @@ class Redis
      * call method (predis methods).
      *
      * @param  string  $method
-     * @param  mixed  $params
+     * @param  array  $params
      * @return void
      */
     public static function __callstatic($method, $params)

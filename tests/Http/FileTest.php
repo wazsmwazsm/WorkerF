@@ -18,14 +18,14 @@ class FileTest extends PHPUnit_Framework_TestCase
         $filesArr = [
             'file_name' => 'test',
             'file_data' => 'Some test data',
-            'file_size' => 24,
+            'file_size' => 14,
             'file_type' => 'text',
         ];
 
         $file = new File($filesArr);
 
         $this->assertEquals('test', $file->getFileName());
-        $this->assertEquals(24, $file->getFileSize());
+        $this->assertEquals(14, $file->getFileSize());
         $this->assertEquals('text', $file->getFileType());
 
     }
@@ -35,7 +35,7 @@ class FileTest extends PHPUnit_Framework_TestCase
         $filesArr = [
             'file_name' => 'test',
             'file_data' => 'Some test data',
-            'file_size' => 24,
+            'file_size' => 14,
             'file_type' => 'text',
         ];
 

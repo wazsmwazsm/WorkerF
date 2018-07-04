@@ -129,9 +129,9 @@ Class Requests
         $files = [];
         foreach ($_FILES as $file) {
             if ( ! empty($file['file_data'])) {
-                $files[$file['name']][] = new File($file);
+                $files[$file['file_name']][] = new File($file);
             } else {
-                $files[$file['name']] = NULL;
+                $files[$file['file_name']] = NULL;
             }   
         }
         // count file 
@@ -151,7 +151,10 @@ Class Requests
      */
     public function file($name)
     {
-        return $this->_files[$name];
+        if (array_key_exists($name, $this->_files)) {
+            return $this->_files[$name];
+        }
+        return NULL;
     }
 
     /**

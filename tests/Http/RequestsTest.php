@@ -3,6 +3,7 @@ namespace WorkerF\Tests\Http;
 
 use PHPUnit_Framework_TestCase;
 use WorkerF\Http\Requests;
+use WorkerF\Http\File;
 
 class RequestsTest extends PHPUnit_Framework_TestCase
 {
@@ -18,7 +19,6 @@ class RequestsTest extends PHPUnit_Framework_TestCase
         $_REQUEST = ['foo' => 'bar', 'foz' => 'baz'];
         $_SERVER  = ['server' => 'test'];
         $_COOKIE  = ['foo' => 'bar'];
-        // $_FILES   = ['foo' => 'bar'];
 
         $request = new Requests();
 
@@ -27,7 +27,6 @@ class RequestsTest extends PHPUnit_Framework_TestCase
         $this->assertEquals((object) $_REQUEST, $request->request());
         $this->assertEquals((object) $_SERVER, $request->server());
         $this->assertEquals((object) $_COOKIE, $request->cookie());
-        // $this->assertEquals($_FILES, $request->files());
         $this->assertEquals($GLOBALS['HTTP_RAW_POST_DATA'], $request->rawData());
     }
 
@@ -154,5 +153,64 @@ class RequestsTest extends PHPUnit_Framework_TestCase
 
         $request = new Requests();
         $this->assertEquals('192.168.1.1', $request->ip());
+    }
+
+    public function testFileUpload()
+    {
+        $filesArr = [
+            'file_name' => 'test',
+            'file_data' => 'Some test data',
+            'file_size' => 24,
+            'file_type' => 'text',
+        ];
+        $_FILES = [
+            $filesArr,
+        ];
+
+        $file = new File($filesArr);
+
+        $files = [
+            'test' => $file,
+        ];
+
+        $request = new Requests();
+        $this->assertEquals($files, $request->files());
+        $this->assertEquals($file, $request->file('test'));
+        $this->assertNull($request->file('not_exist'));
+    }
+
+    public function testMultipleFileUpload()
+    {
+        $filesArr1 = [
+            'file_name' => 'test',
+            'file_data' => 'Some test data',
+            'file_size' => 14,
+            'file_type' => 'text',
+        ];
+        $filesArr2 = [
+            'file_name' => 'test',
+            'file_data' => 'Hello world!',
+            'file_size' => 12,
+            'file_type' => 'text',
+        ];
+
+        $_FILES = [
+            $filesArr1,
+            $filesArr2,
+        ];
+
+        $file1 = new File($filesArr1);
+        $file2 = new File($filesArr2);
+
+        $files = [
+            'test' => [
+                $file1, 
+                $file2
+            ],
+        ];
+
+        $request = new Requests();
+        $this->assertEquals($files, $request->files());
+        $this->assertEquals([$file1, $file2], $request->file('test'));
     }
 }

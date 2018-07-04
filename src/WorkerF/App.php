@@ -10,6 +10,7 @@ use WorkerF\Config;
 use WorkerF\Error;
 use WorkerF\DB\DB;
 use WorkerF\DB\Redis;
+use WorkerF\Exceptions\ExceptionHandler;
 
 /**
  * App.
@@ -51,18 +52,12 @@ class App
             $con->send($response);
 
         } catch (\Exception $e) {
-            $httpCode = 500;
-            // create http response header
-            if (property_exists($e, 'httpCode')) { // is a http exception
-                $httpCode = $e->httpCode;
-                $header = Response::$statusCodes[$httpCode];
-            } else { // other exception
-                $header = Response::$statusCodes[$httpCode];
-                Error::printError($e); // if Server error, echo to stdout
-            }
+            // Handle Exception
+            $exceptionHandler = IOCContainer::getInstance(ExceptionHandler::class);
+            IOCContainer::singleton($exceptionHandler); // set singleton
+            $handleResult = $exceptionHandler->handle($e);
 
-            Response::header($header);
-            $con->send(Error::errorHtml($e, $header, Config::get('app.debug')));
+            $con->send($handleResult);
         }
 
     }

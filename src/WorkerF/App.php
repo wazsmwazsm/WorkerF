@@ -53,8 +53,7 @@ class App
 
         } catch (\Exception $e) {
             // Handle Exception
-            $exceptionHandler = IOCContainer::getInstance(ExceptionHandler::class);
-            IOCContainer::singleton($exceptionHandler); // set singleton
+            $exceptionHandler = IOCContainer::getInstanceWithSingleton(ExceptionHandler::class);
             $handleResult = $exceptionHandler->handle($e);
 
             $con->send($handleResult);

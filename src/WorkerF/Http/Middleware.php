@@ -29,14 +29,13 @@ class Middleware
         $pipes = [];
 
         foreach ($middlewares as $middleware) {
-            // get instance
-            $middleware_instance = IOCContainer::getInstance($middleware);
+            // get instance with singleton
+            $middleware_instance = IOCContainer::getInstanceWithSingleton($middleware);
             // check middleware
             if( ! ($middleware_instance instanceof MiddlewareInterface)) {
-                throw new \InvalidArgumentException("middleware must implements MiddlewareInterface!");
+                IOCContainer::unsetSingleton($middleware); // unset singleton
+                throw new \InvalidArgumentException("middleware must implements MiddlewareInterface!");           
             }
-            // set singleton
-            IOCContainer::singleton($middleware_instance);
             // create pipes array    
             $pipes[] = [$middleware_instance, 'handle'];
         }

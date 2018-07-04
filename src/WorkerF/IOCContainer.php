@@ -69,6 +69,16 @@ use ReflectionClass;
     }
 
     /**
+     * unset a singleton instance.
+     *
+     * @param  string $class_name
+     */
+    public static function unsetSingleton($class_name)
+    {
+        self::$_singleton[$class_name] = NULL;
+    }
+
+    /**
      * get Instance from reflection info.
      *
      * @param  string  $class_name
@@ -76,10 +86,6 @@ use ReflectionClass;
      */
     public static function getInstance($class_name)
     {
-        // is a singleton instance?
-        if (NULL != ($instance = self::getSingleton($class_name))) {
-            return $instance;
-        }
         // get class reflector
         $reflector = new ReflectionClass($class_name);
         // get constructor
@@ -88,6 +94,25 @@ use ReflectionClass;
         $di_params = $constructor ? self::_getDiParams($constructor->getParameters()) : [];
         // create instance
         return $reflector->newInstanceArgs($di_params);
+    }
+
+    /**
+     * get Instance, if instance is not singleton, set it to singleton.
+     *
+     * @param  string  $class_name
+     * @return object
+     */
+    public static function getInstanceWithSingleton($class_name)
+    {
+        // is a singleton instance?
+        if (NULL != ($instance = self::getSingleton($class_name))) {
+            return $instance;
+        }
+
+        $instance = self::getInstance($class_name);
+        self::singleton($instance);
+
+        return $instance;
     }
 
     /**

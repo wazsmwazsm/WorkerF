@@ -45,15 +45,15 @@ class MiddlewareTest extends PHPUnit_Framework_TestCase
         $result = Middleware::run($middlewares, $request);
         $this->assertEquals($request, $result);
         // passed
-        $middlewares = ['WorkerF\Tests\Http\M1'];
+        $middlewares = [M1::class];
         $result = Middleware::run($middlewares, $request);
         $this->assertEquals($request, $result);
         // not passed
-        $middlewares = ['WorkerF\Tests\Http\M2'];
+        $middlewares = [M2::class];
         $result = Middleware::run($middlewares, $request);
         $this->assertEquals('stop at m2!', $result);
         // not passed
-        $middlewares = ['WorkerF\Tests\Http\M1', 'WorkerF\Tests\Http\M2'];
+        $middlewares = [M1::class, M2::class];
         $result = Middleware::run($middlewares, $request);
         $this->assertEquals('stop at m2!', $result);
     }
@@ -67,7 +67,7 @@ class MiddlewareTest extends PHPUnit_Framework_TestCase
 
         $request = new Requests();
         // null
-        $middlewares = ['WorkerF\Tests\Http\Some'];
+        $middlewares = [Some::class];
         $result = Middleware::run($middlewares, $request);
     }
 

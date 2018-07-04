@@ -397,7 +397,7 @@ class RouteTest extends PHPUnit_Framework_TestCase
     public function testCheckMiddleware()
     {
         // middleware check passed
-        Config::set('middleware.route', ['auth' => 'WorkerF\Tests\Http\M3']);
+        Config::set('middleware.route', ['auth' => M3::class]);
         $request = new Requests();
         $middleware_symbols = ['auth'];
         $result = RouteFake::checkMiddleware($request, $middleware_symbols);
@@ -405,7 +405,7 @@ class RouteTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($request, $result);
         
         // middleware check not passed
-        Config::set('middleware.route', ['auth' => 'WorkerF\Tests\Http\M4']);
+        Config::set('middleware.route', ['auth' => M4::class]);
         $request = new Requests();
         $middleware_symbols = ['auth'];
         $result = RouteFake::checkMiddleware($request, $middleware_symbols);
@@ -436,7 +436,7 @@ class RouteTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('hello bar!', $result);
 
         // middleware 
-        Config::set('middleware.route', ['auth' => 'WorkerF\Tests\Http\M4']);
+        Config::set('middleware.route', ['auth' => M4::class]);
         $request = new Requests();
         $callback = 'WorkerF\Tests\Http\Fuck@bar';
         $middleware_symbols = ['auth'];
@@ -492,7 +492,7 @@ class RouteTest extends PHPUnit_Framework_TestCase
 
         // with middleware
         // middleware check passed
-        Config::set('middleware.route', ['auth' => 'WorkerF\Tests\Http\M3']);
+        Config::set('middleware.route', ['auth' => M3::class]);
         $request = new Requests();
         RouteFake::group(['prefix' => '/pre', 'middleware' => 'auth'], function() {    
             RouteFake::get('/test', 'WorkerF\Tests\Http\Fuck@bar');
@@ -503,7 +503,7 @@ class RouteTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('hello bar!', $result);
 
         // middleware check not passed
-        Config::set('middleware.route', ['auth' => 'WorkerF\Tests\Http\M4']);
+        Config::set('middleware.route', ['auth' => M4::class]);
         $request = new Requests();
         RouteFake::group(['prefix' => '/pre', 'middleware' => 'auth'], function() {    
             RouteFake::get('/test', 'WorkerF\Tests\Http\Fuck@bar');
@@ -556,7 +556,7 @@ class RouteTest extends PHPUnit_Framework_TestCase
 
         // with middleware
         // middleware check passed
-        Config::set('middleware.route', ['auth' => 'WorkerF\Tests\Http\M3']);
+        Config::set('middleware.route', ['auth' => M3::class]);
         $_SERVER  = [
             'REQUEST_URI'    => 'http://test.com/pre/post/2',
             'REQUEST_METHOD' => 'GET',
@@ -571,7 +571,7 @@ class RouteTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('2', $result);
 
         // middleware check not passed
-        Config::set('middleware.route', ['auth' => 'WorkerF\Tests\Http\M4']);
+        Config::set('middleware.route', ['auth' => M4::class]);
         $_SERVER  = [
             'REQUEST_URI'    => 'http://test.com/pre/post/2',
             'REQUEST_METHOD' => 'GET',
@@ -596,7 +596,7 @@ class RouteTest extends PHPUnit_Framework_TestCase
             'REQUEST_URI'    => 'http://test.com/post/8',
             'REQUEST_METHOD' => 'GET',
           ];
-        Config::set('middleware.route', ['auth' => 'WorkerF\Tests\Http\M3']);
+        Config::set('middleware.route', ['auth' => M3::class]);
         $request = new Requests();
         RouteFake::group(['middleware' => 'auth'], function() {
             RouteFake::get('/post/{id}', 'WorkerF\Tests\Http\Fuck@post');
@@ -664,7 +664,7 @@ class RouteTest extends PHPUnit_Framework_TestCase
     public function testCheckMiddlewareException()
     {
         // middleware check passed
-        Config::set('middleware.route', ['auth' => 'WorkerF\Tests\Http\M3']);
+        Config::set('middleware.route', ['auth' => M3::class]);
         $request = new Requests();
 
         $middleware_symbols = ['some'];
@@ -677,7 +677,7 @@ class RouteTest extends PHPUnit_Framework_TestCase
     public function testDispatchCheckMiddlewareException()
     {
         // middleware check passed
-        Config::set('middleware.route', ['auth' => 'WorkerF\Tests\Http\M3']);
+        Config::set('middleware.route', ['auth' => M3::class]);
         $request = new Requests();
         RouteFake::group(['prefix' => '/pre', 'middleware' => 'some'], function() {    
             RouteFake::get('/test', 'WorkerF\Tests\Http\Fuck@bar');

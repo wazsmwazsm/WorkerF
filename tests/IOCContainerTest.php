@@ -59,13 +59,13 @@ class IOCContainerTest extends PHPUnit_Framework_TestCase
 {
     public function testSingleton()
     {
-        $singleton = IOCContainerFake::getSingleton('WorkerF\Tests\Foo');
+        $singleton = IOCContainerFake::getSingleton(Foo::class);
         $this->assertNull($singleton);
 
         $foo = new Foo();
         IOCContainerFake::singleton($foo);
 
-        $singleton = IOCContainerFake::getSingleton('WorkerF\Tests\Foo');
+        $singleton = IOCContainerFake::getSingleton(Foo::class);
         $this->assertEquals($singleton, $foo);
 
     }
@@ -75,26 +75,26 @@ class IOCContainerTest extends PHPUnit_Framework_TestCase
     */
     public function testSingletonException()
     {
-        IOCContainerFake::singleton('WorkerF\Tests\Foo');
+        IOCContainerFake::singleton(Foo::class);
     }
 
     public function testGetDiParams()
     {
         // test construct
-        $reflector = new ReflectionClass('WorkerF\Tests\Bar');
+        $reflector = new ReflectionClass(Bar::class);
         $constructor = $reflector->getConstructor();
         $di_params = IOCContainerFake::getDiParams($constructor->getParameters());
 
         $this->assertEquals(2, count($di_params));
-        $this->assertInstanceOf('WorkerF\Tests\Foo', $di_params[0]);
-        $this->assertInstanceOf('WorkerF\Tests\Foz', $di_params[1]);
+        $this->assertInstanceOf(Foo::class, $di_params[0]);
+        $this->assertInstanceOf(Foz::class, $di_params[1]);
 
         // test function
-        $reflector = new ReflectionClass('WorkerF\Tests\Bar');
+        $reflector = new ReflectionClass(Bar::class);
         $reflectorMethod = $reflector->getMethod('f1');
         $di_params = IOCContainerFake::getDiParams($reflectorMethod->getParameters());
         $this->assertEquals(1, count($di_params));
-        $this->assertInstanceOf('WorkerF\Tests\Foo', $di_params[0]);
+        $this->assertInstanceOf(Foo::class, $di_params[0]);
     }
 
     public function testGetInstance()
@@ -102,7 +102,7 @@ class IOCContainerTest extends PHPUnit_Framework_TestCase
         $foo = new Foo();
         $foz = new Foz();
         $expect = new Bar($foo, $foz);
-        $result = IOCContainerFake::getInstance('WorkerF\Tests\Bar');
+        $result = IOCContainerFake::getInstance(Bar::class);
 
         $this->assertEquals($expect, $result);
     }
@@ -113,15 +113,15 @@ class IOCContainerTest extends PHPUnit_Framework_TestCase
         $foz = new Foz();
         $expect = new Bar($foo, $foz);
         
-        $this->assertEquals(NULL, IOCContainerFake::getSingleton('WorkerF\Tests\Bar'));
+        $this->assertEquals(NULL, IOCContainerFake::getSingleton(Bar::class));
         // set singleton
         IOCContainerFake::singleton($expect);
 
-        $result = IOCContainerFake::getInstance('WorkerF\Tests\Bar');
+        $result = IOCContainerFake::getInstance(Bar::class);
 
         $this->assertEquals($expect, $result);
 
-        $this->assertEquals($expect, IOCContainerFake::getSingleton('WorkerF\Tests\Bar'));
+        $this->assertEquals($expect, IOCContainerFake::getSingleton(Bar::class));
     }
 
     public function testRun()
@@ -130,7 +130,7 @@ class IOCContainerTest extends PHPUnit_Framework_TestCase
         $foz = new Foz();
         $expect = new Bar($foo, $foz);
 
-        $result = IOCContainerFake::run('WorkerF\Tests\Bar', 'f1');
+        $result = IOCContainerFake::run(Bar::class, 'f1');
         
         $this->assertEquals($expect->f1($foo), $result);
     }
@@ -141,7 +141,7 @@ class IOCContainerTest extends PHPUnit_Framework_TestCase
         $foz = new Foz();
         $expect = new Bar($foo, $foz);
 
-        $result = IOCContainerFake::run('WorkerF\Tests\Bar', 'f2', [13, 'Jack']);
+        $result = IOCContainerFake::run(Bar::class, 'f2', [13, 'Jack']);
         
         $this->assertEquals($expect->f2($foo, 13, 'Jack'), $result);
     }
@@ -151,7 +151,7 @@ class IOCContainerTest extends PHPUnit_Framework_TestCase
     */
     public function testRunExceptionClassNotFound()
     {
-        $result = IOCContainerFake::run('WorkerF\Tests\Baz', 'f1');
+        $result = IOCContainerFake::run(Baz::class, 'f1');
     }
 
     /**
@@ -159,6 +159,6 @@ class IOCContainerTest extends PHPUnit_Framework_TestCase
     */
     public function testRunExceptionMethodNotFound()
     {
-        $result = IOCContainerFake::run('WorkerF\Tests\Bar', 'f3');
+        $result = IOCContainerFake::run(Bar::class, 'f3');
     }
 }

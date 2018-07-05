@@ -4,6 +4,7 @@ namespace WorkerF\Tests\Http;
 use PHPUnit_Framework_TestCase;
 use WorkerF\Http\Route;
 use WorkerF\Http\Requests;
+use WorkerF\Http\Response;
 use WorkerF\Config;
 use WorkerF\Http\MiddlewareInterface;
 
@@ -624,6 +625,17 @@ class RouteTest extends PHPUnit_Framework_TestCase
         $url = RouteFake::getRedirectUrl('/pre/test', ['foo' => 1, 'bar' => 2]);
 
         $this->assertEquals('http://test.com/pre/test?foo=1&bar=2', $url);
+    }
+
+    public function testGetRedirect()
+    {
+        Config::set('app.base_url', 'http://test.com/');
+        $redirectClosure = RouteFake::redirect('/pre/test', ['foo' => 1, 'bar' => 2]);
+        $result = call_user_func($redirectClosure);
+        
+        $this->assertEquals('HTTP/1.1 302 Found', Response::getHeader('Http-Code'));
+        $this->assertEquals('Location: http://test.com/pre/test?foo=1&bar=2', Response::getHeader('Location'));
+        $this->assertEquals('redirect', $result);
     }
 
     /**

@@ -116,17 +116,14 @@ Class Response
         // should be json
         if(is_array($data) || is_object($data)) {
             // Closure
-            if($data instanceof Closure) {
-                
-                switch (call_user_func($data)) {
-                    case 'redirect':
-                        return 'link already redirected';
-                        break;
-                    
-                    default:
-                        return '';
-                        break;
+            if($data instanceof Closure) { 
+                $result = call_user_func($data);
+                // is redirect Closure 
+                if ($result == 'redirect') {
+                    return 'link already redirected';
                 }
+
+                return '';
             }
             // Array \ Object
             self::header("Content-Type: application/json;charset=utf-8");
@@ -163,7 +160,7 @@ Class Response
         // is compress conf be accepted?
         if(in_array($compress_conf['encoding'], $accept_encodeing)) {
             // get content type string
-            preg_match('/^Content-Type\:\s*(.+)\s*\;/', $content_type, $match);
+            preg_match('/^Content-Type\:\s*([^;]+)\s*;?/', $content_type, $match);
             // is content type enable compress ?
             if(in_array($match[1], $compress_conf['content_type'])) {
                 // check conf encodeing, enable compress

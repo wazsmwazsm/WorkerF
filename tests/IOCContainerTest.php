@@ -61,13 +61,15 @@ class IOCContainerTest extends PHPUnit_Framework_TestCase
     {
         $singleton = IOCContainerFake::getSingleton(Foo::class);
         $this->assertNull($singleton);
-
+        // set singleton
         $foo = new Foo();
         IOCContainerFake::singleton($foo);
-
         $singleton = IOCContainerFake::getSingleton(Foo::class);
         $this->assertEquals($singleton, $foo);
-
+        // unset singleton
+        IOCContainerFake::unsetSingleton(Foo::class);
+        $singleton = IOCContainerFake::getSingleton(Foo::class);
+        $this->assertNull($singleton);
     }
 
     /**
@@ -112,14 +114,9 @@ class IOCContainerTest extends PHPUnit_Framework_TestCase
         $foo = new Foo();
         $foz = new Foz();
         $expect = new Bar($foo, $foz);
-        
         $this->assertEquals(NULL, IOCContainerFake::getSingleton(Bar::class));
-        // set singleton
-        IOCContainerFake::singleton($expect);
-
-        $result = IOCContainerFake::getInstance(Bar::class);
-
-        $this->assertEquals($expect, $result);
+        // set singleton, set singleton
+        $result = IOCContainerFake::getInstanceWithSingleton(Bar::class);
 
         $this->assertEquals($expect, IOCContainerFake::getSingleton(Bar::class));
     }

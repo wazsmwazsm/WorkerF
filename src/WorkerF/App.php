@@ -33,30 +33,31 @@ class App
     {
         try {
             // build config
-            $conf = [];
-            $conf['compress'] = Config::get('app.compress');
+            $conf = Config::get('app');
             // get request
             $request = new Requests();
             
             // check global middlewares
             $global_middlerwares = Config::get('middleware.global');
-            $request = Middleware::run($global_middlerwares, $request);
+            $result = Middleware::run($global_middlerwares, $request);
             // middlewares check passed?
-            if ($request instanceof Requests) {
+            if ($result instanceof Requests) {
                 // run dispatch
-                $request = Route::dispatch($request);
+                $result = Route::dispatch($result);
             }
             
-            // return Response data
-            $response = Response::bulid($request, $conf);
-            $con->send($response);
-
         } catch (\Exception $e) {
             // Handle Exception
-            $exceptionHandler = IOCContainer::getInstanceWithSingleton(ExceptionHandler::class);
-            $handleResult = $exceptionHandler->handle($e);
+            $exceptionHandler = empty($conf['exception_handler']) ?
+                IOCContainer::getInstanceWithSingleton(ExceptionHandler::class) :
+                IOCContainer::getInstanceWithSingleton($conf['exception_handler']);
 
-            $con->send($handleResult);
+            $result = $exceptionHandler->handle($e);
+            
+        } finally {
+            // return Response data
+            $response = Response::bulid($result, $conf);
+            $con->send($response);
         }
 
     }

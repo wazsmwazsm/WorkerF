@@ -28,4 +28,16 @@ class SqliteDQLTest extends PDODQLTest
         self::$db = new Sqlite($config);
     }
 
+    /**
+    * @expectedException \InvalidArgumentException
+    */
+    public function testInvalidDbnameException()
+    {
+        $config = [
+            'dbname' => 'aa.db',
+            'prefix' => 't_',
+          ];
+        self::$db = new Sqlite($config);
+    }
+
 }

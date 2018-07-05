@@ -34,6 +34,7 @@ class Sqlite extends PDODriver implements ConnectorInterface
      *
      * @return  void
      * @throws  \PDOException
+     * @throws  \InvalidArgumentException
      */
     protected function _connect()
     {
@@ -45,7 +46,7 @@ class Sqlite extends PDODriver implements ConnectorInterface
             $path = realpath($dbname);
 
             if($path === FALSE) {
-                throw new InvalidArgumentException("Database $dbname does not exist.");
+                throw new \InvalidArgumentException("Database $dbname does not exist.");
             }
             $dsn = 'sqlite:'.$path;
         }

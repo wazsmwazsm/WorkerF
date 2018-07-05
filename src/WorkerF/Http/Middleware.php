@@ -33,7 +33,6 @@ class Middleware
             $middleware_instance = IOCContainer::getInstanceWithSingleton($middleware);
             // check middleware
             if( ! ($middleware_instance instanceof MiddlewareInterface)) {
-                IOCContainer::unsetSingleton($middleware); // unset singleton
                 throw new \InvalidArgumentException("middleware must implements MiddlewareInterface!");           
             }
             // create pipes array    

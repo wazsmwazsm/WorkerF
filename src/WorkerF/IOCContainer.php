@@ -89,7 +89,6 @@ use ReflectionClass;
      * @param  string $abstract abstract class name
      * @param  string $concrete concrete class name, if NULL, use abstract class name
      * @return void
-     * @throws \InvalidArgumentException
      */
     public static function register($abstract, $concrete = NULL)
     {

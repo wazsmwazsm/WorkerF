@@ -12,14 +12,8 @@ class IOCContainerFake extends IOCContainer
         return self::_getDiParams($params);
     }
 
-    public static function getRegister()
-    {
-        return self::$_register;
-    }
-
     public static function clean()
     {
-        self::$_register = [];
         self::$_singleton = [];
     }
 }
@@ -86,6 +80,12 @@ class IOCContainerTest extends PHPUnit_Framework_TestCase
         IOCContainerFake::unsetSingleton(Foo::class);
         $singleton = IOCContainerFake::getSingleton(Foo::class);
         $this->assertNull($singleton);
+
+        // use name
+        $foo = new Foo();
+        IOCContainerFake::singleton($foo, 'foo');
+        $singleton = IOCContainerFake::getSingleton('foo');
+        $this->assertEquals($singleton, $foo);
     }
 
     /**
@@ -98,24 +98,15 @@ class IOCContainerTest extends PHPUnit_Framework_TestCase
 
     public function testRegister()
     {
+        // concrete is null
         IOCContainerFake::register(Foo::class);
-        IOCContainerFake::register(Bar::class);
-        $result = IOCContainerFake::getRegister();
-        $expect = [
-            Foo::class,
-            Bar::class,
-        ];
-        $this->assertEquals($expect, $result);
-    }
 
-    public function testRunRegister()
-    {
-        IOCContainerFake::register(Foo::class);
-        IOCContainerFake::register(Foz::class);
-        IOCContainerFake::runRegister();
+        $this->assertEquals(new Foo, IOCContainerFake::getSingleton(Foo::class));
+        
+        // concrete is not null
+        IOCContainerFake::register(Foz::class, Foo::class);
 
-        $this->assertEquals(new Foo(), IOCContainerFake::getSingleton(Foo::class));
-        $this->assertEquals(new Foz(), IOCContainerFake::getSingleton(Foz::class));
+        $this->assertEquals(new Foo, IOCContainerFake::getSingleton(Foz::class));    
     }
 
     public function testGetDiParams()

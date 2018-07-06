@@ -10,18 +10,11 @@ use ReflectionClass;
  */
  class IOCContainer
  {
-     /**
-      * class register.
-      *
-      * @var array
-      */
-    protected static $_register = []; 
-
-     /**
-      * singleton instances.
-      *
-      * @var array
-      */
+    /**
+     * singleton instances.
+     *
+     * @var array
+     */
     protected static $_singleton = [];   
 
     /**
@@ -49,17 +42,21 @@ use ReflectionClass;
      * set a singleton instance.
      *
      * @param  object $instance
+     * @param  string $name 
      * @return void
      * @throws \InvalidArgumentException
      */
-    public static function singleton($instance)
+    public static function singleton($instance, $name = NULL)
     {
         if ( ! is_object($instance)) {
             throw new \InvalidArgumentException("Object need!");
         }
+
+        $class_name = $name == NULL ? get_class($instance) : $name;
+
         // singleton not exist, create
-        if ( ! array_key_exists(get_class($instance), self::$_singleton)) {
-            self::$_singleton[get_class($instance)] = $instance;
+        if ( ! array_key_exists($class_name, self::$_singleton)) {
+            self::$_singleton[$class_name] = $instance;
         }
     }
 
@@ -79,6 +76,7 @@ use ReflectionClass;
      * unset a singleton instance.
      *
      * @param  string $class_name
+     * @return void
      */
     public static function unsetSingleton($class_name)
     {
@@ -88,26 +86,19 @@ use ReflectionClass;
     /**
      * register class.
      *
-     * @param  string $class_name
+     * @param  string $abstract abstract class name
+     * @param  string $concrete concrete class name, if NULL, use abstract class name
      * @return void
+     * @throws \InvalidArgumentException
      */
-    public static function register($class_name)
+    public static function register($abstract, $concrete = NULL)
     {
-        if ( ! in_array($class_name, self::$_register)) {
-            self::$_register[] = $class_name;
-        }
-    }
-
-    /**
-     * set register to singleton.
-     *
-     * @return void
-     */
-    public static function runRegister()
-    {
-        foreach (self::$_register as $register) {
-            $instance = self::getInstance($register);
+        if ($concrete == NULL) {
+            $instance = self::getInstance($abstract);
             self::singleton($instance);
+        } else {
+            $instance = self::getInstance($concrete);
+            self::singleton($instance, $abstract);
         }
     }
 

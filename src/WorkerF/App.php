@@ -36,7 +36,7 @@ class App
             $conf = Config::get('app');
             // get request
             $request = new Requests();
-            
+
             // check global middlewares
             $global_middlerwares = Config::get('middleware.global');
             $result = Middleware::run($global_middlerwares, $request);
@@ -81,5 +81,5 @@ class App
         }
 
     }
-
+    
 }

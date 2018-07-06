@@ -19,17 +19,17 @@ class WorkerHttp
      */
     public static function header($headers)
     {
-        if(is_array($headers)) {
+        if (is_array($headers)) {
             // if pass array
             foreach ($headers as $header) {
-                if(FALSE === Http::header($header)) {
+                if (FALSE === Http::header($header)) {
                     throw new \InvalidArgumentException("Header $header is invalid!");
                 }
             }
             return;
         }
         // pass string
-        if(FALSE === Http::header($headers)) {
+        if (FALSE === Http::header($headers)) {
             throw new \InvalidArgumentException("Header $headers is invalid!");
         }
     }
@@ -42,7 +42,7 @@ class WorkerHttp
      */
     public static function getHeader($key)
     {
-        if( ! array_key_exists($key, HttpCache::$header)) {
+        if ( ! array_key_exists($key, HttpCache::$header)) {
             return NULL;
         }
 

@@ -350,13 +350,13 @@ class PDODriver implements ConnectorInterface
             $this->_pdoSt->execute();
             $this->_reset();  // memory-resident mode, singleton pattern, need reset build attr
             // if debug mode, print sql and bind params to stdout
-            if($this->_debug) {
+            if ($this->_debug) {
                 $this->_pdoSt->debugDumpParams();
                 $this->_debug = FALSE; // close debug
             }
         } catch (PDOException $e) {
             // when time out, reconnect
-            if($this->_isTimeout($e)) {
+            if ($this->_isTimeout($e)) {
                 $this->_closeConnection();
                 $this->_connect();
                 // retry
@@ -367,7 +367,7 @@ class PDODriver implements ConnectorInterface
                     $this->_pdoSt->execute();
                     $this->_reset();
                     // if debug mode, print sql and bind params to stdout
-                    if($this->_debug) {
+                    if ($this->_debug) {
                         $this->_pdoSt->debugDumpParams();
                         $this->_debug = FALSE; // close debug
                     }
@@ -389,21 +389,21 @@ class PDODriver implements ConnectorInterface
      */
     protected function _bindParams()
     {
-        if(is_array($this->_bind_params)) {
+        if (is_array($this->_bind_params)) {
 
             foreach ($this->_bind_params as $plh => $param) {
 
                 $data_type = PDO::PARAM_STR;
 
-                if(is_numeric($param)) {
+                if (is_numeric($param)) {
                     $data_type = PDO::PARAM_INT;
                 }
 
-                if(is_null($param)) {
+                if (is_null($param)) {
                     $data_type = PDO::PARAM_NULL;
                 }
 
-                if(is_bool($param)) {
+                if (is_bool($param)) {
                     $data_type = PDO::PARAM_BOOL;
                 }
 
@@ -462,20 +462,20 @@ class PDODriver implements ConnectorInterface
         $prefix_replace = self::_quote('$1').'$2'.self::_quote('$3');
         $func_pattern = '/[a-zA-Z0-9_]+\([a-zA-Z0-9_\,\s\`\'\"\*]*\)/';
         // alias mode
-        if(preg_match($alias_pattern, $str, $alias_match)) {
+        if (preg_match($alias_pattern, $str, $alias_match)) {
             // if field is aa.bb as cc mode
-            if(preg_match($prefix_pattern, $alias_match[1])) {
+            if (preg_match($prefix_pattern, $alias_match[1])) {
                 $pre_rst = preg_replace($prefix_pattern, $prefix_replace, $alias_match[1]);
                 $alias_replace = $pre_rst.' $2 '.self::_quote('$3');
             }
             return preg_replace($alias_pattern, $alias_replace, $str);
         }
         // prefix mode
-        if(preg_match($prefix_pattern, $str)) {
+        if (preg_match($prefix_pattern, $str)) {
             return preg_replace($prefix_pattern, $prefix_replace, $str);
         }
         // func mode (do nothing)
-        if(preg_match($func_pattern, $str)) {
+        if (preg_match($func_pattern, $str)) {
             return $str;
         }
         // field mode
@@ -494,14 +494,14 @@ class PDODriver implements ConnectorInterface
     protected function _condition_constructor($args_num, $params, &$construct_str)
     {
         // params dose not conform to specification
-        if( ! $args_num || $args_num > 3) {
+        if ( ! $args_num || $args_num > 3) {
             throw new \InvalidArgumentException("Error number of parameters");
         }
         // argurment mode
         switch ($args_num) {
           // assoc array mode
           case 1:
-              if( ! is_array($params[0])) {
+              if ( ! is_array($params[0])) {
                   throw new \InvalidArgumentException($params[0].' should be Array');
               }
               $construct_str .= '(';
@@ -516,7 +516,7 @@ class PDODriver implements ConnectorInterface
               break;
           // ('a', 10) : a = 10 mode or ('a', null) : a is null mode
           case 2:
-              if(is_null($params[1])) {
+              if (is_null($params[1])) {
                   $construct_str .= ' '.self::_wrapRow($params[0]).' IS NULL ';
               } else {
                   $plh = self::_getPlh();
@@ -526,7 +526,7 @@ class PDODriver implements ConnectorInterface
               break;
           // ('a', '>', 10) : a > 10 mode \ ('name', 'like', '%adam%') : name like '%adam%' mode
           case 3:
-              if( ! in_array(strtolower($params[1]), $this->_operators)) {
+              if ( ! in_array(strtolower($params[1]), $this->_operators)) {
                   throw new \InvalidArgumentException('Confusing Symbol '.$params[1]);
               }
               $plh = self::_getPlh();
@@ -654,7 +654,7 @@ class PDODriver implements ConnectorInterface
     {
         $cols = func_get_args();
 
-        if( ! func_num_args() || in_array('*', $cols)) {
+        if ( ! func_num_args() || in_array('*', $cols)) {
             $this->_cols_str = ' * ';
         } else {
             // _cols_str default ' * ' , it easy to get a result when select func dosen't called
@@ -678,7 +678,7 @@ class PDODriver implements ConnectorInterface
     {
         $operator = 'AND';
         // is the first time call where method ?
-        if($this->_where_str == '') {
+        if ($this->_where_str == '') {
             $this->_where_str = ' WHERE ';
         } else {
             $this->_where_str .= ' '.$operator.' ';
@@ -698,7 +698,7 @@ class PDODriver implements ConnectorInterface
     {
         $operator = 'OR';
         // is the first time call where method ?
-        if($this->_where_str == '') {
+        if ($this->_where_str == '') {
             $this->_where_str = ' WHERE ';
         } else {
             $this->_where_str .= ' '.$operator.' ';
@@ -721,7 +721,7 @@ class PDODriver implements ConnectorInterface
      */
     public function whereIn($field, array $data, $condition = 'IN', $operator = 'AND')
     {
-        if( ! in_array($condition, ['IN', 'NOT IN']) || ! in_array($operator, ['AND', 'OR'])) {
+        if ( ! in_array($condition, ['IN', 'NOT IN']) || ! in_array($operator, ['AND', 'OR'])) {
             throw new \InvalidArgumentException("Error whereIn mode");
         }
         // create placeholder
@@ -731,7 +731,7 @@ class PDODriver implements ConnectorInterface
             $this->_bind_params[$plh] = $value;
         }
         // is the first time call where method ?
-        if($this->_where_str == '') {
+        if ($this->_where_str == '') {
             $this->_where_str = ' WHERE '.self::_wrapRow($field).' '.$condition.' ('.implode(',', $data).')';
         } else {
             $this->_where_str .= ' '.$operator.' '.self::_wrapRow($field).' '.$condition.' ('.implode(',', $data).')';
@@ -791,7 +791,7 @@ class PDODriver implements ConnectorInterface
      */
     public function whereBetween($field, $start, $end, $operator = 'AND')
     {
-        if( ! in_array($operator, ['AND', 'OR'])) {
+        if ( ! in_array($operator, ['AND', 'OR'])) {
             throw new \InvalidArgumentException("Logical operator");
         }
         // create placeholder
@@ -801,7 +801,7 @@ class PDODriver implements ConnectorInterface
         $this->_bind_params[$end_plh] = $end;
 
         // is the first time call where method ?
-        if($this->_where_str == '') {
+        if ($this->_where_str == '') {
             $this->_where_str = ' WHERE '.self::_wrapRow($field).' BETWEEN '.$start_plh.' AND '.$end_plh;
         } else {
             $this->_where_str .= ' '.$operator.' '.self::_wrapRow($field).' BETWEEN '.$start_plh.' AND '.$end_plh;
@@ -835,11 +835,11 @@ class PDODriver implements ConnectorInterface
      */
     public function whereNull($field, $condition = 'NULL', $operator = 'AND')
     {
-        if( ! in_array($condition, ['NULL', 'NOT NULL']) || ! in_array($operator, ['AND', 'OR'])) {
+        if ( ! in_array($condition, ['NULL', 'NOT NULL']) || ! in_array($operator, ['AND', 'OR'])) {
             throw new \InvalidArgumentException("Logical operator");
         }
         // is the first time call where method ?
-        if($this->_where_str == '') {
+        if ($this->_where_str == '') {
             $this->_where_str = ' WHERE ';
         } else {
             $this->_where_str .= ' '.$operator.' ';
@@ -896,11 +896,11 @@ class PDODriver implements ConnectorInterface
      */
     public function whereBrackets(Closure $callback, $operator = 'AND')
     {
-        if( ! in_array($operator, ['AND', 'OR'])) {
+        if ( ! in_array($operator, ['AND', 'OR'])) {
             throw new \InvalidArgumentException("Logical operator");
         }
         // first time call where ?
-        if($this->_where_str == '') {
+        if ($this->_where_str == '') {
             $this->_where_str = ' WHERE ( ';
         } else {
             $this->_where_str .= ' '.$operator.' ( ';
@@ -935,11 +935,11 @@ class PDODriver implements ConnectorInterface
      */
     public function whereExists(Closure $callback, $condition = 'EXISTS', $operator = 'AND')
     {
-        if( ! in_array($condition, ['EXISTS', 'NOT EXISTS']) || ! in_array($operator, ['AND', 'OR'])) {
+        if ( ! in_array($condition, ['EXISTS', 'NOT EXISTS']) || ! in_array($operator, ['AND', 'OR'])) {
             throw new \InvalidArgumentException("Error whereExists mode");
         }
         // first time call where ?
-        if($this->_where_str == '') {
+        if ($this->_where_str == '') {
             $this->_where_str = ' WHERE '.$condition.' ( ';
         } else {
             $this->_where_str .= ' '.$operator.' '.$condition.' ( ';
@@ -999,11 +999,11 @@ class PDODriver implements ConnectorInterface
      */
     public function whereInSub($field, Closure $callback, $condition = 'IN', $operator = 'AND')
     {
-        if( ! in_array($condition, ['IN', 'NOT IN']) || ! in_array($operator, ['AND', 'OR'])) {
+        if ( ! in_array($condition, ['IN', 'NOT IN']) || ! in_array($operator, ['AND', 'OR'])) {
             throw new \InvalidArgumentException("Error whereIn mode");
         }
         // first time call where ?
-        if($this->_where_str == '') {
+        if ($this->_where_str == '') {
             $this->_where_str = ' WHERE '.self::_wrapRow($field).' '.$condition.' ( ';
         } else {
             $this->_where_str .= ' '.$operator.' '.self::_wrapRow($field).' '.$condition.' ( ';
@@ -1064,7 +1064,7 @@ class PDODriver implements ConnectorInterface
     public function groupBy($field)
     {
         // is the first time call groupBy method ?
-        if($this->_groupby_str == '') {
+        if ($this->_groupby_str == '') {
             $this->_groupby_str = ' GROUP BY '.self::_wrapRow($field);
         } else {
             $this->_groupby_str .= ' , '.self::_wrapRow($field);
@@ -1083,7 +1083,7 @@ class PDODriver implements ConnectorInterface
         $operator = 'AND';
 
         // is the first time call where method ?
-        if($this->_having_str == '') {
+        if ($this->_having_str == '') {
             $this->_having_str = ' HAVING ';
         } else {
             $this->_having_str .= ' '.$operator.' ';
@@ -1104,7 +1104,7 @@ class PDODriver implements ConnectorInterface
         $operator = 'OR';
 
         // is the first time call where method ?
-        if($this->_having_str == '') {
+        if ($this->_having_str == '') {
             $this->_having_str = ' HAVING ';
         } else {
             $this->_having_str .= ' '.$operator.' ';
@@ -1139,11 +1139,11 @@ class PDODriver implements ConnectorInterface
     public function orderBy($field, $mode = 'ASC')
     {
         $mode = strtoupper($mode);
-        if( ! in_array($mode, ['ASC', 'DESC'])) {
+        if ( ! in_array($mode, ['ASC', 'DESC'])) {
             throw new \InvalidArgumentException("Error order by mode");
         }
         // is the first time call orderBy method ?
-        if($this->_orderby_str == '') {
+        if ($this->_orderby_str == '') {
             $this->_orderby_str = ' ORDER BY '.self::_wrapRow($field).' '.$mode;
         } else {
             $this->_orderby_str .= ' , '.self::_wrapRow($field).' '.$mode;
@@ -1164,7 +1164,7 @@ class PDODriver implements ConnectorInterface
      */
     public function join($table, $one, $two, $type = 'INNER')
     {
-        if( ! in_array($type, ['INNER', 'LEFT', 'RIGHT'])) {
+        if ( ! in_array($type, ['INNER', 'LEFT', 'RIGHT'])) {
             throw new \InvalidArgumentException("Error join mode");
         }
         // set table prefix
@@ -1321,7 +1321,7 @@ class PDODriver implements ConnectorInterface
      */
     public function count($field = '*')
     {
-        if(trim($field) != '*') {
+        if (trim($field) != '*') {
             $field = self::_quote($field);
         }
         $this->_cols_str = ' COUNT('.$field.') AS count_num ';
@@ -1439,7 +1439,7 @@ class PDODriver implements ConnectorInterface
     public function update(array $data)
     {
         // should not update without where
-        if(empty($this->_where_str)) {
+        if (empty($this->_where_str)) {
             throw new \InvalidArgumentException("Need where condition");
         }
         // create build str
@@ -1467,7 +1467,7 @@ class PDODriver implements ConnectorInterface
     public function delete()
     {
         // should not delete without where
-        if(empty($this->_where_str)) {
+        if (empty($this->_where_str)) {
             throw new \InvalidArgumentException("Need where condition");
         }
 
@@ -1502,7 +1502,7 @@ class PDODriver implements ConnectorInterface
             return $this->_pdo->query($sql);
         } catch (PDOException $e) {
             // when time out, reconnect
-            if($this->_isTimeout($e)) {
+            if ($this->_isTimeout($e)) {
 
                 $this->_closeConnection();
                 $this->_connect();
@@ -1532,7 +1532,7 @@ class PDODriver implements ConnectorInterface
             return $this->_pdo->exec($sql);
         } catch (PDOException $e) {
             // when time out, reconnect
-            if($this->_isTimeout($e)) {
+            if ($this->_isTimeout($e)) {
 
                 $this->_closeConnection();
                 $this->_connect();
@@ -1563,7 +1563,7 @@ class PDODriver implements ConnectorInterface
             return $this->_pdo->prepare($sql, $driver_options);
         } catch (PDOException $e) {
             // when time out, reconnect
-            if($this->_isTimeout($e)) {
+            if ($this->_isTimeout($e)) {
 
                 $this->_closeConnection();
                 $this->_connect();

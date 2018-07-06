@@ -114,9 +114,9 @@ Class Response
     public static function bulid($data, array $conf)
     {
         // should be json
-        if(is_array($data) || is_object($data)) {
+        if (is_array($data) || is_object($data)) {
             // Closure
-            if($data instanceof Closure) { 
+            if ($data instanceof Closure) { 
                 $result = call_user_func($data);
                 // is redirect Closure 
                 if ($result == 'redirect') {
@@ -130,7 +130,7 @@ Class Response
             return self::_compress(json_encode($data), $conf['compress']);
         }
         // is string (could be html string)
-        if(is_string($data)) {
+        if (is_string($data)) {
             return self::_compress($data, $conf['compress']);
         }
         // if return others, regard as illegal
@@ -158,11 +158,11 @@ Class Response
         }
 
         // is compress conf be accepted?
-        if(in_array($compress_conf['encoding'], $accept_encodeing)) {
+        if (in_array($compress_conf['encoding'], $accept_encodeing)) {
             // get content type string
             preg_match('/^Content-Type\:\s*([^;]+)\s*;?/', $content_type, $match);
             // is content type enable compress ?
-            if(in_array($match[1], $compress_conf['content_type'])) {
+            if (in_array($match[1], $compress_conf['content_type'])) {
                 // check conf encodeing, enable compress
                 switch ($compress_conf['encoding']) {
                     case 'gzip':

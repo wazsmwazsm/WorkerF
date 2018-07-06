@@ -40,12 +40,12 @@ class Sqlite extends PDODriver implements ConnectorInterface
     {
         extract($this->_config, EXTR_SKIP);
 
-        if($dbname == ':memory:') {
+        if ($dbname == ':memory:') {
             $dsn = 'sqlite::memory:';
         } else {
             $path = realpath($dbname);
 
-            if($path === FALSE) {
+            if ($path === FALSE) {
                 throw new \InvalidArgumentException("Database $dbname does not exist.");
             }
             $dsn = 'sqlite:'.$path;

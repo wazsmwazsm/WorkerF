@@ -28,7 +28,7 @@ class DotArr
 
         while (count($keys) > 1) {
             $key = array_shift($keys);
-            if( ! isset($array[$key]) || ! is_array($array[$key])) {
+            if ( ! isset($array[$key]) || ! is_array($array[$key])) {
                 $array[$key] = [];
             }
 
@@ -50,7 +50,7 @@ class DotArr
      */
     public static function dotGet($array, $key, $default = NULL)
     {
-        if(is_null($key)) {
+        if (is_null($key)) {
             return $array;
         }
 
@@ -59,7 +59,7 @@ class DotArr
         }
 
         foreach (explode('.', $key) as $segment) {
-            if( ! is_array($array) || ! array_key_exists($segment, $array)) {
+            if ( ! is_array($array) || ! array_key_exists($segment, $array)) {
                 return $default;
             }
 

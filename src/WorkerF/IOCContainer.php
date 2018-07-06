@@ -54,11 +54,11 @@ use ReflectionClass;
      */
     public static function singleton($instance)
     {
-        if( ! is_object($instance)) {
+        if ( ! is_object($instance)) {
             throw new \InvalidArgumentException("Object need!");
         }
         // singleton not exist, create
-        if( ! array_key_exists(get_class($instance), self::$_singleton)) {
+        if ( ! array_key_exists(get_class($instance), self::$_singleton)) {
             self::$_singleton[get_class($instance)] = $instance;
         }
     }
@@ -160,11 +160,11 @@ use ReflectionClass;
     public static function run($class_name, $method, $params = [])
     {
         // class exist ?
-        if( ! class_exists($class_name)) {
+        if ( ! class_exists($class_name)) {
             throw new \BadMethodCallException("Class $class_name is not found!");
         }
         // method exist ?
-        if( ! method_exists($class_name, $method)) {
+        if ( ! method_exists($class_name, $method)) {
             throw new \BadMethodCallException("undefined method $method in $class_name !");
         }
         // create instance

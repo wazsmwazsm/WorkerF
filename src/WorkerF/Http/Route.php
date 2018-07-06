@@ -78,7 +78,7 @@ class Route {
     public static function __callstatic($method, $params)
     {
         // $param check
-        if(count($params) !== 2) {
+        if (count($params) !== 2) {
             // not catch, trigger Fatal error
             throw new \InvalidArgumentException("method $method accept 2 params!");
         }
@@ -101,15 +101,15 @@ class Route {
         $middleware    = self::$_filter['middleware'];
 
         // set filter path prefix
-        if(isset($filter['prefix'])) {
+        if (isset($filter['prefix'])) {
             self::$_filter['prefix'] .= '/'.$filter['prefix'].'/';
         }
         // set filter namespace prefix
-        if(isset($filter['namespace'])) {
+        if (isset($filter['namespace'])) {
             self::$_filter['namespace'] .= '\\'.$filter['namespace'].'\\';
         }
         // set filter middleware
-        if(isset($filter['middleware'])) {
+        if (isset($filter['middleware'])) {
             self::$_filter['middleware'][] = $filter['middleware'];
         }
         // call route setting
@@ -299,16 +299,16 @@ class Route {
         }
 
         // is class
-        if(is_string($callback)) {
+        if (is_string($callback)) {
             // syntax check
-            if( ! preg_match('/^[a-zA-Z0-9_\\\\]+@[a-zA-Z0-9_]+$/', $callback)) {
+            if ( ! preg_match('/^[a-zA-Z0-9_\\\\]+@[a-zA-Z0-9_]+$/', $callback)) {
                 throw new \LogicException("Please use controller@method define callback");
             }
             // get controller method info
             $controller = explode('@', $callback);
             list($class, $method) = [$controller[0], $controller[1]];
             // class methods exist ?
-            if( ! class_exists($class) || ! method_exists($class, $method)) {
+            if ( ! class_exists($class) || ! method_exists($class, $method)) {
                 $e = new \BadMethodCallException("Class@method: $callback is not found!");
                 $e->httpCode = 404;
                 throw $e;
@@ -317,7 +317,7 @@ class Route {
             return IOCContainer::run($class, $method, $params);
         }
         // is callback
-        if(is_callable($callback)) {
+        if (is_callable($callback)) {
             // call function
             return call_user_func_array($callback, $params);
         }
@@ -339,7 +339,7 @@ class Route {
         $method = $request->method();
 
         // router exist or not
-        if(array_key_exists($path, self::$_map_tree) &&
+        if (array_key_exists($path, self::$_map_tree) &&
            array_key_exists($method, self::$_map_tree[$path])
         ) {
             // get current request route middleware symbols
@@ -351,7 +351,7 @@ class Route {
         }
 
         // route in variable route cache or not
-        if(array_key_exists($path, self::$_variable_route_cache) &&
+        if (array_key_exists($path, self::$_variable_route_cache) &&
            array_key_exists($method, self::$_variable_route_cache[$path])
         ) {
             // get variable route info

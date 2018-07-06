@@ -64,19 +64,19 @@ class Pgsql extends PDODriver implements ConnectorInterface
             $this->_pdo = new PDO($dsn, $user, $password, $options);
 
             // charset set
-            if(isset($charset)) {
+            if (isset($charset)) {
                 $this->_pdo->prepare("set names '$charset'")->execute();
             }
             // timezone
-            if(isset($timezone)) {
+            if (isset($timezone)) {
                 $this->_pdo->prepare("set time zone '$timezone'")->execute();
             }
             // set schema path
-            if(isset($schema)) {
+            if (isset($schema)) {
                 $this->_pdo->prepare("set search_path to $schema")->execute();
             }
             // set application name
-            if(isset($application_name)) {
+            if (isset($application_name)) {
                 $this->_pdo->prepare("set application_name to '$applicationName'")->execute();
             }
         } catch (PDOException $e) {

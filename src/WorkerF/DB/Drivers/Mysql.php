@@ -50,16 +50,16 @@ class Mysql extends PDODriver implements ConnectorInterface
             $this->_pdo = new PDO($dsn, $user, $password, $options);
 
             // charset set
-            if(isset($charset)) {
+            if (isset($charset)) {
                 $this->_pdo->prepare("set names $charset ".(isset($collation) ? " collate '$collation'" : ''))->execute();
             }
             // timezone
-            if(isset($timezone)) {
+            if (isset($timezone)) {
                 $this->_pdo->prepare("set time_zone='$timezone'")->execute();
             }
             // strict mode
-            if(isset($strict)) {
-                if($strict) {
+            if (isset($strict)) {
+                if ($strict) {
                     $this->_pdo->prepare("set session sql_mode='STRICT_ALL_TABLES'")->execute();
                 } else {
                     $this->_pdo->prepare("set session sql_mode=''")->execute();

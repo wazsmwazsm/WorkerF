@@ -84,7 +84,7 @@ use ReflectionClass;
     }
 
     /**
-     * register class.
+     * register class, instantiate class, set instance to singleton.
      *
      * @param  string $abstract abstract class name
      * @param  string $concrete concrete class name, if NULL, use abstract class name

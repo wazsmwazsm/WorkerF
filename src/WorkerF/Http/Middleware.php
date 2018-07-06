@@ -17,7 +17,6 @@ class Middleware
      * @param array $middlewares
      * @param WorkerF\Http\Requests $request
      * @return mixed
-     * @throws \InvalidArgumentException
      */
     public static function run(array $middlewares, Requests $request)
     {
@@ -30,11 +29,7 @@ class Middleware
 
         foreach ($middlewares as $middleware) {
             // get instance with singleton
-            $middleware_instance = IOCContainer::getInstanceWithSingleton($middleware);
-            // check middleware
-            if ( ! ($middleware_instance instanceof MiddlewareInterface)) {
-                throw new \InvalidArgumentException("middleware must implements MiddlewareInterface!");           
-            }
+            $middleware_instance = IOCContainer::getSingleton($middleware);
             // create pipes array    
             $pipes[] = [$middleware_instance, 'handle'];
         }

@@ -48,9 +48,7 @@ class App
             
         } catch (\Exception $e) {
             // Handle Exception
-            $exceptionHandler = empty($conf['exception_handler']) ?
-                IOCContainer::getInstanceWithSingleton(ExceptionHandler::class) :
-                IOCContainer::getInstanceWithSingleton($conf['exception_handler']);
+            $exceptionHandler = IOCContainer::getSingleton(ExceptionHandler::class);
 
             $result = $exceptionHandler->handle($e);
             
@@ -59,7 +57,6 @@ class App
             $response = Response::bulid($result, $conf);
             $con->send($response);
         }
-
     }
 
     /**
@@ -71,6 +68,8 @@ class App
     public static function init()
     {
         try {
+            // register class
+            self::register();
             // init database
             DB::init(Config::get('database.db_con'));
             // init redis
@@ -79,7 +78,29 @@ class App
         } catch (\Exception $e) {
             Error::printError($e->getMessage());
         }
-
     }
-    
+
+    /**
+     * register class
+     *
+     * @return void
+     */
+    public static function register()
+    {
+        // register middlewares
+        $middleware_global = Config::get('middleware.global');
+        $middleware_route  = Config::get('middleware.route');
+
+        if ( ! empty($middleware_global)) {
+            foreach ($middleware_global as $middleware) {
+                IOCContainer::register($middleware);
+            }
+        }
+        if ( ! empty($middleware_route)) {
+            foreach ($middleware_route as $middleware) {
+                IOCContainer::register($middleware);
+            }
+        }
+    }
+
 }

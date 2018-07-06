@@ -6,6 +6,7 @@ use WorkerF\Http\Route;
 use WorkerF\Http\Requests;
 use WorkerF\Http\Response;
 use WorkerF\Config;
+use WorkerF\IOCContainer;
 use WorkerF\Http\MiddlewareInterface;
 
 class RouteFake extends Route
@@ -166,7 +167,9 @@ class RouteTest extends PHPUnit_Framework_TestCase
           'REQUEST_METHOD' => 'GET',
         ];
         Config::set('middleware.route', []);
-        
+        // set singleton
+        IOCContainer::register(M3::class);
+        IOCContainer::register(M4::class);
     }
 
     public function testUriParse()

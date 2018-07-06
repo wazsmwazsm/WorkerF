@@ -6,6 +6,7 @@ use PHPUnit_Framework_TestCase;
 use WorkerF\Http\Middleware;
 use WorkerF\Http\Requests;
 use WorkerF\Http\MiddlewareInterface;
+use WorkerF\IOCContainer;
 
 class M1 implements MiddlewareInterface
 {
@@ -38,6 +39,8 @@ class MiddlewareTest extends PHPUnit_Framework_TestCase
     public function testRun()
     {
         $GLOBALS['HTTP_RAW_POST_DATA'] = '{"a":"test"}';
+        IOCContainer::register(M1::class);
+        IOCContainer::register(M2::class);
 
         $request = new Requests();
         // null
@@ -57,18 +60,4 @@ class MiddlewareTest extends PHPUnit_Framework_TestCase
         $result = Middleware::run($middlewares, $request);
         $this->assertEquals('stop at m2!', $result);
     }
-
-    /**
-    * @expectedException \InvalidArgumentException
-    */
-    public function testMiddlewareNotImplementsInterfaceException()
-    {
-        $GLOBALS['HTTP_RAW_POST_DATA'] = '{"a":"test"}';
-
-        $request = new Requests();
-        // null
-        $middlewares = [Some::class];
-        $result = Middleware::run($middlewares, $request);
-    }
-
 }

@@ -9,7 +9,7 @@ use WorkerF\DB\Drivers\PDODriver;
  *
  * @author MirQin https://github.com/wazsmwazsm
  */
-class Mysql extends PDODriver implements ConnectorInterface
+class Mysql extends PDODriver
 {
     /**
      * escape symbol

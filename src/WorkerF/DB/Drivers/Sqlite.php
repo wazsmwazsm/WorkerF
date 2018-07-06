@@ -9,7 +9,7 @@ use WorkerF\DB\Drivers\PDODriver;
  *
  * @author MirQin https://github.com/wazsmwazsm
  */
-class Sqlite extends PDODriver implements ConnectorInterface
+class Sqlite extends PDODriver
 {
     /**
      * escape symbol

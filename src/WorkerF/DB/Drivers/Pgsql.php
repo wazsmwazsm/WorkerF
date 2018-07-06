@@ -9,7 +9,7 @@ use WorkerF\DB\Drivers\PDODriver;
  *
  * @author MirQin https://github.com/wazsmwazsm
  */
-class Pgsql extends PDODriver implements ConnectorInterface
+class Pgsql extends PDODriver
 {
 
     /**

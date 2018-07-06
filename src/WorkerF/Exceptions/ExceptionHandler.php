@@ -11,9 +11,14 @@ use WorkerF\Error;
  *
  * @author MirQin https://github.com/wazsmwazsm
  */
-class ExceptionHandler
+class ExceptionHandler implements ExceptionHandlerInterface
 {
-
+    /**
+     * ExceptionHandler handle.
+     *
+     * @param \Exception $e
+     * @return string
+     */
     public function handle(\Exception $e)
     {
         $httpCode = 500;

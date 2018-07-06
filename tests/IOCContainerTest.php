@@ -11,6 +11,17 @@ class IOCContainerFake extends IOCContainer
     {
         return self::_getDiParams($params);
     }
+
+    public static function getRegister()
+    {
+        return self::$_register;
+    }
+
+    public static function clean()
+    {
+        self::$_register = [];
+        self::$_singleton = [];
+    }
 }
 
 class Foo
@@ -57,6 +68,11 @@ class Bar
 
 class IOCContainerTest extends PHPUnit_Framework_TestCase
 {
+    public function setUp()
+    {
+        IOCContainerFake::clean();
+    }
+
     public function testSingleton()
     {
         $singleton = IOCContainerFake::getSingleton(Foo::class);
@@ -78,6 +94,28 @@ class IOCContainerTest extends PHPUnit_Framework_TestCase
     public function testSingletonException()
     {
         IOCContainerFake::singleton(Foo::class);
+    }
+
+    public function testRegister()
+    {
+        IOCContainerFake::register(Foo::class);
+        IOCContainerFake::register(Bar::class);
+        $result = IOCContainerFake::getRegister();
+        $expect = [
+            Foo::class,
+            Bar::class,
+        ];
+        $this->assertEquals($expect, $result);
+    }
+
+    public function testRunRegister()
+    {
+        IOCContainerFake::register(Foo::class);
+        IOCContainerFake::register(Foz::class);
+        IOCContainerFake::runRegister();
+
+        $this->assertEquals(new Foo(), IOCContainerFake::getSingleton(Foo::class));
+        $this->assertEquals(new Foz(), IOCContainerFake::getSingleton(Foz::class));
     }
 
     public function testGetDiParams()

@@ -11,6 +11,13 @@ use ReflectionClass;
  class IOCContainer
  {
      /**
+      * class register.
+      *
+      * @var array
+      */
+    protected static $_register = []; 
+
+     /**
       * singleton instances.
       *
       * @var array
@@ -76,6 +83,32 @@ use ReflectionClass;
     public static function unsetSingleton($class_name)
     {
         self::$_singleton[$class_name] = NULL;
+    }
+
+    /**
+     * register class.
+     *
+     * @param  string $class_name
+     * @return void
+     */
+    public static function register($class_name)
+    {
+        if ( ! in_array($class_name, self::$_register)) {
+            self::$_register[] = $class_name;
+        }
+    }
+
+    /**
+     * set register to singleton.
+     *
+     * @return void
+     */
+    public static function runRegister()
+    {
+        foreach (self::$_register as $register) {
+            $instance = self::getInstance($register);
+            self::singleton($instance);
+        }
     }
 
     /**

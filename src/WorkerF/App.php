@@ -48,7 +48,7 @@ class App
             
         } catch (\Exception $e) {
             // Handle Exception
-            $exceptionHandler = IOCContainer::getSingleton(ExceptionHandler::class);
+            $exceptionHandler = IOCContainer::getInstanceWithSingleton(ExceptionHandler::class);
 
             $result = $exceptionHandler->handle($e);
             
@@ -88,17 +88,11 @@ class App
     public static function register()
     {
         // register middlewares
-        $middleware_global = Config::get('middleware.global');
-        $middleware_route  = Config::get('middleware.route');
+        $registers = Config::get('app.registers');
 
-        if ( ! empty($middleware_global)) {
-            foreach ($middleware_global as $middleware) {
-                IOCContainer::register($middleware);
-            }
-        }
-        if ( ! empty($middleware_route)) {
-            foreach ($middleware_route as $middleware) {
-                IOCContainer::register($middleware);
+        if ( ! empty($registers)) {
+            foreach ($registers as $register) {
+                IOCContainer::register($register);
             }
         }
     }

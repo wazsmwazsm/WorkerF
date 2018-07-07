@@ -29,7 +29,7 @@ class Middleware
 
         foreach ($middlewares as $middleware) {
             // get instance with singleton
-            $middleware_instance = IOCContainer::getSingleton($middleware);
+            $middleware_instance = IOCContainer::getInstanceWithSingleton($middleware);
             // create pipes array    
             $pipes[] = [$middleware_instance, 'handle'];
         }

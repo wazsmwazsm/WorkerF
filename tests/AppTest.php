@@ -20,7 +20,7 @@ class Foz
     public $b = 4;
 }
 
-class ErrorTest extends PHPUnit_Framework_TestCase
+class AppTest extends PHPUnit_Framework_TestCase
 {
     public function testRegister()
     {

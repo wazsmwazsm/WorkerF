@@ -23,7 +23,9 @@ class ExceptionHandler implements ExceptionHandlerInterface
     {
         $httpCode = 500;
         // create http response header
-        if (property_exists($e, 'httpCode')) { // is a http exception
+        if (property_exists($e, 'httpCode') && 
+           array_key_exists($e->httpCode, Response::$statusCodes)
+        ) { // is a http exception
             $httpCode = $e->httpCode;
             $header = Response::$statusCodes[$httpCode];
         } else { // other exception

@@ -1,5 +1,7 @@
 # WorkerF
 
+[![Build Status](https://travis-ci.org/wazsmwazsm/WorkerF.svg?branch=master)](https://travis-ci.org/wazsmwazsm/WorkerF)
+
 WorkerA 的框架部分。
 
 安装、使用请查看 [文档](https://www.kancloud.cn/wazsmwazsm/workera/691859 "文档")。

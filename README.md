@@ -1,25 +1,15 @@
-# WorkerF framework part
+# WorkerF
 
-[![Build Status](https://travis-ci.org/wazsmwazsm/WorkerF.svg?branch=master)](https://travis-ci.org/wazsmwazsm/WorkerF)
+WorkerA 的框架部分。
 
-[中文文档](https://github.com/wazsmwazsm/WorkerF/blob/master/README_CN.md  "中文文档")
+安装、使用请查看 [文档](https://www.kancloud.cn/wazsmwazsm/workera/691859 "文档")。
 
-## About
 
-  a http framework for workerman, framework part
+## 项目依赖
 
-  - memory-resident
-  - multiprocess, Highly concurrent
-  - singleton db connection
-  - use dependency injection
-  - brief routing
-  - support mysql postgresql sqlite driver, timeout auto reconnect
-  - support redis driver, based on predis
+[workerman](http://www.workerman.net/ "workerman")
 
-  Not allround but brief, Extensible, efficient
-
-## Dependents
-  [workerman](http://www.workerman.net/ "workerman")
+[predis](https://github.com/nrk/predis "predis")
 
 ## License
 

@@ -22,11 +22,6 @@ class ConfigTest extends PHPUnit_Framework_TestCase
           $this->assertEquals($foo, Config::get('a'));
     }
 
-    public function testGetRootPath()
-    {
-          $this->assertEquals(getcwd(), Config::getRootPath());
-    }
-
     public function testLoad()
     {
         $foo = [

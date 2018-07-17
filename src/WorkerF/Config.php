@@ -52,14 +52,4 @@ class Config
         return DotArr::dotGet(self::$_config, $key, $default);
     }
 
-    /**
-     * get root path.
-     *
-     * @return string
-     */
-    public static function getRootPath()
-    {
-        return getcwd();
-    }
-
 }

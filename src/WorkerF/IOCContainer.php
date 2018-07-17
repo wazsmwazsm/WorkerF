@@ -31,7 +31,7 @@ use ReflectionClass;
             if ($class) {
                 // check dependency is a singleton instance or not
                 $singleton = self::getSingleton($class->name);
-                $di_params[] = $singleton ? $singleton : new $class->name();
+                $di_params[] = $singleton ? $singleton : self::getInstance($class->name);
             }
         }
 

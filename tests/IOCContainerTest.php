@@ -60,6 +60,33 @@ class Bar
 }
 
 
+class Fzz
+{
+    public $a = 5;
+
+    public $b = 6;
+
+    public function __construct(Foo $foo)
+    {
+        $this->a = $foo->a + $this->a;
+        $this->b = $foo->b + $this->b;
+    }
+}
+
+class brr
+{
+    public $a = 0;
+
+    public $b = 0;
+
+    public function __construct(Fzz $fzz)
+    {
+        $this->a = $fzz->a;
+        $this->b = $fzz->b;
+    }
+}
+
+
 class IOCContainerTest extends PHPUnit_Framework_TestCase
 {
     public function setUp()
@@ -136,6 +163,11 @@ class IOCContainerTest extends PHPUnit_Framework_TestCase
         $result = IOCContainerFake::getInstance(Bar::class);
 
         $this->assertEquals($expect, $result);
+
+        $result = IOCContainerFake::getInstance(Brr::class);
+
+        $this->assertEquals(6, $result->a);
+        $this->assertEquals(8, $result->b);
     }
 
     public function testGetInstanceSingleton()

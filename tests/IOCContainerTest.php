@@ -157,13 +157,13 @@ class IOCContainerTest extends PHPUnit_Framework_TestCase
 
     public function testGetInstance()
     {
-        $foo = new Foo();
-        $foz = new Foz();
-        $expect = new Bar($foo, $foz);
+        // DI 
         $result = IOCContainerFake::getInstance(Bar::class);
 
-        $this->assertEquals($expect, $result);
+        $this->assertEquals(1, $result->a);
+        $this->assertEquals(4, $result->b);
 
+        // DI nesting
         $result = IOCContainerFake::getInstance(Brr::class);
 
         $this->assertEquals(6, $result->a);

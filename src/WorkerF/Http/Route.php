@@ -213,6 +213,20 @@ class Route {
     }  
 
     /**
+     * To avoid memory leaks, clear variable route cache when data out of array length.
+     *
+     * @return void
+     */
+    protected static function _clearVariableRouteCache()
+    {
+        $limit = 65535;
+
+        if (count(self::$_variable_route_cache) > $limit) {
+            self::$_variable_route_cache = NULL;
+        }
+    }
+
+    /**
      * set map tree.
      *
      * @param  string  $method
@@ -368,6 +382,8 @@ class Route {
             $callback           = $path_info['callback'];
             $params             = $path_info['params'];
             $middleware_symbols = $path_info['middleware'];
+            // clear route cache if data out of range
+            self::_clearVariableRouteCache();
             // save variable route to cache
             self::$_variable_route_cache[$path][$method]['callback']   = $callback;
             self::$_variable_route_cache[$path][$method]['params']     = $params;

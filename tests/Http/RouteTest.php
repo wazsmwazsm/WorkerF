@@ -31,6 +31,16 @@ class RouteFake extends Route
         return self::$_variable_route_cache;
     }
 
+    public static function setVariableRouteCache($arr)
+    {
+        self::$_variable_route_cache = $arr;
+    }
+
+    public static function clearVariableRouteCache()
+    {
+        self::_clearVariableRouteCache();
+    }
+
     public static function getVariableReplacement()
     {
         return self::$_variable_replacement;
@@ -620,6 +630,37 @@ class RouteTest extends PHPUnit_Framework_TestCase
         // dispatch when variable already cached
         $result = RouteFake::dispatch($request);
         $this->assertEquals(8, $result);
+    }
+
+    public function testClearVariableRouteCache()
+    {
+        // data not out of range
+        $route_cache = [];
+
+        for ($i=0; $i < 65535; $i++) { 
+            $route_cache[$i] = 1;
+        }
+
+        RouteFake::setVariableRouteCache($route_cache);
+        RouteFake::clearVariableRouteCache();
+
+        $route_cache = RouteFake::getVariableRouteCache();
+        
+        $this->assertEquals(65535, count($route_cache));
+
+        // data out of range
+        $route_cache = [];
+
+        for ($i=0; $i < 65536; $i++) { 
+            $route_cache[$i] = 1;
+        }
+
+        RouteFake::setVariableRouteCache($route_cache);
+        RouteFake::clearVariableRouteCache();
+
+        $route_cache = RouteFake::getVariableRouteCache();
+        
+        $this->assertEquals(0, count($route_cache));
     }
 
     public function testGetRedirectUrl()

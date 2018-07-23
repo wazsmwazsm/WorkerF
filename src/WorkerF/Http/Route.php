@@ -41,6 +41,20 @@ class Route {
     protected static $_variable_route_cache = []; 
 
     /**
+     * The variable route cache index, Used for cache control with LRU.
+     *
+     * @var array
+     */
+    protected static $_variable_route_cache_index = []; 
+
+    /**
+     * The variable route cache limit, default 2^13.
+     *
+     * @var array
+     */
+    protected static $_variable_route_cache_limit = 8192; 
+
+    /**
      * The variable route regexp mode.
      * accept letter, underscore. cannot start with a number 
      *
@@ -213,17 +227,35 @@ class Route {
     }  
 
     /**
-     * To avoid memory leaks, clear variable route cache when data out of array length.
+     * To avoid memory leaks, clear variable route cache with LRU when data out of array length.
      *
+     * @param  string  $value
      * @return void
      */
-    protected static function _clearVariableRouteCache()
+    protected static function _variableRouteCacheControl($value)
     {
-        $limit = 65535;
-
-        if (count(self::$_variable_route_cache) > $limit) {
-            self::$_variable_route_cache = NULL;
-        }
+        // get route cache index count
+        $count = count(self::$_variable_route_cache_index);
+        // is value in cache index list?
+        if (FALSE !== ($index = array_search($value, self::$_variable_route_cache_index))) {
+            // if value is tail, do nothing
+            if ($index == ($count - 1)) {
+                return;
+            }
+            // unset old value
+            unset(self::$_variable_route_cache_index[$index]);
+            // reset array index
+            self::$_variable_route_cache_index = array_values(self::$_variable_route_cache_index);
+        } 
+        // cache index list out of range? 
+        if ($count >= self::$_variable_route_cache_limit) {
+            // remove head value
+            $remove_value = array_shift(self::$_variable_route_cache_index);
+            // unset route cache, free memory
+            unset(self::$_variable_route_cache[$remove_value]);
+        } 
+        // push value to tail
+        array_push(self::$_variable_route_cache_index, $value);
     }
 
     /**
@@ -383,7 +415,7 @@ class Route {
             $params             = $path_info['params'];
             $middleware_symbols = $path_info['middleware'];
             // clear route cache if data out of range
-            self::_clearVariableRouteCache();
+            self::_variableRouteCacheControl($path);
             // save variable route to cache
             self::$_variable_route_cache[$path][$method]['callback']   = $callback;
             self::$_variable_route_cache[$path][$method]['params']     = $params;

@@ -36,6 +36,16 @@ class RouteFake extends Route
         self::$_variable_route_cache = $arr;
     }
 
+    public static function getVariableRouteCacheIndex()
+    {
+        return self::$_variable_route_cache_index;
+    }
+
+    public static function getVariableRouteCacheLimit()
+    {
+        return self::$_variable_route_cache_limit;
+    }
+
     public static function variableRouteCacheControl($value)
     {
         self::_variableRouteCacheControl($value);
@@ -661,6 +671,29 @@ class RouteTest extends PHPUnit_Framework_TestCase
         // $route_cache = RouteFake::getVariableRouteCache();
         
         // $this->assertEquals(0, count($route_cache));
+    }
+
+    public function testSetVariableRouteCacheLimit()
+    {
+        RouteFake::setVariableRouteCacheLimit(552);
+
+        $this->assertEquals(552, RouteFake::getVariableRouteCacheLimit());
+    }
+
+    /**
+    * @expectedException \InvalidArgumentException
+    */
+    public function testSetVariableRouteCacheLimitException()
+    {
+        RouteFake::setVariableRouteCacheLimit(-1);
+    }
+
+    /**
+    * @expectedException \InvalidArgumentException
+    */
+    public function testSetVariableRouteCacheLimitException2()
+    {
+        RouteFake::setVariableRouteCacheLimit(['a' => 1, 'b' => 2]);
     }
 
     public function testGetRedirectUrl()

@@ -370,6 +370,20 @@ class Route {
     }
 
     /**
+     * Set variable route cache length limit.
+     *
+     * @param  int  $value
+     * @return void
+     */
+    public static function setVariableRouteCacheLimit($value)
+    {
+        if ( ! (is_numeric($value) && $value > 0)) {
+            throw new \InvalidArgumentException("The route cache limit need a numeric greater than 0 !");
+        }
+        self::$_variable_route_cache_limit = $value;
+    }
+
+    /**
      * dispatch route.
      *
      * @param WorkerF\Http\Requests $request
@@ -414,7 +428,7 @@ class Route {
             $callback           = $path_info['callback'];
             $params             = $path_info['params'];
             $middleware_symbols = $path_info['middleware'];
-            // clear route cache if data out of range
+            // clear route cache with LRU if data out of range
             self::_variableRouteCacheControl($path);
             // save variable route to cache
             self::$_variable_route_cache[$path][$method]['callback']   = $callback;

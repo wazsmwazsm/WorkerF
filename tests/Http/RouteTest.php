@@ -41,6 +41,11 @@ class RouteFake extends Route
         return self::$_variable_route_cache_index;
     }
 
+    public static function setVariableRouteCacheIndex($arr)
+    {
+        self::$_variable_route_cache_index = $arr;
+    }
+
     public static function getVariableRouteCacheLimit()
     {
         return self::$_variable_route_cache_limit;
@@ -644,33 +649,53 @@ class RouteTest extends PHPUnit_Framework_TestCase
 
     public function testVariableRouteCacheControl()
     {
-        // // data not out of range
-        // $route_cache = [];
+        // set cache limit
+        RouteFake::setVariableRouteCacheLimit(10);
 
-        // for ($i=0; $i < 65535; $i++) { 
-        //     $route_cache[$i] = 1;
-        // }
+        /* data not out of range */
 
-        // RouteFake::setVariableRouteCache($route_cache);
-        // RouteFake::clearVariableRouteCache();
+        $route_cache_index = [9, 1, 5, 6, 7, 2];
+        RouteFake::setVariableRouteCacheIndex($route_cache_index);
+        RouteFake::setVariableRouteCache([9 => 'a', 7 => 'c', 1 => 'b']);
 
-        // $route_cache = RouteFake::getVariableRouteCache();
-        
-        // $this->assertEquals(65535, count($route_cache));
+        // value add
+        RouteFake::variableRouteCacheControl(15); 
+        $route_cache_index = RouteFake::getVariableRouteCacheIndex();
+        $this->assertEquals([9, 1, 5, 6, 7, 2, 15], $route_cache_index);
 
-        // // data out of range
-        // $route_cache = [];
+        // value hit
+        RouteFake::variableRouteCacheControl(1);
+        $route_cache_index = RouteFake::getVariableRouteCacheIndex();
+        $this->assertEquals([9, 5, 6, 7, 2, 15, 1], $route_cache_index);
+        RouteFake::variableRouteCacheControl(7);
+        $route_cache_index = RouteFake::getVariableRouteCacheIndex();
+        $this->assertEquals([9, 5, 6, 2, 15, 1, 7], $route_cache_index);
+        $route_cache = RouteFake::getVariableRouteCache();
+        $this->assertEquals([9 => 'a', 7 => 'c', 1 => 'b'], $route_cache);
 
-        // for ($i=0; $i < 65536; $i++) { 
-        //     $route_cache[$i] = 1;
-        // }
+        /* data out of range */
 
-        // RouteFake::setVariableRouteCache($route_cache);
-        // RouteFake::clearVariableRouteCache();
+        $route_cache_index = [9, 1, 5, 6, 7, 2, 11, 3, 15, 4];
+        RouteFake::setVariableRouteCacheIndex($route_cache_index);
+        RouteFake::setVariableRouteCache([9 => 'a', 7 => 'c', 1 => 'b']);
 
-        // $route_cache = RouteFake::getVariableRouteCache();
-        
-        // $this->assertEquals(0, count($route_cache));
+        // value add
+        RouteFake::variableRouteCacheControl(18); 
+        $route_cache_index = RouteFake::getVariableRouteCacheIndex();
+        $route_cache = RouteFake::getVariableRouteCache();
+        $this->assertEquals([1, 5, 6, 7, 2, 11, 3, 15, 4, 18], $route_cache_index);
+        $this->assertEquals([7 => 'c', 1 => 'b'], $route_cache);
+        RouteFake::variableRouteCacheControl(16); 
+        $route_cache_index = RouteFake::getVariableRouteCacheIndex();
+        $route_cache = RouteFake::getVariableRouteCache();
+        $this->assertEquals([5, 6, 7, 2, 11, 3, 15, 4, 18, 16], $route_cache_index);
+        $this->assertEquals([7 => 'c'], $route_cache);
+
+        // value hit
+        RouteFake::variableRouteCacheControl(2);
+        $route_cache_index = RouteFake::getVariableRouteCacheIndex();
+        $this->assertEquals([5, 6, 7, 11, 3, 15, 4, 18, 16, 2], $route_cache_index);
+        $this->assertEquals([7 => 'c'], $route_cache);
     }
 
     public function testSetVariableRouteCacheLimit()

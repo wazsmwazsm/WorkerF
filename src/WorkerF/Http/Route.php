@@ -234,12 +234,10 @@ class Route {
      */
     protected static function _variableRouteCacheControl($value)
     {
-        // get route cache index count
-        $count = count(self::$_variable_route_cache_index);
         // is value in cache index list?
         if (FALSE !== ($index = array_search($value, self::$_variable_route_cache_index))) {
             // if value is tail, do nothing
-            if ($index == ($count - 1)) {
+            if ($index == (count(self::$_variable_route_cache_index) - 1)) {
                 return;
             }
             // unset old value
@@ -247,15 +245,15 @@ class Route {
             // reset array index
             self::$_variable_route_cache_index = array_values(self::$_variable_route_cache_index);
         } 
+        // push value to tail
+        array_push(self::$_variable_route_cache_index, $value);
         // cache index list out of range? 
-        if ($count >= self::$_variable_route_cache_limit) {
+        if (count(self::$_variable_route_cache_index) > self::$_variable_route_cache_limit) {
             // remove head value
             $remove_value = array_shift(self::$_variable_route_cache_index);
             // unset route cache, free memory
             unset(self::$_variable_route_cache[$remove_value]);
-        } 
-        // push value to tail
-        array_push(self::$_variable_route_cache_index, $value);
+        }   
     }
 
     /**

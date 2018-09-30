@@ -17,7 +17,7 @@ Class Response
      *
      * @var array
      */
-    public static $statusCodes = array(
+    public static $statusCodes = [
         100 => 'HTTP/1.1 100 Continue',
         101 => 'HTTP/1.1 101 Switching Protocols',
         200 => 'HTTP/1.1 200 OK',
@@ -61,7 +61,7 @@ Class Response
         503 => 'HTTP/1.1 503 Service Unavailable',
         504 => 'HTTP/1.1 504 Gateway Timeout',
         505 => 'HTTP/1.1 505 HTTP Version Not Supported',
-    );
+    ];
 
     /**
      * create http response header.

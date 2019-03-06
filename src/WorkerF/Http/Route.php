@@ -297,7 +297,7 @@ class Route {
     }
 
     /**
-     * set map tree.
+     * check middlewares.
      *
      * @param  WorkerF\Http\Requests $request
      * @param  array $middleware_symbols
